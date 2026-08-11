@@ -13,6 +13,8 @@ export const site = {
     line1: "Industrial Area 4, Al Qusais",
     line2: "Dubai, UAE",
     line3: "Office 402, King Fahad Road, Riyadh, KSA",
+    mapsHref:
+      "https://www.google.com/maps/search/?api=1&query=Industrial+Area+4+Al+Qusais+Dubai",
   },
   social: [
     { label: "LinkedIn", href: "https://linkedin.com" },

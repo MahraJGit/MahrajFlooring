@@ -83,41 +83,66 @@ export function QuoteForm() {
               className="h-11 bg-background"
             />
           </div>
+          <div className="space-y-2">
+            <Label htmlFor="quote-email" className={labelClass}>
+              Email
+            </Label>
+            <Input
+              id="quote-email"
+              name="email"
+              type="email"
+              required
+              autoComplete="email"
+              placeholder="you@company.com"
+              className="h-11 bg-background"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="quote-phone" className={labelClass}>
+              Phone
+            </Label>
+            <Input
+              id="quote-phone"
+              name="phone"
+              type="tel"
+              autoComplete="tel"
+              placeholder="+971 50 000 0000"
+              className="h-11 bg-background"
+            />
+          </div>
+          <div className="space-y-2 sm:col-span-2">
+            <Label htmlFor="quote-solution" className={labelClass}>
+              Industry Solution
+            </Label>
+            <Select name="solution" defaultValue={quoteSolutions[0]}>
+              <SelectTrigger id="quote-solution" className="h-11 w-full bg-background">
+                <SelectValue placeholder="Select a solution" />
+              </SelectTrigger>
+              <SelectContent>
+                {quoteSolutions.map((solution) => (
+                  <SelectItem key={solution} value={solution}>
+                    {solution}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-2 sm:col-span-2">
+            <Label htmlFor="quote-brief" className={labelClass}>
+              Project Brief
+            </Label>
+            <Textarea
+              id="quote-brief"
+              name="brief"
+              required
+              rows={5}
+              placeholder="Tell us about the area size and requirements..."
+              className="bg-background"
+            />
+          </div>
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="quote-solution" className={labelClass}>
-            Industry Solution
-          </Label>
-          <Select name="solution" defaultValue={quoteSolutions[0]}>
-            <SelectTrigger id="quote-solution" className="h-11 w-full bg-background">
-              <SelectValue placeholder="Select a solution" />
-            </SelectTrigger>
-            <SelectContent>
-              {quoteSolutions.map((solution) => (
-                <SelectItem key={solution} value={solution}>
-                  {solution}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="quote-brief" className={labelClass}>
-            Project Brief
-          </Label>
-          <Textarea
-            id="quote-brief"
-            name="brief"
-            required
-            rows={4}
-            placeholder="Tell us about the area size and requirements..."
-            className="bg-background"
-          />
-        </div>
-
-        <Button type="submit" variant="brand" size="xl" className="w-full">
+        <Button type="submit" variant="brand" size="xl" className="w-full ">
           Send Quote Request
         </Button>
       </form>

@@ -1,22 +1,29 @@
 import type { Metadata } from "next";
 
-import { ComingSoon } from "@/components/layout/coming-soon";
-import { PageHero } from "@/components/layout/page-hero";
+import { Accreditations } from "@/components/reviews/accreditations";
+import { Commitment } from "@/components/reviews/commitment";
+import { FeaturedProjects } from "@/components/reviews/featured-projects";
+import { ProjectPartners } from "@/components/reviews/project-partners";
+import { ReviewForm } from "@/components/reviews/review-form";
+import { ReviewsHero } from "@/components/reviews/reviews-hero";
+import { Testimonials } from "@/components/reviews/testimonials";
 
 export const metadata: Metadata = {
   title: "Reviews",
   description:
-    "What contractors, architects, and facility owners across the GCC say about working with Mahraj Flooring.",
+    "Completed flooring projects across the GCC, paired with technical testimonials from the teams who specified and received them.",
 };
 
 export default function ReviewsPage() {
   return (
     <>
-      <PageHero
-        title="Reviews"
-        description="What contractors, architects, and facility owners across the GCC say about working with our team."
-      />
-      <ComingSoon note="Client testimonials are being collected and will be published here." />
+      <ReviewsHero />
+      <ProjectPartners />
+      <FeaturedProjects />
+      <Testimonials />
+      <Accreditations />
+      <Commitment />
+      <ReviewForm />
     </>
   );
 }
