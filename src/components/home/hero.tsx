@@ -58,11 +58,10 @@ export function Hero() {
 
       <Container className="flex min-h-[34rem] flex-col justify-center py-20 lg:min-h-[38rem] lg:py-24">
         <div className="max-w-2xl">
-          <h1 className="font-heading text-4xl font-semibold leading-[1.1] text-white sm:text-5xl lg:text-[3.5rem]">
-            Complete Flooring and Fitness Solutions
-            <span className="mt-1 block text-brand">Across the GCC</span>
+          <h1 className="font-heading text-4xl font-semibold leading-[1.12] text-white sm:text-5xl lg:text-[3.5rem]">
+            Complete Flooring and Fitness Solutions Across the GCC
           </h1>
-          <p className="mt-6 max-w-xl text-base leading-relaxed text-white/70">
+          <p className="mt-6 max-w-xl text-base leading-relaxed text-white/90">
             Delivering high-performance surfaces for commercial gyms, elite
             sports venues, and industrial spaces with precision-engineered
             quality.
@@ -70,23 +69,27 @@ export function Hero() {
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Button asChild variant="brand" size="xl">
               <Link href="/contact">
-                Request a Quote
+                Request project
                 <ArrowRight />
               </Link>
             </Button>
-            <Button asChild variant="inverseOutline" size="xl">
-              <Link href="/services">Explore Solutions</Link>
+            <Button
+              asChild
+              size="xl"
+              className="border-white/15 bg-white/10 text-white backdrop-blur-sm hover:bg-white/20"
+            >
+              <Link href="/contact">Get a Quote</Link>
             </Button>
           </div>
         </div>
 
-        <ul className="mt-14 flex flex-wrap items-center gap-x-8 gap-y-4 border-t border-white/15 pt-6">
+        <ul className="mt-14 flex flex-wrap items-center gap-x-10 gap-y-4 border-t border-white/20 pt-6">
           {heroHighlights.map(({ icon: Icon, label }) => (
             <li
               key={label}
-              className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-white/80"
+              className="flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.16em] text-white"
             >
-              <Icon className="size-4 text-brand" />
+              <Icon className="size-4 text-white" />
               {label}
             </li>
           ))}

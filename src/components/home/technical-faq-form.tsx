@@ -62,6 +62,8 @@ export function TechnicalFaqForm() {
                 </Label>
                 <Input
                   id="home-name"
+                  name="name"
+                  autoComplete="name"
                   placeholder="John Doe"
                   className="h-11 bg-background"
                 />
@@ -72,7 +74,35 @@ export function TechnicalFaqForm() {
                 </Label>
                 <Input
                   id="home-company"
+                  name="company"
+                  autoComplete="organization"
                   placeholder="Design Studio"
+                  className="h-11 bg-background"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="home-phone" className={labelClass}>
+                  Phone
+                </Label>
+                <Input
+                  id="home-phone"
+                  name="phone"
+                  type="tel"
+                  autoComplete="tel"
+                  placeholder="111-111-111"
+                  className="h-11 bg-background"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="home-email" className={labelClass}>
+                  Email
+                </Label>
+                <Input
+                  id="home-email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  placeholder="xyz@gmail.com"
                   className="h-11 bg-background"
                 />
               </div>

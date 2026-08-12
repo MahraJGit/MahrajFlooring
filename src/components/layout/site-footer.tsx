@@ -40,6 +40,29 @@ function InstagramIcon(props: React.ComponentProps<"svg">) {
   );
 }
 
+function TwitterIcon(props: React.ComponentProps<"svg">) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden {...props}>
+      <path d="M22.46 6c-.77.35-1.6.58-2.46.69a4.3 4.3 0 0 0 1.88-2.37 8.59 8.59 0 0 1-2.72 1.04 4.28 4.28 0 0 0-7.29 3.9A12.14 12.14 0 0 1 3.15 4.6a4.27 4.27 0 0 0 1.32 5.71 4.24 4.24 0 0 1-1.94-.54v.05a4.28 4.28 0 0 0 3.43 4.2 4.3 4.3 0 0 1-1.93.07 4.29 4.29 0 0 0 4 2.97A8.58 8.58 0 0 1 2 18.41 12.11 12.11 0 0 0 8.56 20c7.88 0 12.2-6.53 12.2-12.2 0-.19 0-.37-.01-.56A8.72 8.72 0 0 0 22.46 6Z" />
+    </svg>
+  );
+}
+
+function YouTubeIcon(props: React.ComponentProps<"svg">) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden {...props}>
+      <path d="M23.5 6.2a3.02 3.02 0 0 0-2.12-2.14C19.54 3.7 12 3.7 12 3.7s-7.54 0-9.38.36A3.02 3.02 0 0 0 .5 6.2 31.6 31.6 0 0 0 .14 12c0 1.94.13 3.86.36 5.8a3.02 3.02 0 0 0 2.12 2.14c1.84.36 9.38.36 9.38.36s7.54 0 9.38-.36a3.02 3.02 0 0 0 2.12-2.14c.23-1.94.36-3.86.36-5.8 0-1.94-.13-3.86-.36-5.8ZM9.75 15.52V8.48L15.84 12l-6.09 3.52Z" />
+    </svg>
+  );
+}
+
+const socialIcons = {
+  LinkedIn: LinkedInIcon,
+  Instagram: InstagramIcon,
+  Twitter: TwitterIcon,
+  YouTube: YouTubeIcon,
+};
+
 export function SiteFooter() {
   return (
     <footer>
@@ -70,22 +93,22 @@ export function SiteFooter() {
                 commercial, and industrial spaces.
               </p>
               <div className="mt-6 flex gap-3">
-                {site.social.map((item) => (
-                  <a
-                    key={item.label}
-                    href={item.href}
-                    target="_blank"
-                    rel="noreferrer noopener"
-                    className="flex size-9 items-center justify-center rounded-md border border-white/15 text-white/70 transition-colors hover:border-brand hover:bg-brand hover:text-white"
-                  >
-                    {item.label === "LinkedIn" ? (
-                      <LinkedInIcon className="size-4" />
-                    ) : (
-                      <InstagramIcon className="size-4" />
-                    )}
-                    <span className="sr-only">{item.label}</span>
-                  </a>
-                ))}
+                {site.social.map((item) => {
+                  const Icon = socialIcons[item.label];
+
+                  return (
+                    <a
+                      key={item.label}
+                      href={item.href}
+                      target="_blank"
+                      rel="noreferrer noopener"
+                      className="flex size-9 items-center justify-center rounded-md border border-white/15 text-white/70 transition-colors hover:border-brand hover:bg-brand hover:text-white"
+                    >
+                      <Icon className="size-4" />
+                      <span className="sr-only">{item.label}</span>
+                    </a>
+                  );
+                })}
               </div>
             </div>
 

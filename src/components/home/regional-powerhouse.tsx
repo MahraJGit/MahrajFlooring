@@ -18,7 +18,7 @@ export function RegionalPowerhouse() {
           itemClassName="w-[calc((100%-0.75rem)/2)] sm:w-[calc((100%-2.25rem)/4)]"
           className="border-t border-border pt-8"
           heading={
-            <div className="text-center lg:text-start">
+            <div className="text-center">
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand">
                 Personal Presence
               </p>

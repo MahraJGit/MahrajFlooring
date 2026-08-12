@@ -1,12 +1,13 @@
 import {
   Building2,
-  ClipboardCheck,
   Dumbbell,
   GraduationCap,
   HardHat,
+  Headphones,
   Hotel,
   House,
   Layers,
+  Package,
   PartyPopper,
   SearchCheck,
   Stethoscope,
@@ -22,9 +23,9 @@ export const heroImage = "/images/hero/hero-gym.jpg";
 export const heroVideo = "/videos/hero/hero-video.mp4";
 
 export const heroHighlights = [
-  { icon: Layers, label: "Supply" },
-  { icon: HardHat, label: "Installation" },
-  { icon: ClipboardCheck, label: "Project Support" },
+  { icon: Package, label: "Supply" },
+  { icon: Wrench, label: "Installation" },
+  { icon: Headphones, label: "Project Support" },
 ];
 
 export type Industry = {

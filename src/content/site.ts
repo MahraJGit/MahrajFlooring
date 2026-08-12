@@ -19,6 +19,8 @@ export const site = {
   social: [
     { label: "LinkedIn", href: "https://linkedin.com" },
     { label: "Instagram", href: "https://instagram.com" },
+    { label: "Twitter", href: "https://twitter.com" },
+    { label: "YouTube", href: "https://youtube.com" },
   ],
 } as const;
 
