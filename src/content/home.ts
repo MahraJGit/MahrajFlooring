@@ -8,10 +8,12 @@ import {
   House,
   Layers,
   PartyPopper,
+  SearchCheck,
   Stethoscope,
   Tent,
   Trees,
   Trophy,
+  Wrench,
   Warehouse,
   type LucideIcon,
 } from "lucide-react";
@@ -43,6 +45,57 @@ export const industries: Industry[] = [
   { slug: "homes", label: "Homes", icon: House },
   { slug: "fairs", label: "Fairs", icon: Tent },
   { slug: "stables", label: "Stables", icon: Warehouse },
+];
+
+export const homeIndustriesCompact = industries.slice(0, 8);
+
+export type CoreService = {
+  title: string;
+  subtitle: string;
+  icon: LucideIcon;
+};
+
+export const coreServices: CoreService[] = [
+  {
+    title: "Consultation & Design",
+    subtitle: "Requirements and specification planning",
+    icon: Layers,
+  },
+  {
+    title: "Professional Installation",
+    subtitle: "Certified floor installation teams",
+    icon: HardHat,
+  },
+  {
+    title: "Site Survey & Moisture Testing",
+    subtitle: "Sub-floor readiness and technical checks",
+    icon: SearchCheck,
+  },
+  {
+    title: "Post Installation Maintenance",
+    subtitle: "Care guidance and support planning",
+    icon: Wrench,
+  },
+  {
+    title: "Consultation & Design",
+    subtitle: "Project scope and usage mapping",
+    icon: Layers,
+  },
+  {
+    title: "Professional Installation",
+    subtitle: "On-site quality control and delivery",
+    icon: HardHat,
+  },
+  {
+    title: "Site Survey & Moisture Testing",
+    subtitle: "Technical reports for approval",
+    icon: SearchCheck,
+  },
+  {
+    title: "Post Installation Maintenance",
+    subtitle: "Lifecycle maintenance programs",
+    icon: Wrench,
+  },
 ];
 
 export const advantages = [
@@ -96,6 +149,74 @@ export const projects: Project[] = [
     application: "Healthcare",
     product: "Homogeneous Medical Vinyl",
     image: "/images/projects/al-noor-specialist-hospital.jpg",
+  },
+];
+
+export const featuredCaseStudies = [
+  {
+    slug: "elite-padel-club",
+    title: "T9000 Commercial Treadmill",
+    price: "AED 12,450.00",
+    meta: "Quote required for install",
+    badge: "In Stock",
+  },
+  {
+    slug: "global-tech-hq",
+    title: "Pro-Series Adjustable Bench",
+    price: "AED 2,800.00",
+    meta: "Next day delivery",
+    badge: "In Stock",
+  },
+  {
+    slug: "al-noor-specialist-hospital",
+    title: "Signature Dumbbell Set",
+    price: "AED 5,900.00",
+    meta: "10KG - 40KG set",
+    badge: "In Stock",
+  },
+] as const;
+
+export const trustPartnerLogos = [
+  "NEOM",
+  "Aldar",
+  "Emaar",
+  "ADNOC",
+  "SEHA",
+  "Qatar Foundation",
+  "Majid Al Futtaim",
+  "Dubai Sports Council",
+];
+
+export const blogHighlights = [
+  {
+    slug: "lvt-performance-breakdown",
+    title: "SPC vs LVT: A Performance Breakdown",
+    image: "/images/services/vinyl-flooring.jpg",
+  },
+  {
+    slug: "sports-floor-base-guide",
+    title: "Sports Floor Base Requirements",
+    image: "/images/projects/elite-padel-club.jpg",
+  },
+  {
+    slug: "office-fitout-material-guide",
+    title: "Office Fit-out Material Selection",
+    image: "/images/projects/global-tech-hq.jpg",
+  },
+  {
+    slug: "healthcare-hygiene-floors",
+    title: "Healthcare Hygiene Flooring Specs",
+    image: "/images/projects/al-noor-specialist-hospital.jpg",
+  },
+  {
+    slug: "rubber-gym-thickness-guide",
+    title: "Rubber Gym Thickness by Usage",
+    image: "/images/services/rubber-gym-flooring.jpg",
+  },
+  {
+    slug: "event-flooring-lead-times",
+    title: "Event Flooring Lead Times in the GCC",
+    image: "/images/services/exhibition-event-flooring.jpg",
   },
 ];
 
