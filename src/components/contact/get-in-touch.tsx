@@ -4,36 +4,39 @@ import { contactChannels, contactIntro } from "@/content/contact";
 
 export function GetInTouch() {
   return (
-    <Section tone="alt">
+    <Section tone="alt" spacing="compact" className="relative z-0 pt-24 sm:pt-28 lg:pt-32">
       <SectionHeading
         align="center"
-        title={<span className="text-brand">{contactIntro.title}</span>}
+        title={contactIntro.title}
         description={contactIntro.description}
       />
 
       <ul className="mt-10 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {contactChannels.map(
-          ({ title, description, action, href, icon: Icon, external }) => (
+          ({ title, description, action, href, icon: Icon, external, note }) => (
             <li key={title}>
               <a
                 href={href}
                 {...(external
                   ? { target: "_blank", rel: "noreferrer noopener" }
                   : {})}
-                className="group flex h-full flex-col items-center rounded-md border border-border bg-background px-5 py-8 text-center transition-colors hover:border-brand-dark hover:bg-brand-dark hover:text-white"
+                className="flex h-full flex-col items-center rounded-md border border-border bg-background px-5 py-8 text-center shadow-sm transition-shadow hover:shadow-md"
               >
-                <span className="flex size-12 items-center justify-center rounded-full bg-surface-alt text-brand transition-colors group-hover:bg-white/15 group-hover:text-white">
+                <span className="flex size-12 items-center justify-center rounded-full bg-brand/10 text-brand">
                   <Icon className="size-5" />
                 </span>
-                <h3 className="mt-5 text-base font-semibold transition-colors group-hover:text-white">
-                  {title}
-                </h3>
-                <p className="mt-2 flex-1 text-sm leading-relaxed text-body transition-colors group-hover:text-white/75">
+                <h3 className="mt-5 text-base font-semibold text-ink">{title}</h3>
+                <p className="mt-2 flex-1 text-sm leading-relaxed text-body">
                   {description}
                 </p>
-                <span className="mt-5 text-xs font-semibold uppercase tracking-[0.14em] text-brand transition-colors group-hover:text-white">
+                <span className="mt-5 text-xs font-semibold uppercase tracking-[0.14em] text-brand">
                   {action}
                 </span>
+                {note ? (
+                  <span className="mt-3 text-[0.6875rem] leading-relaxed text-body">
+                    {note}
+                  </span>
+                ) : null}
               </a>
             </li>
           )

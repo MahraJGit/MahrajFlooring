@@ -16,27 +16,38 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { faqs, quoteSolutions } from "@/content/home";
+import { faqs as defaultFaqs, quoteSolutions } from "@/content/home";
 
 const labelClass =
   "text-[0.6875rem] font-semibold uppercase tracking-[0.14em] text-body";
 
-export function TechnicalFaqForm() {
+type FaqItem = {
+  question: string;
+  answer: string;
+};
+
+export function TechnicalFaqForm({
+  formIdPrefix = "home",
+  faqs = defaultFaqs,
+  faqIntro = "Most stock items are available within 3-5 working days. Custom orders or specialised sports turf typically require 4-6 weeks from manufacture to port delivery.",
+  formTitle = "Technical Expertise",
+}: {
+  formIdPrefix?: string;
+  faqs?: FaqItem[];
+  faqIntro?: string;
+  formTitle?: string;
+}) {
   return (
     <Section tone="alt" spacing="none">
       <div className="grid items-start gap-6 py-12 lg:grid-cols-2">
         <div>
           <h2 className="text-2xl font-semibold sm:text-3xl">FAQ</h2>
-          <p className="mt-4 text-sm leading-relaxed text-body">
-            Most stock items are available within 3-5 working days. Custom orders
-            or specialised sports turf typically require 4-6 weeks from
-            manufacture to port delivery.
-          </p>
+          <p className="mt-4 text-sm leading-relaxed text-body">{faqIntro}</p>
 
           <Accordion
             type="single"
             collapsible
-            defaultValue={faqs[0].question}
+            defaultValue={faqs[0]?.question}
             className="mt-7"
           >
             {faqs.map((faq) => (
@@ -53,15 +64,17 @@ export function TechnicalFaqForm() {
         </div>
 
         <div className="rounded-md bg-background p-8 shadow-sm ring-1 ring-border">
-          <h3 className="text-2xl font-semibold">Technical Expertise</h3>
+          <h3 className="text-xl font-semibold uppercase tracking-[0.04em] sm:text-2xl">
+            {formTitle}
+          </h3>
           <form className="mt-6 space-y-5">
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="home-name" className={labelClass}>
+                <Label htmlFor={`${formIdPrefix}-name`} className={labelClass}>
                   Your Name
                 </Label>
                 <Input
-                  id="home-name"
+                  id={`${formIdPrefix}-name`}
                   name="name"
                   autoComplete="name"
                   placeholder="John Doe"
@@ -69,11 +82,11 @@ export function TechnicalFaqForm() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="home-company" className={labelClass}>
+                <Label htmlFor={`${formIdPrefix}-company`} className={labelClass}>
                   Company
                 </Label>
                 <Input
-                  id="home-company"
+                  id={`${formIdPrefix}-company`}
                   name="company"
                   autoComplete="organization"
                   placeholder="Design Studio"
@@ -81,11 +94,11 @@ export function TechnicalFaqForm() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="home-phone" className={labelClass}>
+                <Label htmlFor={`${formIdPrefix}-phone`} className={labelClass}>
                   Phone
                 </Label>
                 <Input
-                  id="home-phone"
+                  id={`${formIdPrefix}-phone`}
                   name="phone"
                   type="tel"
                   autoComplete="tel"
@@ -94,11 +107,11 @@ export function TechnicalFaqForm() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="home-email" className={labelClass}>
+                <Label htmlFor={`${formIdPrefix}-email`} className={labelClass}>
                   Email
                 </Label>
                 <Input
-                  id="home-email"
+                  id={`${formIdPrefix}-email`}
                   name="email"
                   type="email"
                   autoComplete="email"
@@ -109,11 +122,14 @@ export function TechnicalFaqForm() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="home-solution" className={labelClass}>
+              <Label htmlFor={`${formIdPrefix}-solution`} className={labelClass}>
                 Industry Solution
               </Label>
               <Select defaultValue={quoteSolutions[0]}>
-                <SelectTrigger id="home-solution" className="h-11 w-full bg-background">
+                <SelectTrigger
+                  id={`${formIdPrefix}-solution`}
+                  className="h-11 w-full bg-background"
+                >
                   <SelectValue placeholder="Select a solution" />
                 </SelectTrigger>
                 <SelectContent>
@@ -127,11 +143,11 @@ export function TechnicalFaqForm() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="home-brief" className={labelClass}>
+              <Label htmlFor={`${formIdPrefix}-brief`} className={labelClass}>
                 Project Brief
               </Label>
               <Textarea
-                id="home-brief"
+                id={`${formIdPrefix}-brief`}
                 rows={4}
                 placeholder="Tell us about the area size and requirements..."
                 className="bg-background"

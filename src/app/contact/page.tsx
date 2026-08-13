@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 
+import { ContactHero } from "@/components/contact/contact-hero";
+import { CurrentLocation } from "@/components/contact/current-location";
 import { GetInTouch } from "@/components/contact/get-in-touch";
-import { QuoteForm } from "@/components/home/quote-form";
-import { PageHero } from "@/components/layout/page-hero";
-import { Section } from "@/components/layout/section";
+import { RegionalOffices } from "@/components/contact/regional-offices";
+import { TechnicalFaqForm } from "@/components/home/technical-faq-form";
+import { contactFaqs, contactFaqIntro } from "@/content/contact";
 
 export const metadata: Metadata = {
   title: "Contact Us",
@@ -14,14 +16,15 @@ export const metadata: Metadata = {
 export default function ContactPage() {
   return (
     <>
-      <PageHero
-        title="Contact Us"
-        description="Send us your project brief and our engineers will respond within 24 hours with recommendations and indicative pricing."
-      />
+      <ContactHero />
       <GetInTouch />
-      <Section>
-        <QuoteForm />
-      </Section>
+      <CurrentLocation />
+      <RegionalOffices />
+      <TechnicalFaqForm
+        formIdPrefix="contact"
+        faqs={contactFaqs}
+        faqIntro={contactFaqIntro}
+      />
     </>
   );
 }
