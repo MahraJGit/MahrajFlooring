@@ -5,6 +5,22 @@ export type Service = {
   image: string;
 };
 
+export type ServiceDetail = Service & {
+  detailTitle: string;
+  heroTitle: string;
+  heroDescription: string;
+  overviewTitle: string;
+  overviewDescription: string;
+  guideTitle: string;
+  caseStudiesTitle: string;
+  projectsTitle: string;
+  applications: {
+    title: string;
+    description: string;
+    points: string[];
+  }[];
+};
+
 const services: Service[] = [
   {
     slug: "rubber-gym-flooring",
@@ -84,6 +100,95 @@ export function getServices() {
 
 export function getServiceBySlug(slug: string) {
   return services.find((service) => service.slug === slug);
+}
+
+const templateTitles: Record<
+  string,
+  Pick<
+    ServiceDetail,
+    | "detailTitle"
+    | "heroTitle"
+    | "overviewTitle"
+    | "guideTitle"
+    | "caseStudiesTitle"
+    | "projectsTitle"
+  >
+> = {
+  "rubber-gym-flooring": {
+    detailTitle: "Rubber Gym Flooring",
+    heroTitle: "Rubber Gym Flooring Built for Impact, Grip, and Daily Use",
+    overviewTitle:
+      "Complete Rubber Gym Flooring Support - From Specification to Installation",
+    guideTitle: "The Rubber Gym Flooring Guide",
+    caseStudiesTitle: "Rubber Gym Flooring Case Studies",
+    projectsTitle: "Rubber Gym Flooring Ongoing Projects",
+  },
+  "vinyl-flooring": {
+    detailTitle: "Vinyl Flooring",
+    heroTitle: "Vinyl Flooring Built for Durable Commercial Interiors",
+    overviewTitle:
+      "Complete Vinyl Flooring Support - From Specification to Installation",
+    guideTitle: "The Commercial Vinyl Flooring Guide",
+    caseStudiesTitle: "Vinyl Flooring Case Studies",
+    projectsTitle: "Vinyl Flooring Ongoing Projects",
+  },
+  "office-carpet-flooring": {
+    detailTitle: "Office Tiles",
+    heroTitle: "Office Carpet Tiles Built for Comfort, Acoustics, and Daily Use",
+    overviewTitle:
+      "Complete Office Tile Support - From Specification to Installation",
+    guideTitle: "The Office Carpet Tile Guide",
+    caseStudiesTitle: "Office Tile Case Studies",
+    projectsTitle: "Office Tile Ongoing Projects",
+  },
+  "sports-flooring": {
+    detailTitle: "Sports Flooring",
+    heroTitle: "Sports Flooring Built for Grip, Response, and Competition",
+    overviewTitle:
+      "Complete Sports Flooring Support - From Specification to Installation",
+    guideTitle: "The Sports Flooring Guide",
+    caseStudiesTitle: "Sports Flooring Case Studies",
+    projectsTitle: "Sports Flooring Ongoing Projects",
+  },
+};
+
+export function getServiceDetail(slug: string): ServiceDetail | undefined {
+  const service = getServiceBySlug(slug);
+  const titles = templateTitles[slug];
+
+  if (!service || !titles) return undefined;
+
+  return {
+    ...service,
+    ...titles,
+    heroDescription: `${service.excerpt} Engineered for GCC commercial environments with documented performance, controlled preparation, and professional installation.`,
+    overviewDescription:
+      "Our team supports the full project cycle with site assessment, product selection, technical submittals, preparation, installation, and documented handover.",
+    applications: [
+      {
+        title: "High-Impact Areas",
+        description:
+          "Performance-led systems selected for demanding loads, repeated use, and long service life.",
+        points: ["Impact control", "Durable finish"],
+      },
+      {
+        title: "Daily Traffic",
+        description:
+          "Stable, easy-care surfaces for active commercial environments and continuous operation.",
+        points: ["Easy maintenance", "Reliable grip"],
+      },
+      {
+        title: "Functional Zones",
+        description:
+          "Application-specific finishes aligned with safety, comfort, acoustic, and visual requirements.",
+        points: ["Zone resistance", "Seamless transitions"],
+      },
+    ],
+  };
+}
+
+export function hasServiceDetail(slug: string) {
+  return slug in templateTitles;
 }
 
 export type MegaMenuColumn = {
