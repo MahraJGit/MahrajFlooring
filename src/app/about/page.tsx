@@ -1,22 +1,40 @@
 import type { Metadata } from "next";
 
-import { ComingSoon } from "@/components/layout/coming-soon";
-import { PageHero } from "@/components/layout/page-hero";
+import { AboutCta, AboutFaq } from "@/components/about/about-closing";
+import {
+  AboutCompliance,
+  AboutObjectives,
+  CommercialProcess,
+} from "@/components/about/about-delivery";
+import { AboutHero } from "@/components/about/about-hero";
+import {
+  AboutAudiences,
+  AboutIndustries,
+} from "@/components/about/about-industries";
+import {
+  AboutOverview,
+  AboutPartners,
+} from "@/components/about/about-overview";
 
 export const metadata: Metadata = {
   title: "About Us",
   description:
-    "Mahraj Flooring supplies and installs performance surfaces for fitness, commercial, and industrial spaces across the UAE, Saudi Arabia, Qatar, Oman, and Bahrain.",
+    "Commercial flooring consultation, specification, preparation, installation, and project support across the UAE and GCC.",
 };
 
 export default function AboutPage() {
   return (
     <>
-      <PageHero
-        title="About Mahraj Flooring"
-        description="The leading authority in performance surfaces across the Middle East, providing architect-grade solutions for fitness, commercial, and industrial spaces."
-      />
-      <ComingSoon note="Company history, certifications, and team profiles are being written." />
+      <AboutHero />
+      <AboutPartners />
+      <AboutOverview />
+      <AboutIndustries />
+      <AboutAudiences />
+      <AboutObjectives />
+      <CommercialProcess />
+      <AboutCompliance />
+      <AboutFaq />
+      <AboutCta />
     </>
   );
 }

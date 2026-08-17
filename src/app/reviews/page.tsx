@@ -1,29 +1,35 @@
 import type { Metadata } from "next";
 
-import { Accreditations } from "@/components/reviews/accreditations";
-import { Commitment } from "@/components/reviews/commitment";
-import { FeaturedProjects } from "@/components/reviews/featured-projects";
-import { ProjectPartners } from "@/components/reviews/project-partners";
+import { IndustryReviews } from "@/components/reviews/industry-reviews";
+import { ProjectExperience } from "@/components/reviews/project-experience";
 import { ReviewForm } from "@/components/reviews/review-form";
+import { ReviewsCta } from "@/components/reviews/reviews-cta";
+import { ReviewsFaq } from "@/components/reviews/reviews-faq";
 import { ReviewsHero } from "@/components/reviews/reviews-hero";
-import { Testimonials } from "@/components/reviews/testimonials";
+import { SolutionFeedback } from "@/components/reviews/solution-feedback";
+import { TrustMetrics } from "@/components/reviews/trust-metrics";
+import { TrustedLogos } from "@/components/reviews/trusted-logos";
+import { WhyClientsChoose } from "@/components/reviews/why-clients-choose";
 
 export const metadata: Metadata = {
   title: "Reviews",
   description:
-    "Completed flooring projects across the GCC, paired with technical testimonials from the teams who specified and received them.",
+    "Verified client feedback, completed flooring projects, and technical testimonials from teams across the GCC.",
 };
 
 export default function ReviewsPage() {
   return (
     <>
       <ReviewsHero />
-      <ProjectPartners />
-      <FeaturedProjects />
-      <Testimonials />
-      <Accreditations />
-      <Commitment />
+      <TrustMetrics />
+      <WhyClientsChoose />
+      <IndustryReviews />
+      <SolutionFeedback />
       <ReviewForm />
+      <TrustedLogos />
+      <ProjectExperience />
+      <ReviewsFaq />
+      <ReviewsCta />
     </>
   );
 }

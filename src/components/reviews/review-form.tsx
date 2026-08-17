@@ -1,20 +1,28 @@
 "use client";
 
 import { useState } from "react";
-import { Star } from "lucide-react";
 
+import { Section } from "@/components/layout/section";
+import { SectionHeading } from "@/components/layout/section-heading";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { Section } from "@/components/layout/section";
+import { quoteSolutions } from "@/content/home";
+import { feedbackFormIntro } from "@/content/reviews";
 
 const labelClass =
   "text-[0.6875rem] font-semibold uppercase tracking-[0.14em] text-body";
 
 export function ReviewForm() {
   const [submitted, setSubmitted] = useState(false);
-  const [rating, setRating] = useState(5);
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -22,14 +30,19 @@ export function ReviewForm() {
   }
 
   return (
-    <Section>
-      <div className="rounded-md border border-border bg-surface-alt p-8 lg:p-12">
+    <Section tone="alt">
+      <SectionHeading
+        align="center"
+        title={feedbackFormIntro.title}
+        description={feedbackFormIntro.description}
+      />
+
+      <div className="mx-auto mt-10 max-w-3xl rounded-md bg-background p-8 shadow-sm ring-1 ring-border lg:p-10">
         {submitted ? (
-          <div className="mx-auto max-w-xl text-center">
-            <h2 className="text-2xl font-semibold sm:text-3xl">Review received</h2>
+          <div className="text-center">
+            <h3 className="text-xl font-semibold">Feedback received</h3>
             <p className="mt-3 text-sm leading-relaxed text-body">
-              Thank you. Our team will review your feedback before it is published
-              alongside the related project.
+              Thank you. Our team will review your feedback before it is published.
             </p>
             <Button
               variant="brandOutline"
@@ -42,104 +55,102 @@ export function ReviewForm() {
           </div>
         ) : (
           <>
-            <div className="mx-auto max-w-2xl text-center">
-              <h2 className="text-2xl font-semibold sm:text-3xl">
-                Share Your Project Experience
-              </h2>
-              <p className="mt-3 text-sm leading-relaxed text-body">
-                Your feedback helps us maintain technical standards and improve
-                the next installation.
-              </p>
-            </div>
-
-            <form onSubmit={handleSubmit} className="mx-auto mt-8 max-w-3xl space-y-5">
-              <div className="grid gap-5 sm:grid-cols-2">
+            <h3 className="text-xl font-semibold uppercase tracking-[0.04em] sm:text-2xl">
+              Technical Expertise
+            </h3>
+            <form onSubmit={handleSubmit} className="mt-6 space-y-5">
+              <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="review-name" className={labelClass}>
-                    Full Name
+                    Your Name
                   </Label>
                   <Input
                     id="review-name"
                     name="name"
                     required
                     autoComplete="name"
-                    placeholder="e.g. Robert Smith"
+                    placeholder="John Doe"
                     className="h-11 bg-background"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="review-org" className={labelClass}>
-                    Organization / Project
+                  <Label htmlFor="review-company" className={labelClass}>
+                    Company
                   </Label>
                   <Input
-                    id="review-org"
-                    name="organization"
-                    placeholder="e.g. Sky Tower Sports Hub"
+                    id="review-company"
+                    name="company"
+                    autoComplete="organization"
+                    placeholder="Design Studio"
+                    className="h-11 bg-background"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="review-phone" className={labelClass}>
+                    Phone
+                  </Label>
+                  <Input
+                    id="review-phone"
+                    name="phone"
+                    type="tel"
+                    autoComplete="tel"
+                    placeholder="111-111-111"
+                    className="h-11 bg-background"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="review-email" className={labelClass}>
+                    Email
+                  </Label>
+                  <Input
+                    id="review-email"
+                    name="email"
+                    type="email"
+                    required
+                    autoComplete="email"
+                    placeholder="xyz@gmail.com"
                     className="h-11 bg-background"
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <p className={labelClass}>Rating</p>
-                <div className="flex gap-1" role="group" aria-label="Star rating">
-                  {Array.from({ length: 5 }).map((_, index) => {
-                    const value = index + 1;
-                    return (
-                      <button
-                        key={value}
-                        type="button"
-                        onClick={() => setRating(value)}
-                        className="rounded-sm p-0.5 text-amber-500 transition-transform hover:scale-110"
-                        aria-label={`${value} star${value === 1 ? "" : "s"}`}
-                        aria-pressed={rating === value}
-                      >
-                        <Star
-                          className={`size-6 ${value <= rating ? "fill-amber-500" : "fill-transparent text-border"}`}
-                        />
-                      </button>
-                    );
-                  })}
-                </div>
-                <input type="hidden" name="rating" value={rating} />
+                <Label htmlFor="review-solution" className={labelClass}>
+                  Industry Solution
+                </Label>
+                <Select name="solution" defaultValue={quoteSolutions[0]}>
+                  <SelectTrigger
+                    id="review-solution"
+                    className="h-11 w-full bg-background"
+                  >
+                    <SelectValue placeholder="Select a solution" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {quoteSolutions.map((solution) => (
+                      <SelectItem key={solution} value={solution}>
+                        {solution}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="review-feedback" className={labelClass}>
-                  Technical Feedback
+                <Label htmlFor="review-brief" className={labelClass}>
+                  Project Brief
                 </Label>
                 <Textarea
-                  id="review-feedback"
-                  name="feedback"
+                  id="review-brief"
+                  name="brief"
                   required
-                  rows={5}
-                  placeholder="Describe the installation quality, material performance, and project support..."
+                  rows={4}
+                  placeholder="Tell us about the area size and requirements..."
                   className="bg-background"
                 />
               </div>
 
-              <div className="space-y-3">
-                <label className="flex items-start gap-3 text-sm leading-relaxed text-body">
-                  <input
-                    type="checkbox"
-                    name="publish"
-                    className="mt-1 size-4 shrink-0 accent-brand"
-                  />
-                  I consent to having this review published on the Mahraj Flooring
-                  site.
-                </label>
-                <label className="flex items-start gap-3 text-sm leading-relaxed text-body">
-                  <input
-                    type="checkbox"
-                    name="reference"
-                    className="mt-1 size-4 shrink-0 accent-brand"
-                  />
-                  Include my project as a reference for prospective clients.
-                </label>
-              </div>
-
               <Button type="submit" variant="brand" size="xl" className="w-full">
-                Submit Technical Review
+                Submit
               </Button>
             </form>
           </>
