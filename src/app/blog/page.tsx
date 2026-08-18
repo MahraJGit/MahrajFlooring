@@ -1,7 +1,14 @@
 import type { Metadata } from "next";
 
-import { ComingSoon } from "@/components/layout/coming-soon";
-import { PageHero } from "@/components/layout/page-hero";
+import { BlogHero } from "@/components/blog/blog-hero";
+import {
+  ExploreByTopic,
+  FeaturedBlogs,
+  KnowledgeHubBand,
+  LatestInsights,
+  LessonsAndCta,
+  WorkingOnSection,
+} from "@/components/blog/blog-sections";
 
 export const metadata: Metadata = {
   title: "Blog",
@@ -12,11 +19,13 @@ export const metadata: Metadata = {
 export default function BlogPage() {
   return (
     <>
-      <PageHero
-        title="Blog"
-        description="Technical guides, material comparisons, and installation insight from our engineering team."
-      />
-      <ComingSoon note="Articles are being drafted and will appear here once the content plan is signed off." />
+      <BlogHero />
+      <FeaturedBlogs />
+      <ExploreByTopic />
+      <WorkingOnSection />
+      <LatestInsights />
+      <KnowledgeHubBand />
+      <LessonsAndCta />
     </>
   );
 }
