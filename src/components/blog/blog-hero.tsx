@@ -59,18 +59,25 @@ export function BlogHero() {
           </p>
         </div>
 
-        <div className="mx-auto mt-8 flex w-full max-w-3xl items-center gap-3 rounded-full border border-white/20 bg-black/45 p-2 backdrop-blur-sm justify-center">
-          <p className="min-w-0 flex-1 truncate px-4 text-sm text-white/80 sm:text-base text-center">
-            {blogPage.hero.searchPlaceholder}
-          </p>
+        <form
+          role="search"
+          className="mx-auto mt-8 flex w-full max-w-3xl items-center gap-3 rounded-full border border-white/20 bg-black/45 p-2 backdrop-blur-sm"
+        >
+          <input
+            type="search"
+            name="q"
+            placeholder={blogPage.hero.searchPlaceholder}
+            aria-label="Search blog"
+            className="min-w-0 flex-1 bg-transparent px-4 text-sm text-white outline-none placeholder:text-white/80 sm:text-base"
+          />
           <button
-            type="button"
+            type="submit"
             className="inline-flex size-12 shrink-0 items-center justify-center rounded-full bg-white text-brand transition-colors hover:bg-brand hover:text-white"
             aria-label="Search blog"
           >
             <Search className="size-5" />
           </button>
-        </div>
+        </form>
    
       </Container>
     </section>
