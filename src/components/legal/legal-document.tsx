@@ -1,24 +1,38 @@
 import Link from "next/link";
-import { ArrowRight, FileText, Scale } from "lucide-react";
+import { ArrowRight, Link2 } from "lucide-react";
 
 import { Container } from "@/components/layout/container";
 import { Section } from "@/components/layout/section";
+import { SectionHeading } from "@/components/layout/section-heading";
+import { BackToTop, LegalToc } from "@/components/legal/legal-toc";
 import { Button } from "@/components/ui/button";
 import type { LegalDocument } from "@/content/legal";
 
-export function LegalHighlights({ document }: { document: LegalDocument }) {
+export function LegalKeyPoints({ doc }: { doc: LegalDocument }) {
   return (
-    <Section spacing="compact">
-      <ul className="grid gap-4 sm:grid-cols-3">
-        {document.highlights.map((item) => (
+    <Section>
+      <SectionHeading
+        align="center"
+        eyebrow="At a glance"
+        title={doc.keyPointsTitle}
+        description={doc.keyPointsDescription}
+      />
+
+      <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {doc.keyPoints.map((point) => (
           <li
-            key={item.label}
-            className="rounded-md border border-border bg-background px-5 py-5"
+            key={point.title}
+            className="group flex h-full flex-col rounded-md border border-border bg-background p-6 transition-colors hover:border-brand hover:bg-brand"
           >
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-brand">
-              {item.label}
+            <span className="flex size-12 items-center justify-center rounded-md bg-brand text-white transition-colors group-hover:bg-white group-hover:text-brand">
+              <point.icon className="size-6" />
+            </span>
+            <h3 className="mt-5 text-base font-semibold text-ink transition-colors group-hover:text-white">
+              {point.title}
+            </h3>
+            <p className="mt-2 text-sm leading-relaxed text-body transition-colors group-hover:text-white/80">
+              {point.description}
             </p>
-            <p className="mt-2 text-base font-semibold text-ink">{item.value}</p>
           </li>
         ))}
       </ul>
@@ -26,77 +40,70 @@ export function LegalHighlights({ document }: { document: LegalDocument }) {
   );
 }
 
-export function LegalBody({ document }: { document: LegalDocument }) {
-  const Icon = document.slug === "terms" ? Scale : FileText;
+export function LegalBody({ doc }: { doc: LegalDocument }) {
+  const tocItems = doc.sections.map((section) => ({
+    id: section.id,
+    title: section.title,
+  }));
 
   return (
-    <Section tone="alt" className="pt-4">
-      <div className="grid gap-10 lg:grid-cols-[16rem_minmax(0,1fr)] lg:items-start">
+    <Section tone="alt">
+      <div className="grid gap-8 lg:grid-cols-[17rem_minmax(0,1fr)] lg:items-start lg:gap-12">
         <aside className="lg:sticky lg:top-28">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand">
-            Contents
-          </p>
-          <nav aria-label="On this page" className="mt-4">
-            <ol className="space-y-1">
-              {document.sections.map((section, index) => (
-                <li key={section.id}>
-                  <a
-                    href={`#${section.id}`}
-                    className="flex gap-3 rounded-md px-2 py-2 text-sm text-body transition-colors hover:bg-background hover:text-brand"
-                  >
-                    <span className="w-6 shrink-0 font-semibold text-brand">
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
-                    <span>{section.title}</span>
-                  </a>
-                </li>
-              ))}
-            </ol>
-          </nav>
+          <LegalToc items={tocItems} />
 
           <div className="mt-8 hidden rounded-md border border-border bg-background p-5 lg:block">
             <p className="text-sm font-semibold text-ink">Related document</p>
             <Link
-              href={document.related.href}
+              href={doc.related.href}
               className="mt-2 inline-flex items-center gap-1.5 text-sm font-semibold text-brand transition-colors hover:text-brand-dark"
             >
-              {document.related.label}
+              {doc.related.label}
               <ArrowRight className="size-4" />
             </Link>
           </div>
         </aside>
 
         <article className="rounded-md border border-border bg-background p-6 sm:p-8 lg:p-10">
-          <div className="flex items-start gap-4 border-b border-border pb-6">
-            <span className="flex size-12 shrink-0 items-center justify-center rounded-md bg-brand text-white">
-              <Icon className="size-6" />
-            </span>
-            <p className="text-base leading-relaxed text-body">{document.intro}</p>
-          </div>
+          <p className="mb-5 text-xs font-semibold uppercase tracking-[0.16em] text-body">
+            Last updated {doc.lastUpdated}
+          </p>
+          <p className="border-s-2 border-brand ps-5 text-base leading-relaxed text-body">
+            {doc.intro}
+          </p>
 
-          <div className="divide-y divide-border">
-            {document.sections.map((section, index) => (
+          <div className="mt-2 divide-y divide-border">
+            {doc.sections.map((section, index) => (
               <section
                 key={section.id}
                 id={section.id}
                 className="scroll-mt-28 py-8"
               >
-                <h2 className="flex gap-3 text-xl font-semibold sm:text-2xl">
-                  <span className="text-brand">
+                <h2 className="group flex items-baseline gap-3 text-xl font-semibold sm:text-2xl">
+                  <span className="text-base font-semibold tabular-nums text-brand sm:text-lg">
                     {String(index + 1).padStart(2, "0")}
                   </span>
                   {section.title}
+                  <a
+                    href={`#${section.id}`}
+                    aria-label={`Link to ${section.title}`}
+                    className="opacity-0 transition-opacity focus-visible:opacity-100 group-hover:opacity-100"
+                  >
+                    <Link2 className="size-4 text-brand" />
+                  </a>
                 </h2>
+
                 {section.paragraphs.map((paragraph) => (
                   <p
                     key={paragraph}
-                    className="mt-4 text-sm leading-relaxed text-body sm:text-base"
+                    className="mt-4 max-w-[68ch] text-sm leading-relaxed text-body sm:text-base"
                   >
                     {paragraph}
                   </p>
                 ))}
+
                 {section.bullets?.length ? (
-                  <ul className="mt-4 space-y-2">
+                  <ul className="mt-5 space-y-2.5 rounded-md bg-surface-alt p-5">
                     {section.bullets.map((bullet) => (
                       <li
                         key={bullet}
@@ -115,24 +122,23 @@ export function LegalBody({ document }: { document: LegalDocument }) {
             ))}
           </div>
 
-          <div className="mt-2 rounded-md border border-border bg-surface-alt px-5 py-4 text-sm text-body lg:hidden">
+          <div className="rounded-md border border-border bg-surface-alt px-5 py-4 text-sm text-body lg:hidden">
             Also read{" "}
-            <Link
-              href={document.related.href}
-              className="font-semibold text-brand"
-            >
-              {document.related.label}
+            <Link href={doc.related.href} className="font-semibold text-brand">
+              {doc.related.label}
             </Link>
           </div>
         </article>
       </div>
+
+      <BackToTop />
     </Section>
   );
 }
 
 export function LegalCta() {
   return (
-    <section className="bg-background pb-16 md:pb-20 lg:pb-24">
+    <section className="bg-background py-16 md:py-20 lg:py-24">
       <Container>
         <div className="grid overflow-hidden rounded-md md:grid-cols-2">
           <div className="bg-brand px-8 py-10 text-white lg:px-12 lg:py-12">

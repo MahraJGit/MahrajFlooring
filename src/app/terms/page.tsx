@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import {
   LegalBody,
   LegalCta,
-  LegalHighlights,
+  LegalKeyPoints,
 } from "@/components/legal/legal-document";
 import { LegalHero } from "@/components/legal/legal-hero";
 import { termsDocument } from "@/content/legal";
@@ -16,9 +16,9 @@ export const metadata: Metadata = {
 export default function TermsPage() {
   return (
     <>
-      <LegalHero document={termsDocument} />
-      <LegalHighlights document={termsDocument} />
-      <LegalBody document={termsDocument} />
+      <LegalHero doc={termsDocument} />
+      <LegalKeyPoints doc={termsDocument} />
+      <LegalBody doc={termsDocument} />
       <LegalCta />
     </>
   );
