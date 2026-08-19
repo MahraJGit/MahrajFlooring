@@ -1,7 +1,19 @@
 import type { Metadata } from "next";
 
-import { ComingSoon } from "@/components/layout/coming-soon";
-import { PageHero } from "@/components/layout/page-hero";
+import { CatalogueHero } from "@/components/catalogues/catalogue-hero";
+import {
+  TopicFilters,
+  FeaturedCollection,
+  ExploreCollections,
+  ChooseByMatters,
+  FindByIndustry,
+  ResourceCenter,
+  RealProjects,
+  TestimonialBand,
+  SizingGuide,
+  CatalogueCta,
+  CatalogueFaq,
+} from "@/components/catalogues/catalogue-sections";
 
 export const metadata: Metadata = {
   title: "Catalogues",
@@ -12,11 +24,18 @@ export const metadata: Metadata = {
 export default function CataloguesPage() {
   return (
     <>
-      <PageHero
-        title="Catalogues"
-        description="Product catalogues, technical data sheets, and finish references for specification and tender submittals."
-      />
-      <ComingSoon note="Catalogue listings and downloadable data sheets are next in the build queue." />
+      <CatalogueHero />
+      <TopicFilters />
+      <FeaturedCollection />
+      <ExploreCollections />
+      <ChooseByMatters />
+      <FindByIndustry />
+      <ResourceCenter />
+      <RealProjects />
+      <TestimonialBand />
+      <SizingGuide />
+      <CatalogueCta />
+      <CatalogueFaq />
     </>
   );
 }

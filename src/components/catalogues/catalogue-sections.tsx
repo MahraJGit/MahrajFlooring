@@ -1,0 +1,545 @@
+import Link from "next/link";
+import { existsSync } from "node:fs";
+import path from "node:path";
+import Image from "next/image";
+import {
+  ArrowRight,
+  ChevronDown,
+  Download,
+  FileText,
+  Mail,
+  MessageSquareText,
+  Star,
+} from "lucide-react";
+
+import { Media } from "@/components/media";
+import { Section } from "@/components/layout/section";
+import { SectionHeading } from "@/components/layout/section-heading";
+import { Button } from "@/components/ui/button";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { cataloguePage } from "@/content/catalogues";
+
+function hasPublicAsset(src: string) {
+  return existsSync(path.join(process.cwd(), "public", src.replace(/^\//, "")));
+}
+
+/* ─── Topic filter row ─── */
+
+export function TopicFilters() {
+  return (
+    <Section spacing="compact">
+      <ul className="flex justify-center gap-5 overflow-x-auto pb-2">
+        {cataloguePage.topics.map((topic) => (
+          <li key={topic.title} className="shrink-0">
+            <button
+              type="button"
+              className="group flex w-32 flex-col overflow-hidden rounded-lg sm:w-36"
+            >
+              <Media
+                src={topic.image}
+                alt={topic.title}
+                className="aspect-[3/4] w-full rounded-lg transition-transform duration-500 group-hover:scale-105"
+                sizes="(min-width: 640px) 144px, 128px"
+              />
+              <span className="mt-2.5 text-start text-sm font-semibold">{topic.title}</span>
+            </button>
+          </li>
+        ))}
+      </ul>
+    </Section>
+  );
+}
+
+/* ─── Featured collection ─── */
+
+export function FeaturedCollection() {
+  return (
+    <Section>
+      <div className="grid items-center gap-8 md:grid-cols-2">
+        <div className="relative overflow-hidden rounded-md">
+          <Media
+            src={cataloguePage.featured.image}
+            alt={cataloguePage.featured.title}
+            className="aspect-[4/3]"
+            sizes="(min-width: 768px) 50vw, 100vw"
+          />
+          <span className="absolute start-4 top-4 rounded bg-brand px-3 py-1 text-xs font-semibold text-white">
+            {cataloguePage.featured.badge}
+          </span>
+        </div>
+
+        <div>
+          <h2 className="text-3xl font-semibold sm:text-4xl">
+            {cataloguePage.featured.title}
+          </h2>
+          <p className="mt-4 text-base leading-relaxed text-body">
+            {cataloguePage.featured.excerpt}
+          </p>
+
+          <div className="mt-6 flex items-center gap-3">
+            <div className="size-10 overflow-hidden rounded-full bg-surface-alt">
+              <Media
+                src={cataloguePage.featured.authorAvatar}
+                alt="Author"
+                className="size-full"
+                sizes="40px"
+              />
+            </div>
+            <span className="text-sm font-medium text-ink">
+              {cataloguePage.featured.author}
+            </span>
+          </div>
+
+          <div className="mt-6 flex flex-wrap gap-3">
+            <Button asChild variant="brand" size="xl">
+              <Link href="/catalogues">View Collection</Link>
+            </Button>
+            <Button asChild variant="brandOutline" size="xl">
+              <Link href="/catalogues">
+                <Download className="size-4" />
+                Download Catalogue
+              </Link>
+            </Button>
+          </div>
+        </div>
+      </div>
+    </Section>
+  );
+}
+
+/* ─── Explore collections ─── */
+
+export function ExploreCollections() {
+  return (
+    <Section tone="alt">
+      <SectionHeading align="center" title={cataloguePage.explore.title} />
+      <ul className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        {cataloguePage.explore.collections.map((col) => (
+          <li
+            key={col.title}
+            className="overflow-hidden rounded-md border border-border bg-background"
+          >
+            <div className="relative">
+              <Media
+                src={col.image}
+                alt={col.title}
+                className="aspect-[5/4]"
+                sizes="(min-width: 1024px) 22vw, (min-width: 640px) 45vw, 90vw"
+              />
+            </div>
+            <div className="p-4">
+              <h3 className="text-base font-semibold">{col.title}</h3>
+              <p className="mt-1 text-sm leading-relaxed text-body">
+                {col.description}
+              </p>
+
+              <p className="mt-3 text-xs font-semibold text-ink">Best For</p>
+              <div className="mt-1.5 flex flex-wrap gap-1.5">
+                {col.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="rounded border border-border px-2 py-0.5 text-[0.6875rem] text-body"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+
+              <div className="mt-4 flex items-center justify-between">
+                <Link
+                  href="/catalogues"
+                  className="text-sm font-semibold text-ink transition-colors hover:text-brand"
+                >
+                  Explore Collection
+                </Link>
+                <ArrowRight className="size-4 text-ink" />
+              </div>
+
+              <Button asChild variant="brand" size="xl" className="mt-3 w-full">
+                <Link href="/catalogues">
+                  <Download className="size-4" />
+                  Download Catalogue
+                </Link>
+              </Button>
+            </div>
+          </li>
+        ))}
+      </ul>
+
+      <div className="mt-10 flex justify-center">
+        <Button asChild variant="brand" size="xl">
+          <Link href="/catalogues">View all Floorings Collections</Link>
+        </Button>
+      </div>
+    </Section>
+  );
+}
+
+/* ─── Choose by what matters ─── */
+
+export function ChooseByMatters() {
+  const cards = cataloguePage.matters.cards;
+  return (
+    <Section>
+      <SectionHeading align="center" title={cataloguePage.matters.title} />
+      <div className="mt-10 space-y-4">
+        <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {cards.slice(0, 4).map((card) => (
+            <li
+              key={card.title}
+              className="group flex flex-col items-center rounded-md border border-border bg-background px-5 py-8 text-center transition-colors hover:border-brand hover:bg-brand"
+            >
+              <span className="flex size-12 items-center justify-center rounded-md bg-brand text-white transition-colors group-hover:bg-white group-hover:text-brand">
+                <card.icon className="size-6" />
+              </span>
+              <p className="mt-4 text-sm font-semibold text-ink transition-colors group-hover:text-white">
+                {card.title}
+              </p>
+              <p className="mt-1 text-xs text-body transition-colors group-hover:text-white/80">
+                {card.description}
+              </p>
+            </li>
+          ))}
+        </ul>
+        <ul className="mx-auto grid max-w-2xl gap-4 sm:grid-cols-2">
+          {cards.slice(4).map((card, i) => (
+            <li
+              key={`${card.title}-${i}`}
+              className="group flex flex-col items-center rounded-md border border-border bg-background px-5 py-8 text-center transition-colors hover:border-brand hover:bg-brand"
+            >
+              <span className="flex size-12 items-center justify-center rounded-md bg-brand text-white transition-colors group-hover:bg-white group-hover:text-brand">
+                <card.icon className="size-6" />
+              </span>
+              <p className="mt-4 text-sm font-semibold text-ink transition-colors group-hover:text-white">
+                {card.title}
+              </p>
+              <p className="mt-1 text-xs text-body transition-colors group-hover:text-white/80">
+                {card.description}
+              </p>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </Section>
+  );
+}
+
+/* ─── Industry grid (shared for industry + real projects) ─── */
+
+function IndustryGrid({
+  title,
+  cards,
+  ctaLabel,
+}: {
+  title: string;
+  cards: { title: string; description: string; image: string }[];
+  ctaLabel: string;
+}) {
+  return (
+    <Section tone="alt">
+      <SectionHeading align="center" title={title} />
+      <ul className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {cards.map((card, i) => (
+          <li
+            key={`${card.title}-${i}`}
+            className="overflow-hidden rounded-md border border-border bg-background"
+          >
+            <Media
+              src={card.image}
+              alt={card.title}
+              className="aspect-[16/10]"
+              sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 90vw"
+            />
+            <div className="p-4">
+              <h3 className="text-base font-semibold">{card.title}</h3>
+              <p className="mt-1 text-sm text-body">{card.description}</p>
+              <div className="mt-3 flex items-center justify-between">
+                <span className="text-sm font-semibold text-brand">
+                  Explore further
+                </span>
+                <ArrowRight className="size-4 text-brand" />
+              </div>
+            </div>
+          </li>
+        ))}
+      </ul>
+      <div className="mt-10 flex justify-center">
+        <Button asChild variant="brand" size="xl">
+          <Link href="/catalogues">{ctaLabel}</Link>
+        </Button>
+      </div>
+    </Section>
+  );
+}
+
+export function FindByIndustry() {
+  return (
+    <IndustryGrid
+      title={cataloguePage.industry.title}
+      cards={cataloguePage.industry.cards}
+      ctaLabel="View all Floorings"
+    />
+  );
+}
+
+export function RealProjects() {
+  return (
+    <IndustryGrid
+      title={cataloguePage.realProjects.title}
+      cards={cataloguePage.realProjects.cards}
+      ctaLabel="View all Floorings"
+    />
+  );
+}
+
+/* ─── Catalogue resource center ─── */
+
+export function ResourceCenter() {
+  const cards = cataloguePage.resources.cards;
+  return (
+    <Section>
+      <SectionHeading title={cataloguePage.resources.title} />
+      <div className="mt-10 space-y-4">
+        <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {cards.slice(0, 4).map((card, i) => (
+            <li
+              key={`${card.title}-${i}`}
+              className="rounded-md border border-border bg-background p-5"
+            >
+              <span className="flex size-12 items-center justify-center rounded-md bg-brand text-white">
+                <FileText className="size-6" />
+              </span>
+              <h3 className="mt-4 text-base font-semibold">{card.title}</h3>
+              <p className="mt-1 text-sm text-body">{card.description}</p>
+              <div className="mt-3 flex items-center gap-1.5 text-xs text-body">
+                <FileText className="size-3.5" />
+                {card.fileInfo}
+              </div>
+              <div className="mt-3 flex items-center justify-between">
+                <span className="text-sm font-semibold text-brand">Download</span>
+                <Download className="size-4 text-brand" />
+              </div>
+            </li>
+          ))}
+        </ul>
+        <ul className="mx-auto grid max-w-2xl gap-4 sm:grid-cols-2">
+          {cards.slice(4).map((card, i) => (
+            <li
+              key={`${card.title}-extra-${i}`}
+              className="rounded-md border border-border bg-background p-5"
+            >
+              <span className="flex size-12 items-center justify-center rounded-md bg-brand text-white">
+                <FileText className="size-6" />
+              </span>
+              <h3 className="mt-4 text-base font-semibold">{card.title}</h3>
+              <p className="mt-1 text-sm text-body">{card.description}</p>
+              <div className="mt-3 flex items-center gap-1.5 text-xs text-body">
+                <FileText className="size-3.5" />
+                {card.fileInfo}
+              </div>
+              <div className="mt-3 flex items-center justify-between">
+                <span className="text-sm font-semibold text-brand">Download</span>
+                <Download className="size-4 text-brand" />
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </Section>
+  );
+}
+
+/* ─── Testimonial band ─── */
+
+export function TestimonialBand() {
+  const t = cataloguePage.testimonial;
+  const showImage = hasPublicAsset(t.image);
+
+  return (
+    <section className="relative isolate overflow-hidden bg-ink">
+      <div
+        aria-hidden
+        className="absolute inset-0 -z-20 bg-gradient-to-br from-neutral-700 via-neutral-800 to-neutral-900"
+      />
+      {showImage ? (
+        <Image
+          src={t.image}
+          alt=""
+          fill
+          sizes="100vw"
+          className="-z-10 object-cover object-center"
+        />
+      ) : null}
+      <div
+        aria-hidden
+        className="absolute inset-0 -z-10 bg-black/70"
+      />
+
+      <div className="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
+        <div className="max-w-xl">
+          <h2 className="text-3xl font-semibold text-white sm:text-4xl">{t.title}</h2>
+          <div className="mt-4 flex gap-1">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <Star key={i} className="size-5 fill-amber-400 text-amber-400" />
+            ))}
+          </div>
+          <p className="mt-4 text-sm leading-relaxed text-white/80">{t.review}</p>
+          <p className="mt-3 text-sm font-medium text-white/60">-{t.author}</p>
+
+          <ul className="mt-8 grid grid-cols-2 gap-3 sm:max-w-sm">
+            {t.metrics.map((m, i) => (
+              <li
+                key={`${m.label}-${i}`}
+                className="flex items-center gap-3 rounded-md border border-white/15 bg-white/10 px-4 py-3 backdrop-blur-sm"
+              >
+                <FileText className="size-5 text-white/60" />
+                <div>
+                  <p className="text-sm font-bold text-white">{m.value}</p>
+                  <p className="text-[0.6875rem] text-white/60">{m.label}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ─── Sizing guide table ─── */
+
+export function SizingGuide() {
+  const sg = cataloguePage.sizingGuide;
+  return (
+    <Section>
+      <SectionHeading align="center" title={sg.title} />
+      <div className="mt-10 overflow-x-auto">
+        <table className="w-full min-w-[600px] text-sm">
+          <thead>
+            <tr className="border-b border-border bg-surface-alt">
+              {sg.columns.map((col, i) => (
+                <th
+                  key={`${col}-${i}`}
+                  className="px-4 py-3 text-start text-xs font-semibold uppercase tracking-wider text-body"
+                >
+                  {col}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {sg.rows.map((row, ri) => (
+              <tr key={ri} className="border-b border-border">
+                {row.cells.map((cell, ci) => (
+                  <td
+                    key={ci}
+                    className={`px-4 py-4 font-medium ${
+                      ci === sg.columns.length - 1
+                        ? "text-brand"
+                        : "text-ink"
+                    }`}
+                  >
+                    {cell}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div className="mt-8 flex justify-center">
+        <Button asChild variant="brandOutline" size="xl">
+          <Link href="/contact">Talk to Our Flooring Team</Link>
+        </Button>
+      </div>
+    </Section>
+  );
+}
+
+/* ─── CTA panels (Need Help + Subscribe) ─── */
+
+export function CatalogueCta() {
+  return (
+    <section>
+      <div className="grid md:grid-cols-2">
+        <div className="bg-brand px-8 py-10 text-white lg:px-12 lg:py-12">
+          <span className="flex size-12 items-center justify-center rounded bg-white text-brand">
+            <MessageSquareText className="size-7" />
+          </span>
+          <h3 className="mt-5 text-3xl font-semibold leading-tight text-white sm:text-4xl">
+            {cataloguePage.ctaPanels.help.title}
+          </h3>
+          <p className="mt-4 max-w-xl text-base leading-relaxed text-white/80">
+            {cataloguePage.ctaPanels.help.description}
+          </p>
+          <Button asChild variant="inverse" size="xl" className="mt-6">
+            <Link href="/contact">
+              Read More
+              <ArrowRight className="size-4" />
+            </Link>
+          </Button>
+        </div>
+
+        <div className="bg-charcoal px-8 py-10 text-white lg:px-12 lg:py-12">
+          <span className="flex size-12 items-center justify-center rounded bg-white text-brand">
+            <Mail className="size-7" />
+          </span>
+          <h3 className="mt-5 text-3xl font-semibold leading-tight text-white sm:text-4xl">
+            {cataloguePage.ctaPanels.subscribe.title}
+          </h3>
+          <p className="mt-4 max-w-xl text-base leading-relaxed text-white/75">
+            {cataloguePage.ctaPanels.subscribe.description}
+          </p>
+          <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+            <input
+              type="email"
+              placeholder={cataloguePage.ctaPanels.subscribe.placeholder}
+              className="h-12 flex-1 rounded border border-white/15 bg-white/15 px-4 text-sm text-white placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-brand/50"
+            />
+            <Button type="button" variant="brand" size="xl">
+              Subscribe
+            </Button>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ─── FAQ ─── */
+
+export function CatalogueFaq() {
+  return (
+    <Section tone="alt">
+      <div className="mx-auto max-w-3xl text-center">
+        <h2 className="text-3xl font-semibold sm:text-4xl">FAQ</h2>
+        <p className="mt-4 text-sm leading-relaxed text-body sm:text-base">
+          {cataloguePage.faqIntro}
+        </p>
+      </div>
+
+      <Accordion
+        type="single"
+        collapsible
+        defaultValue={cataloguePage.faqs[0]?.question}
+        className="mx-auto mt-8 max-w-3xl"
+      >
+        {cataloguePage.faqs.map((faq, i) => (
+          <AccordionItem key={`${faq.question}-${i}`} value={`${faq.question}-${i}`}>
+            <AccordionTrigger className="py-4 text-start text-base font-medium text-ink hover:no-underline data-[state=open]:text-brand">
+              {faq.question}
+            </AccordionTrigger>
+            <AccordionContent className="pb-4 text-sm leading-relaxed text-body">
+              {faq.answer}
+            </AccordionContent>
+          </AccordionItem>
+        ))}
+      </Accordion>
+    </Section>
+  );
+}

@@ -1,15 +1,25 @@
 import type { Metadata } from "next";
 
-import { ComingSoon } from "@/components/layout/coming-soon";
-import { PageHero } from "@/components/layout/page-hero";
+import {
+  LegalBody,
+  LegalCta,
+  LegalHighlights,
+} from "@/components/legal/legal-document";
+import { LegalHero } from "@/components/legal/legal-hero";
+import { privacyDocument } from "@/content/legal";
 
-export const metadata: Metadata = { title: "Privacy Policy" };
+export const metadata: Metadata = {
+  title: "Privacy Policy",
+  description: privacyDocument.description,
+};
 
 export default function PrivacyPolicyPage() {
   return (
     <>
-      <PageHero title="Privacy Policy" />
-      <ComingSoon note="Our privacy policy is being reviewed by legal counsel and will be published shortly." />
+      <LegalHero document={privacyDocument} />
+      <LegalHighlights document={privacyDocument} />
+      <LegalBody document={privacyDocument} />
+      <LegalCta />
     </>
   );
 }

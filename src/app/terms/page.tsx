@@ -1,15 +1,25 @@
 import type { Metadata } from "next";
 
-import { ComingSoon } from "@/components/layout/coming-soon";
-import { PageHero } from "@/components/layout/page-hero";
+import {
+  LegalBody,
+  LegalCta,
+  LegalHighlights,
+} from "@/components/legal/legal-document";
+import { LegalHero } from "@/components/legal/legal-hero";
+import { termsDocument } from "@/content/legal";
 
-export const metadata: Metadata = { title: "Terms of Service" };
+export const metadata: Metadata = {
+  title: "Terms of Service",
+  description: termsDocument.description,
+};
 
 export default function TermsPage() {
   return (
     <>
-      <PageHero title="Terms of Service" />
-      <ComingSoon note="Our terms of service are being reviewed by legal counsel and will be published shortly." />
+      <LegalHero document={termsDocument} />
+      <LegalHighlights document={termsDocument} />
+      <LegalBody document={termsDocument} />
+      <LegalCta />
     </>
   );
 }
