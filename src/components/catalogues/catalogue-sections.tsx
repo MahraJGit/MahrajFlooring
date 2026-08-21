@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 
 import { Media } from "@/components/media";
+import { SubscribeForm } from "@/components/forms/subscribe-form";
 import { Section } from "@/components/layout/section";
 import { SectionHeading } from "@/components/layout/section-heading";
 import { Button } from "@/components/ui/button";
@@ -454,7 +455,7 @@ export function SizingGuide() {
       </div>
       <div className="mt-8 flex justify-center">
         <Button asChild variant="brandOutline" size="xl">
-          <Link href="/contact">Talk to Our Flooring Team</Link>
+          <Link href="/contact#get-in-touch">Talk to Our Flooring Team</Link>
         </Button>
       </div>
     </Section>
@@ -478,7 +479,7 @@ export function CatalogueCta() {
             {cataloguePage.ctaPanels.help.description}
           </p>
           <Button asChild variant="inverse" size="xl" className="mt-6">
-            <Link href="/contact">
+            <Link href="/contact#quote-form">
               Read More
               <ArrowRight className="size-4" />
             </Link>
@@ -495,16 +496,10 @@ export function CatalogueCta() {
           <p className="mt-4 max-w-xl text-base leading-relaxed text-white/75">
             {cataloguePage.ctaPanels.subscribe.description}
           </p>
-          <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-            <input
-              type="email"
-              placeholder={cataloguePage.ctaPanels.subscribe.placeholder}
-              className="h-12 flex-1 rounded border border-white/15 bg-white/15 px-4 text-sm text-white placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-brand/50"
-            />
-            <Button type="button" variant="brand" size="xl">
-              Subscribe
-            </Button>
-          </div>
+          <SubscribeForm
+            placeholder={cataloguePage.ctaPanels.subscribe.placeholder}
+            className="mt-6"
+          />
         </div>
       </div>
     </section>

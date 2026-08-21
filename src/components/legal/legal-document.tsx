@@ -151,7 +151,7 @@ export function LegalCta() {
               before work starts.
             </p>
             <Button asChild variant="inverse" size="xl" className="mt-6">
-              <Link href="/contact">
+              <Link href="/contact#get-in-touch">
                 Talk to Our Team
                 <ArrowRight className="size-4" />
               </Link>

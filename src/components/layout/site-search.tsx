@@ -2,12 +2,13 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Search } from "lucide-react";
+import { Search, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Sheet,
+  SheetClose,
   SheetContent,
   SheetHeader,
   SheetTitle,
@@ -56,16 +57,28 @@ export function SiteSearch() {
           <span className="sr-only">Search flooring solutions</span>
         </Button>
       </SheetTrigger>
-      <SheetContent side="top" className="p-0">
+      <SheetContent side="top" className="p-0" showCloseButton={false}>
         <SheetHeader className="p-6">
           <SheetTitle className="sr-only">Search</SheetTitle>
-          <Input
-            autoFocus
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder="Search flooring solutions, materials, applications..."
-            className="h-12 text-base"
-          />
+          <div className="flex items-center gap-3">
+            <Input
+              autoFocus
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder="Search flooring solutions, materials, applications..."
+              className="h-12 flex-1 text-base"
+            />
+            <SheetClose asChild>
+              <Button
+                variant="ghost"
+                size="icon-lg"
+                className="size-12 shrink-0 text-body"
+              >
+                <X className="size-5" />
+                <span className="sr-only">Close search</span>
+              </Button>
+            </SheetClose>
+          </div>
           {term.length > 1 ? (
             <div className="mt-4">
               {results.length > 0 ? (

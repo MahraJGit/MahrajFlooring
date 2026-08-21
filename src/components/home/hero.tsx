@@ -68,7 +68,7 @@ export function Hero() {
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Button asChild variant="brand" size="xl">
-              <Link href="/contact">
+              <Link href="/contact#get-in-touch">
                 Request project
                 <ArrowRight />
               </Link>
@@ -78,7 +78,7 @@ export function Hero() {
               size="xl"
               className="border-white/15 bg-white/10 text-white backdrop-blur-sm hover:bg-white/20"
             >
-              <Link href="/contact">Get a Quote</Link>
+              <Link href="/contact#quote-form">Get a Quote</Link>
             </Button>
           </div>
         </div>

@@ -12,7 +12,7 @@ export function ComingSoon({ note }: { note: string }) {
         </p>
         <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
           <Button asChild variant="brand" size="xl">
-            <Link href="/contact">Request a Quote</Link>
+            <Link href="/contact#quote-form">Request a Quote</Link>
           </Button>
           <Button asChild variant="brandOutline" size="xl">
             <Link href="/services">Explore Solutions</Link>

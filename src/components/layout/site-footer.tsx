@@ -12,16 +12,15 @@ const productLinks = [
 ];
 
 const serviceLinks = [
-  { label: "Installation", href: "/services" },
-  { label: "Consultation", href: "/contact" },
-  { label: "Site Survey", href: "/contact" },
-  { label: "Maintenance", href: "/services" },
+  { label: "Installation", href: "/services", disabled: true },
+  { label: "Consultation", href: "/contact#get-in-touch", disabled: false },
+  { label: "Site Survey", href: "/contact#get-in-touch", disabled: false },
+  { label: "Maintenance", href: "/services", disabled: true },
 ];
 
 const legalLinks = [
   { label: "Privacy Policy", href: "/privacy-policy" },
   { label: "Terms of Service", href: "/terms" },
-  { label: "Careers", href: "/careers" },
 ];
 
 function LinkedInIcon(props: React.ComponentProps<"svg">) {
@@ -137,12 +136,22 @@ export function SiteFooter() {
               <ul className="mt-5 space-y-3">
                 {serviceLinks.map((link) => (
                   <li key={link.label}>
-                    <Link
-                      href={link.href}
-                      className="text-sm transition-colors hover:text-brand"
-                    >
-                      {link.label}
-                    </Link>
+                    {link.disabled ? (
+                      <span
+                        className="cursor-not-allowed text-sm text-white/35"
+                        aria-disabled="true"
+                        title="Coming soon"
+                      >
+                        {link.label}
+                      </span>
+                    ) : (
+                      <Link
+                        href={link.href}
+                        className="text-sm transition-colors hover:text-brand"
+                      >
+                        {link.label}
+                      </Link>
+                    )}
                   </li>
                 ))}
               </ul>

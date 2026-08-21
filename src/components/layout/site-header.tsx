@@ -100,7 +100,7 @@ export function SiteHeader() {
           <div className="flex items-center gap-1">
             <SiteSearch />
             <Button asChild variant="brand" className="hidden h-10 px-4 sm:inline-flex">
-              <Link href="/contact">Request a Quote</Link>
+              <Link href="/contact#quote-form">Request a Quote</Link>
             </Button>
             <MobileNav />
           </div>

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowRight, BookOpenText, Mail, Star, UserRoundSearch } from "lucide-react";
 
 import { FeaturedBlogsCarousel } from "@/components/blog/featured-blogs-carousel";
+import { SubscribeForm } from "@/components/forms/subscribe-form";
 import { Media } from "@/components/media";
 import { Section } from "@/components/layout/section";
 import { SectionHeading } from "@/components/layout/section-heading";
@@ -224,7 +225,7 @@ export function LessonsAndCta() {
             {blogPage.ctaPanels.help.description}
           </p>
           <Button asChild variant="inverse" size="xl" className="mt-6">
-            <Link href="/contact">Read More</Link>
+            <Link href="/contact#quote-form">Read More</Link>
           </Button>
         </div>
 
@@ -238,16 +239,10 @@ export function LessonsAndCta() {
           <p className="mt-4 max-w-xl text-base leading-relaxed text-white/75">
             {blogPage.ctaPanels.subscribe.description}
           </p>
-          <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-            <input
-              type="email"
-              placeholder={blogPage.ctaPanels.subscribe.placeholder}
-              className="h-12 flex-1 rounded border border-white/15 bg-white/15 px-4 text-sm text-white placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-brand/50"
-            />
-            <Button type="button" variant="brand" size="xl">
-              Subscribe
-            </Button>
-          </div>
+          <SubscribeForm
+            placeholder={blogPage.ctaPanels.subscribe.placeholder}
+            className="mt-6"
+          />
         </div>
       </div>
     </section>

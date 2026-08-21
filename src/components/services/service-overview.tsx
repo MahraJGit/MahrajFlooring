@@ -79,7 +79,7 @@ export function ServiceOverview({ service }: { service: ServiceDetail }) {
             {service.overviewDescription}
           </p>
           <Button asChild variant="brand" size="xl" className="mt-7">
-            <Link href="/contact">View Installation</Link>
+            <Link href="/contact#get-in-touch">View Installation</Link>
           </Button>
         </div>
       </div>

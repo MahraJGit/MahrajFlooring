@@ -98,7 +98,7 @@ export function MobileNav() {
 
           <div className="mt-6 flex flex-col gap-3">
             <Button asChild variant="brand" size="xl">
-              <Link href="/contact" onClick={close}>
+              <Link href="/contact#quote-form" onClick={close}>
                 Request a Quote
               </Link>
             </Button>

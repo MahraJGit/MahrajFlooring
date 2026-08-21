@@ -91,7 +91,7 @@ export function ReviewsHero() {
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Button asChild variant="brand" size="xl">
-              <Link href="/contact">Request a Quote</Link>
+              <Link href="/contact#quote-form">Request a Quote</Link>
             </Button>
             <Button
               asChild

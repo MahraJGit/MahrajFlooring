@@ -1,3 +1,4 @@
+import { EnquiryForm } from "@/components/forms/enquiry-form";
 import { Section } from "@/components/layout/section";
 import {
   Accordion,
@@ -5,21 +6,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import { faqs as defaultFaqs, quoteSolutions } from "@/content/home";
-
-const labelClass =
-  "text-[0.6875rem] font-semibold uppercase tracking-[0.14em] text-body";
+import { faqs as defaultFaqs } from "@/content/home";
 
 type FaqItem = {
   question: string;
@@ -38,7 +25,12 @@ export function TechnicalFaqForm({
   formTitle?: string;
 }) {
   return (
-    <Section tone="alt" spacing="none">
+    <Section
+      id="quote-form"
+      tone="alt"
+      spacing="none"
+      className="scroll-mt-28"
+    >
       <div className="grid items-start gap-6 py-12 lg:grid-cols-2">
         <div>
           <h2 className="text-2xl font-semibold sm:text-3xl">FAQ</h2>
@@ -67,97 +59,7 @@ export function TechnicalFaqForm({
           <h3 className="text-xl font-semibold uppercase tracking-[0.04em] sm:text-2xl">
             {formTitle}
           </h3>
-          <form className="mt-6 space-y-5">
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="space-y-2">
-                <Label htmlFor={`${formIdPrefix}-name`} className={labelClass}>
-                  Your Name
-                </Label>
-                <Input
-                  id={`${formIdPrefix}-name`}
-                  name="name"
-                  autoComplete="name"
-                  placeholder="John Doe"
-                  className="h-11 bg-background"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor={`${formIdPrefix}-company`} className={labelClass}>
-                  Company
-                </Label>
-                <Input
-                  id={`${formIdPrefix}-company`}
-                  name="company"
-                  autoComplete="organization"
-                  placeholder="Design Studio"
-                  className="h-11 bg-background"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor={`${formIdPrefix}-phone`} className={labelClass}>
-                  Phone
-                </Label>
-                <Input
-                  id={`${formIdPrefix}-phone`}
-                  name="phone"
-                  type="tel"
-                  autoComplete="tel"
-                  placeholder="111-111-111"
-                  className="h-11 bg-background"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor={`${formIdPrefix}-email`} className={labelClass}>
-                  Email
-                </Label>
-                <Input
-                  id={`${formIdPrefix}-email`}
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  placeholder="xyz@gmail.com"
-                  className="h-11 bg-background"
-                />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor={`${formIdPrefix}-solution`} className={labelClass}>
-                Industry Solution
-              </Label>
-              <Select defaultValue={quoteSolutions[0]}>
-                <SelectTrigger
-                  id={`${formIdPrefix}-solution`}
-                  className="h-11 w-full bg-background"
-                >
-                  <SelectValue placeholder="Select a solution" />
-                </SelectTrigger>
-                <SelectContent>
-                  {quoteSolutions.map((solution) => (
-                    <SelectItem key={solution} value={solution}>
-                      {solution}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor={`${formIdPrefix}-brief`} className={labelClass}>
-                Project Brief
-              </Label>
-              <Textarea
-                id={`${formIdPrefix}-brief`}
-                rows={4}
-                placeholder="Tell us about the area size and requirements..."
-                className="bg-background"
-              />
-            </div>
-
-            <Button type="submit" variant="brand" size="xl" className="w-full">
-              Submit
-            </Button>
-          </form>
+          <EnquiryForm idPrefix={formIdPrefix} className="mt-6" />
         </div>
       </div>
     </Section>

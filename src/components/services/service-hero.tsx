@@ -68,7 +68,7 @@ export function ServiceHero({ service }: { service: ServiceDetail }) {
             {service.heroDescription}
           </p>
           <Button asChild variant="brand" size="xl" className="mt-8">
-            <Link href="/contact">Request a Quote</Link>
+            <Link href="/contact#quote-form">Request a Quote</Link>
           </Button>
         </div>
       </Container>

@@ -4,7 +4,12 @@ import { contactChannels, contactIntro } from "@/content/contact";
 
 export function GetInTouch() {
   return (
-    <Section tone="alt" spacing="compact" className="relative z-0 pt-24 sm:pt-28 lg:pt-32">
+    <Section
+      id="get-in-touch"
+      tone="alt"
+      spacing="compact"
+      className="relative z-0 scroll-mt-28 pt-24 sm:pt-28 lg:pt-32"
+    >
       <SectionHeading
         align="center"
         title={contactIntro.title}

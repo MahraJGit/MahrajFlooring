@@ -7,6 +7,7 @@ import { ChevronRight } from "lucide-react";
 import { Container } from "@/components/layout/container";
 import { Button } from "@/components/ui/button";
 import { aboutHero } from "@/content/about";
+import { site } from "@/content/site";
 
 function hasPublicAsset(src: string) {
   return existsSync(path.join(process.cwd(), "public", src.replace(/^\//, "")));
@@ -60,14 +61,14 @@ export function AboutHero() {
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Button asChild variant="brand" size="xl">
-              <Link href="/contact">Request a Quote</Link>
+              <Link href="/contact#quote-form">Request a Quote</Link>
             </Button>
             <Button
               asChild
               size="xl"
               className="border-white/15 bg-white/10 text-white backdrop-blur-sm hover:bg-white/20"
             >
-              <Link href="/contact">Get a Consultation</Link>
+              <a href={site.phoneHref}>Get a Consultation</a>
             </Button>
           </div>
         </div>
