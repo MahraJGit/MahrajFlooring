@@ -6,7 +6,7 @@ import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { WhatsAppButton } from "@/components/layout/whatsapp-button";
 import { site } from "@/content/site";
-import "./globals.css";
+import "../globals.css";
 
 const inter = Inter({
   variable: "--font-sans",

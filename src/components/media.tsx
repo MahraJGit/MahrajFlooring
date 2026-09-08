@@ -8,6 +8,11 @@ function existsInPublic(src: string) {
   return existsSync(path.join(process.cwd(), "public", src.replace(/^\//, "")));
 }
 
+// CMS uploads are served by Payload or S3, so there is no file to stat.
+function isManagedAsset(src: string) {
+  return /^https?:\/\//.test(src) || src.startsWith("/api/");
+}
+
 export function Media({
   src,
   alt,
@@ -21,9 +26,11 @@ export function Media({
   sizes?: string;
   priority?: boolean;
 }) {
+  const managed = isManagedAsset(src);
+
   // Falls back to a labelled block for any asset not yet supplied, so missing
   // photography is visible during review instead of failing as a broken image.
-  if (!existsInPublic(src)) {
+  if (!managed && !existsInPublic(src)) {
     return (
       <div
         data-src={src}
@@ -37,6 +44,23 @@ export function Media({
         <span className="px-4 text-center text-[0.6875rem] font-medium uppercase tracking-[0.14em] text-neutral-600">
           {alt}
         </span>
+      </div>
+    );
+  }
+
+  // Payload/S3 URLs are served as plain <img> tags so the browser never goes
+  // through Next Image optimization (which breaks on S3 redirect responses).
+  if (managed) {
+    return (
+      <div className={cn("relative overflow-hidden bg-surface-alt", className)}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={src}
+          alt={alt}
+          loading={priority ? "eager" : "lazy"}
+          decoding="async"
+          className="absolute inset-0 size-full object-cover object-center"
+        />
       </div>
     );
   }

@@ -5,7 +5,7 @@ import { ArrowUp, List, X } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
-type TocItem = { id: string; title: string };
+type TocItem = { id: string; title: string; level?: 2 | 3 };
 
 function useActiveSection(items: TocItem[]) {
   const [activeId, setActiveId] = useState(items[0]?.id ?? "");
@@ -49,7 +49,13 @@ function useActiveSection(items: TocItem[]) {
   return activeId;
 }
 
-export function LegalToc({ items }: { items: TocItem[] }) {
+export function ArticleToc({
+  items,
+  numbered = true,
+}: {
+  items: TocItem[];
+  numbered?: boolean;
+}) {
   const activeId = useActiveSection(items);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -72,19 +78,22 @@ export function LegalToc({ items }: { items: TocItem[] }) {
               aria-current={isActive ? "true" : undefined}
               className={cn(
                 "flex gap-3 rounded-md border-s-2 px-3 py-2 text-sm transition-colors",
+                item.level === 3 && "ps-6 text-[0.8125rem]",
                 isActive
                   ? "border-brand bg-brand/5 font-medium text-brand"
                   : "border-transparent text-body hover:border-brand/40 hover:text-brand"
               )}
             >
-              <span
-                className={cn(
-                  "w-6 shrink-0 tabular-nums",
-                  isActive ? "text-brand" : "text-body/60"
-                )}
-              >
-                {String(index + 1).padStart(2, "0")}
-              </span>
+              {numbered ? (
+                <span
+                  className={cn(
+                    "w-6 shrink-0 tabular-nums",
+                    isActive ? "text-brand" : "text-body/60"
+                  )}
+                >
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+              ) : null}
               <span>{item.title}</span>
             </a>
           </li>

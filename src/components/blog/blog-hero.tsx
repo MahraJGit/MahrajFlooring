@@ -11,7 +11,7 @@ function hasPublicAsset(src: string) {
   return existsSync(path.join(process.cwd(), "public", src.replace(/^\//, "")));
 }
 
-export function BlogHero() {
+export function BlogHero({ query }: { query?: string }) {
   const showImage = hasPublicAsset(blogPage.hero.image);
 
   return (
@@ -61,11 +61,14 @@ export function BlogHero() {
 
         <form
           role="search"
+          action="/blog"
+          method="get"
           className="mx-auto mt-8 flex w-full max-w-3xl items-center gap-3 rounded-full border border-white/20 bg-black/45 p-2 backdrop-blur-sm"
         >
           <input
             type="search"
             name="q"
+            defaultValue={query}
             placeholder={blogPage.hero.searchPlaceholder}
             aria-label="Search blog"
             className="min-w-0 flex-1 bg-transparent px-4 text-sm text-white outline-none placeholder:text-white/80 sm:text-base"

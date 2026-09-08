@@ -1,0 +1,218 @@
+/*
+ * Mahraj Flooring admin theme.
+ *
+ * Payload keeps its own layout, spacing and dark-mode logic. These rules only
+ * layer brand accents on top, so they hook into Payload's CSS variables
+ * (--theme-elevation-*, --base, --btn-*) rather than hard-coding values that
+ * would drift out of sync with the default styles.
+ */
+
+:root {
+  --mahraj-red: #c8102e;
+  --mahraj-red-hover: #a90e27;
+  --mahraj-accent: #c8102e;
+  --mahraj-accent-soft: rgb(200 16 46 / 10%);
+  --mahraj-accent-faint: rgb(200 16 46 / 5%);
+
+  --style-radius-s: 6px;
+  --style-radius-m: 10px;
+  --style-radius-l: 16px;
+}
+
+/* Solid red stays brand-accurate, but text-level accents lift for contrast. */
+[data-theme="dark"] {
+  --mahraj-accent: #ff6b7d;
+  --mahraj-accent-soft: rgb(255 107 125 / 14%);
+  --mahraj-accent-faint: rgb(255 107 125 / 7%);
+}
+
+/* ---------------------------------------------------------------- Sidebar */
+
+.nav {
+  border-inline-end: 1px solid var(--theme-elevation-100);
+}
+
+/* Payload derives nav padding from these, so the indent stays consistent. */
+.nav__scroll {
+  --nav-padding-inline-start: calc(var(--base) * 0.5);
+  --nav-padding-inline-end: calc(var(--base) * 0.5);
+}
+
+.nav__link {
+  padding-block: 7px;
+  padding-inline: 12px;
+  border-radius: var(--style-radius-s);
+  transition:
+    background-color 150ms ease,
+    color 150ms ease;
+}
+
+.nav__link:hover,
+.nav a.nav__link:focus-visible {
+  background: var(--mahraj-accent-faint);
+  color: var(--mahraj-accent);
+  text-decoration: none;
+}
+
+.nav__link.active {
+  background: var(--mahraj-accent-soft);
+  color: var(--mahraj-accent);
+}
+
+/* Sits outside the link box by default, which clips against the new padding. */
+.nav__link-indicator {
+  inset-inline-start: 4px;
+  background: var(--mahraj-accent);
+}
+
+.nav-group__toggle {
+  padding-inline: 12px;
+}
+
+.nav-group__label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.mahraj-admin-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--theme-text);
+  text-decoration: none;
+}
+
+.mahraj-admin-logo img {
+  display: block;
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+}
+
+.mahraj-admin-logo__wordmark {
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.mahraj-admin-logo__wordmark strong {
+  font-weight: 750;
+}
+
+.mahraj-admin-logo__wordmark span {
+  margin-top: 4px;
+  color: var(--mahraj-accent);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.mahraj-admin-logo__wordmark small {
+  margin-top: 6px;
+  color: var(--theme-elevation-500);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.mahraj-admin-icon {
+  display: block;
+  width: 30px;
+  height: 30px;
+  border-radius: 7px;
+}
+
+/* ------------------------------------------------------------ List header */
+
+.list-header__content,
+.list-header__title-and-actions {
+  align-items: center;
+}
+
+.list-header__title-actions,
+.list-header__actions {
+  margin-bottom: 0;
+}
+
+.list-header__create-new-button .pill {
+  padding: 6px 14px;
+  border-radius: var(--style-radius-s);
+  background: var(--mahraj-red);
+  color: #fff;
+  font-weight: 600;
+}
+
+.list-header__create-new-button:hover .pill {
+  background: var(--mahraj-red-hover);
+}
+
+/* ------------------------------------------------------------------ Table */
+
+.collection-list .table table,
+.collection-folder-list .table table,
+.folder-list .table table {
+  overflow: hidden;
+  border: 1px solid var(--theme-elevation-100);
+  border-radius: var(--style-radius-m);
+  border-collapse: separate;
+  border-spacing: 0;
+  background: var(--theme-elevation-0);
+}
+
+.collection-list .table thead th {
+  border-bottom: 1px solid var(--theme-elevation-100);
+  background: var(--theme-elevation-50);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.collection-list .table tbody tr {
+  transition: background-color 130ms ease;
+}
+
+.collection-list .table tbody tr:hover {
+  background: var(--mahraj-accent-faint);
+}
+
+/* ---------------------------------------------------------------- Buttons */
+
+.btn {
+  border-radius: var(--style-radius-s);
+}
+
+/* Payload drives button colors through these variables. */
+.btn--style-primary {
+  --color: #fff;
+  --hover-color: #fff;
+  --bg-color: var(--mahraj-red);
+  --hover-bg: var(--mahraj-red-hover);
+}
+
+/* ------------------------------------------------------------ Form fields */
+
+input:not([type="checkbox"]):not([type="radio"]):focus,
+textarea:focus,
+select:focus,
+.rs__control--is-focused {
+  border-color: var(--mahraj-accent);
+  box-shadow: 0 0 0 2px var(--mahraj-accent-soft);
+}
+
+/* ------------------------------------------------------------------ Login */
+
+.template-minimal .login__brand {
+  margin-bottom: calc(var(--base) * 1.25);
+}
+
+.login .form-submit .btn {
+  width: 100%;
+}

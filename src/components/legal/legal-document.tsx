@@ -1,10 +1,10 @@
 import Link from "next/link";
 import { ArrowRight, Link2 } from "lucide-react";
 
+import { ArticleToc, BackToTop } from "@/components/layout/article-toc";
 import { Container } from "@/components/layout/container";
 import { Section } from "@/components/layout/section";
 import { SectionHeading } from "@/components/layout/section-heading";
-import { BackToTop, LegalToc } from "@/components/legal/legal-toc";
 import { Button } from "@/components/ui/button";
 import type { LegalDocument } from "@/content/legal";
 
@@ -50,7 +50,7 @@ export function LegalBody({ doc }: { doc: LegalDocument }) {
     <Section tone="alt">
       <div className="grid gap-8 lg:grid-cols-[17rem_minmax(0,1fr)] lg:items-start lg:gap-12">
         <aside className="lg:sticky lg:top-28">
-          <LegalToc items={tocItems} />
+          <ArticleToc items={tocItems} />
 
           <div className="mt-8 hidden rounded-md border border-border bg-background p-5 lg:block">
             <p className="text-sm font-semibold text-ink">Related document</p>

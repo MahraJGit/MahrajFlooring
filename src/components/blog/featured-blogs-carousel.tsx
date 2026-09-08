@@ -18,34 +18,60 @@ type FeaturedArticle = {
   href: string;
 };
 
+function isManagedAsset(src: string) {
+  return /^https?:\/\//.test(src) || src.startsWith("/api/");
+}
+
+function isValidImageSrc(src: string) {
+  return Boolean(src?.startsWith("/") || /^https?:\/\//.test(src));
+}
+
 export function FeaturedBlogsCarousel({
   articles,
 }: {
   articles: FeaturedArticle[];
 }) {
   const [index, setIndex] = useState(0);
-  const current = articles[index];
+  const safeArticles = articles.filter((article) =>
+    isValidImageSrc(article.image)
+  );
+
+  if (safeArticles.length === 0) return null;
+
+  const current = safeArticles[index % safeArticles.length];
 
   function prev() {
-    setIndex((value) => (value - 1 + articles.length) % articles.length);
+    setIndex((value) => (value - 1 + safeArticles.length) % safeArticles.length);
   }
 
   function next() {
-    setIndex((value) => (value + 1) % articles.length);
+    setIndex((value) => (value + 1) % safeArticles.length);
   }
 
   return (
     <>
       <article className="mt-10 grid items-center gap-7 rounded-md border border-border bg-background p-5 lg:grid-cols-[1.1fr_minmax(0,1fr)]">
         <div className="relative overflow-hidden rounded-md">
-          <Image
-            src={current.image}
-            alt={current.title}
-            width={1280}
-            height={800}
-            className="h-auto w-full object-cover"
-            sizes="(min-width: 1024px) 45vw, 90vw"
-          />
+          {isManagedAsset(current.image) ? (
+            // Plain img for Payload/S3 — avoids Next Image optimizer issues.
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={current.image}
+              alt={current.title}
+              className="aspect-[16/10] h-auto w-full object-cover"
+              loading="eager"
+              decoding="async"
+            />
+          ) : (
+            <Image
+              src={current.image}
+              alt={current.title}
+              width={1280}
+              height={800}
+              className="h-auto w-full object-cover"
+              sizes="(min-width: 1024px) 45vw, 90vw"
+            />
+          )}
           <span className="absolute start-3 top-3 rounded bg-brand px-3 py-1 text-xs font-semibold text-white">
             Featured Blog
           </span>
@@ -75,7 +101,7 @@ export function FeaturedBlogsCarousel({
           <ChevronLeft className="size-4" />
         </button>
         <div className="flex gap-2">
-          {articles.map((article, dotIndex) => (
+          {safeArticles.map((article, dotIndex) => (
             <button
               key={article.title}
               type="button"
@@ -83,7 +109,9 @@ export function FeaturedBlogsCarousel({
               aria-label={`Go to featured blog ${dotIndex + 1}`}
               className={cn(
                 "h-1.5 rounded-full transition-all",
-                dotIndex === index ? "w-8 bg-brand" : "w-6 bg-border hover:bg-brand/50"
+                dotIndex === index % safeArticles.length
+                  ? "w-8 bg-brand"
+                  : "w-6 bg-border hover:bg-brand/50"
               )}
             />
           ))}
