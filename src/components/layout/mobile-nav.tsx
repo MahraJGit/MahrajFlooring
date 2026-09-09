@@ -19,9 +19,9 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { mainNav, site } from "@/content/site";
-import { megaMenu } from "@/content/services";
+import type { MegaMenuColumn } from "@/lib/payload/services";
 
-export function MobileNav() {
+export function MobileNav({ megaMenu }: { megaMenu: MegaMenuColumn[] }) {
   const [open, setOpen] = useState(false);
 
   function close() {
@@ -60,7 +60,7 @@ export function MobileNav() {
                           </p>
                           <ul className="mt-2 space-y-2">
                             {column.links.map((link) => (
-                              <li key={link.href}>
+                              <li key={`${column.title}-${link.href}-${link.label}`}>
                                 <Link
                                   href={link.href}
                                   onClick={close}
@@ -78,7 +78,7 @@ export function MobileNav() {
                         onClick={close}
                         className="inline-block text-sm font-semibold text-brand no-underline"
                       >
-                        View All Flooring Solutions
+                        View All Services
                       </Link>
                     </div>
                   </AccordionContent>

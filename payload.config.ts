@@ -10,6 +10,7 @@ import sharp from "sharp";
 import { Categories } from "./src/payload/collections/categories";
 import { Media } from "./src/payload/collections/media";
 import { Posts } from "./src/payload/collections/posts";
+import { Services } from "./src/payload/collections/services";
 import { Users } from "./src/payload/collections/users";
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -50,7 +51,7 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Posts, Categories, Media, Users],
+  collections: [Services, Posts, Categories, Media, Users],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || "",
   db: mongooseAdapter({

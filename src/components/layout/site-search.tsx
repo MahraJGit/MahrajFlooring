@@ -14,24 +14,9 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { getServices, megaMenu } from "@/content/services";
+import type { SearchEntry } from "@/lib/payload/services";
 
-const searchIndex = [
-  ...getServices().map((service) => ({
-    label: service.title,
-    href: `/services/${service.slug}`,
-    group: "Flooring Solutions",
-  })),
-  ...megaMenu.flatMap((column) =>
-    column.links.map((link) => ({
-      label: link.label,
-      href: link.href,
-      group: column.title,
-    }))
-  ),
-];
-
-export function SiteSearch() {
+export function SiteSearch({ searchIndex }: { searchIndex: SearchEntry[] }) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
 

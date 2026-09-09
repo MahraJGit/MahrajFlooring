@@ -67,6 +67,7 @@ export interface Config {
   };
   blocks: {};
   collections: {
+    services: Service;
     posts: Post;
     categories: Category;
     media: Media;
@@ -78,6 +79,7 @@ export interface Config {
   };
   collectionsJoins: {};
   collectionsSelect: {
+    services: ServicesSelect<false> | ServicesSelect<true>;
     posts: PostsSelect<false> | PostsSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
@@ -119,6 +121,176 @@ export interface UserAuthOperations {
   unlock: {
     email: string;
     password: string;
+  };
+}
+/**
+ * Create Main Services to organize the mega menu, then add Sub-services with detail content under each main.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "services".
+ */
+export interface Service {
+  id: string;
+  /**
+   * Main = organizer in the mega menu. Sub = public detail page under a main service.
+   */
+  kind: 'main' | 'sub';
+  title: string;
+  /**
+   * Leave blank to generate from the title.
+   */
+  slug?: string | null;
+  /**
+   * Which main service this sub-service belongs to.
+   */
+  parent?: (string | null) | Service;
+  /**
+   * Lower numbers appear first. For mains: mega-menu column order. For subs: order under that main.
+   */
+  sortOrder?: number | null;
+  /**
+   * Include this item when building the Services mega menu.
+   */
+  showInMegaMenu?: boolean | null;
+  /**
+   * When enabled, the full detail layout is shown. When off, visitors see Coming Soon.
+   */
+  detailReady?: boolean | null;
+  /**
+   * Optional short note for editors. Not shown on the site.
+   */
+  menuDescription?: string | null;
+  /**
+   * Shown on cards, search results, and meta tags.
+   */
+  excerpt?: string | null;
+  /**
+   * Card and hero fallback image.
+   */
+  image?: (string | null) | Media;
+  /**
+   * Shown in “Explore Our Flooring Services”. Leave empty to auto-pick siblings / other sub-services.
+   */
+  relatedServices?: (string | Service)[] | null;
+  /**
+   * Breadcrumb label (defaults to title).
+   */
+  detailTitle?: string | null;
+  /**
+   * Main H1 on the detail page.
+   */
+  heroTitle?: string | null;
+  heroDescription?: string | null;
+  overviewTitle?: string | null;
+  overviewDescription?: string | null;
+  /**
+   * Optional. Falls back to the listing image.
+   */
+  overviewImage?: (string | null) | Media;
+  guideTitle?: string | null;
+  guideDescription?: string | null;
+  applications?:
+    | {
+        title: string;
+        description: string;
+        points?:
+          | {
+              label: string;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Show the Thickness & Performance Matrix section.
+   */
+  showPerformanceMatrix?: boolean | null;
+  performanceRows?:
+    | {
+        useCase: string;
+        recommended: string;
+        forceReduction: string;
+        id?: string | null;
+      }[]
+    | null;
+  density?: string | null;
+  warranty?: string | null;
+  brandingTitle?: string | null;
+  brandingDescription?: string | null;
+  /**
+   * Show the space requirements comparison table.
+   */
+  showSpaceRequirements?: boolean | null;
+  spaceRows?:
+    | {
+        useCase: string;
+        recommended: string;
+        impact: string;
+        slip: string;
+        acoustic: string;
+        maintenance: string;
+        id?: string | null;
+      }[]
+    | null;
+  caseStudiesTitle?: string | null;
+  projectsTitle?: string | null;
+  /**
+   * Overrides the title in search engines.
+   */
+  seoTitle?: string | null;
+  seoDescription?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media".
+ */
+export interface Media {
+  id: string;
+  /**
+   * Describe the image for screen readers and SEO.
+   */
+  alt: string;
+  caption?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+  sizes?: {
+    thumbnail?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    card?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    hero?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
   };
 }
 /**
@@ -174,55 +346,6 @@ export interface Post {
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media".
- */
-export interface Media {
-  id: string;
-  /**
-   * Describe the image for screen readers and SEO.
-   */
-  alt: string;
-  caption?: string | null;
-  updatedAt: string;
-  createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
-  sizes?: {
-    thumbnail?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    card?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    hero?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-  };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -298,6 +421,10 @@ export interface PayloadLockedDocument {
   id: string;
   document?:
     | ({
+        relationTo: 'services';
+        value: string | Service;
+      } | null)
+    | ({
         relationTo: 'posts';
         value: string | Post;
       } | null)
@@ -354,6 +481,76 @@ export interface PayloadMigration {
   batch?: number | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "services_select".
+ */
+export interface ServicesSelect<T extends boolean = true> {
+  kind?: T;
+  title?: T;
+  slug?: T;
+  parent?: T;
+  sortOrder?: T;
+  showInMegaMenu?: T;
+  detailReady?: T;
+  menuDescription?: T;
+  excerpt?: T;
+  image?: T;
+  relatedServices?: T;
+  detailTitle?: T;
+  heroTitle?: T;
+  heroDescription?: T;
+  overviewTitle?: T;
+  overviewDescription?: T;
+  overviewImage?: T;
+  guideTitle?: T;
+  guideDescription?: T;
+  applications?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        points?:
+          | T
+          | {
+              label?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  showPerformanceMatrix?: T;
+  performanceRows?:
+    | T
+    | {
+        useCase?: T;
+        recommended?: T;
+        forceReduction?: T;
+        id?: T;
+      };
+  density?: T;
+  warranty?: T;
+  brandingTitle?: T;
+  brandingDescription?: T;
+  showSpaceRequirements?: T;
+  spaceRows?:
+    | T
+    | {
+        useCase?: T;
+        recommended?: T;
+        impact?: T;
+        slip?: T;
+        acoustic?: T;
+        maintenance?: T;
+        id?: T;
+      };
+  caseStudiesTitle?: T;
+  projectsTitle?: T;
+  seoTitle?: T;
+  seoDescription?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

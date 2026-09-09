@@ -19,6 +19,7 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
 import { mainNav, site } from "@/content/site";
+import type { MegaMenuColumn, SearchEntry } from "@/lib/payload/services";
 import { cn } from "@/lib/utils";
 
 function TopBar() {
@@ -44,7 +45,13 @@ function TopBar() {
   );
 }
 
-export function SiteHeader() {
+export function SiteHeader({
+  megaMenu,
+  searchIndex,
+}: {
+  megaMenu: MegaMenuColumn[];
+  searchIndex: SearchEntry[];
+}) {
   const pathname = usePathname();
 
   function isActive(href: string) {
@@ -76,7 +83,7 @@ export function SiteHeader() {
                       {item.label}
                     </NavigationMenuTrigger>
                     <NavigationMenuContent className="start-0 top-full w-full rounded-none border-t border-border bg-popover p-0 shadow-lg group-data-[viewport=false]/navigation-menu:mt-0 group-data-[viewport=false]/navigation-menu:rounded-none md:w-full">
-                      <MegaMenuPanel />
+                      <MegaMenuPanel columns={megaMenu} />
                     </NavigationMenuContent>
                   </NavigationMenuItem>
                 ) : (
@@ -98,11 +105,11 @@ export function SiteHeader() {
           </NavigationMenu>
 
           <div className="flex items-center gap-1">
-            <SiteSearch />
+            <SiteSearch searchIndex={searchIndex} />
             <Button asChild variant="brand" className="hidden h-10 px-4 sm:inline-flex">
               <Link href="/contact#quote-form">Request a Quote</Link>
             </Button>
-            <MobileNav />
+            <MobileNav megaMenu={megaMenu} />
           </div>
         </Container>
       </div>

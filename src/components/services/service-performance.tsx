@@ -6,16 +6,9 @@ import { Section } from "@/components/layout/section";
 import { SectionHeading } from "@/components/layout/section-heading";
 import { Button } from "@/components/ui/button";
 import { featuredCaseStudies, projects } from "@/content/home";
-import type { ServiceDetail } from "@/content/services";
+import type { ServiceDetailView } from "@/lib/payload/services";
 
-const performanceRows = [
-  ["Home Fitness", "15mm - 20mm", "35%"],
-  ["Strength Machines", "20mm - 25mm", "48%"],
-  ["Free Weights", "30mm - 40mm", "62%"],
-  ["Olympic Lifting", "50mm Integrated", "74%"],
-];
-
-export function PerformanceMatrix() {
+export function PerformanceMatrix({ service }: { service: ServiceDetailView }) {
   return (
     <Section>
       <SectionHeading align="center" title="Thickness & Performance Matrix" />
@@ -36,16 +29,18 @@ export function PerformanceMatrix() {
                 </tr>
               </thead>
               <tbody>
-                {performanceRows.map((row, index) => (
+                {service.performanceRows.map((row, index) => (
                   <tr
-                    key={row[0]}
+                    key={row.useCase}
                     className={index % 2 === 0 ? "bg-background" : "bg-surface-alt"}
                   >
                     <th className="px-5 py-4 text-start font-semibold text-ink">
-                      {row[0]}
+                      {row.useCase}
                     </th>
-                    <td className="px-5 py-4 text-body">{row[1]}</td>
-                    <td className="px-5 py-4 font-medium text-brand">{row[2]}</td>
+                    <td className="px-5 py-4 text-body">{row.recommended}</td>
+                    <td className="px-5 py-4 font-medium text-brand">
+                      {row.forceReduction}
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -56,13 +51,17 @@ export function PerformanceMatrix() {
               <p className="text-xs uppercase tracking-[0.12em] text-body">
                 Density
               </p>
-              <p className="mt-2 text-lg font-semibold text-ink">1100 kg/m³</p>
+              <p className="mt-2 text-lg font-semibold text-ink">
+                {service.density}
+              </p>
             </div>
             <div className="rounded-md bg-surface-alt p-5">
               <p className="text-xs uppercase tracking-[0.12em] text-body">
                 Warranty
               </p>
-              <p className="mt-2 text-lg font-semibold text-ink">5 - 10 Years</p>
+              <p className="mt-2 text-lg font-semibold text-ink">
+                {service.warranty}
+              </p>
             </div>
           </div>
         </div>
@@ -71,11 +70,10 @@ export function PerformanceMatrix() {
           <div className="flex items-start justify-between gap-5">
             <div>
               <h3 className="text-2xl font-semibold text-ink">
-                Custom Branding & Color
+                {service.brandingTitle}
               </h3>
               <p className="mt-4 text-sm leading-relaxed text-body">
-                Add custom logos, zone markings, and colourways using
-                precision-cut inserts and application-specific finishes.
+                {service.brandingDescription}
               </p>
             </div>
             <Scissors className="size-12 shrink-0 text-ink" />
@@ -113,7 +111,7 @@ export function PerformanceMatrix() {
 export function ServiceCaseStudies({
   service,
 }: {
-  service: ServiceDetail;
+  service: ServiceDetailView;
 }) {
   return (
     <Section tone="alt">

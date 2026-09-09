@@ -5,10 +5,10 @@ import { Media } from "@/components/media";
 import { Section } from "@/components/layout/section";
 import { SectionHeading } from "@/components/layout/section-heading";
 import { Button } from "@/components/ui/button";
-import { getServices } from "@/content/services";
+import { getServices } from "@/lib/payload/services";
 
-export function FlooringCategories() {
-  const services = getServices().slice(0, 6);
+export async function FlooringCategories() {
+  const services = (await getServices()).slice(0, 6);
 
   return (
     <Section tone="alt">
@@ -22,12 +22,12 @@ export function FlooringCategories() {
         {services.map((service) => (
           <li key={service.slug}>
             <Link
-              href={`/services/${service.slug}`}
+              href={service.href}
               className="group flex h-full flex-col overflow-hidden rounded-md border border-border bg-background transition-all hover:border-brand/40 hover:shadow-md"
             >
               <Media
                 src={service.image}
-                alt={service.title}
+                alt={service.imageAlt}
                 className="aspect-[4/3]"
                 sizes="(min-width: 1280px) 15vw, (min-width: 1024px) 30vw, (min-width: 640px) 45vw, 90vw"
               />

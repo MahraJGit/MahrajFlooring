@@ -1,14 +1,16 @@
+"use client";
+
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 import { Container } from "@/components/layout/container";
-import { megaMenu } from "@/content/services";
+import type { MegaMenuColumn } from "@/lib/payload/services";
 
-export function MegaMenuPanel() {
+export function MegaMenuPanel({ columns }: { columns: MegaMenuColumn[] }) {
   return (
     <Container className="py-8">
       <div className="grid gap-8 lg:grid-cols-4">
-        {megaMenu.map((column) => (
+        {columns.map((column) => (
           <div key={column.title}>
             <div className="flex items-start gap-2">
               <span
@@ -21,7 +23,7 @@ export function MegaMenuPanel() {
             </div>
             <ul className="mt-4 space-y-2.5">
               {column.links.map((link) => (
-                <li key={link.href}>
+                <li key={`${column.title}-${link.href}-${link.label}`}>
                   <Link
                     href={link.href}
                     className="text-sm text-body transition-colors hover:text-brand"
@@ -39,7 +41,7 @@ export function MegaMenuPanel() {
           href="/services"
           className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand transition-colors hover:text-brand-dark"
         >
-          View All Flooring Solutions
+          View All Services
           <ArrowRight className="size-4" />
         </Link>
       </div>

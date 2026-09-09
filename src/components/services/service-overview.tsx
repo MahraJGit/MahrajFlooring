@@ -5,16 +5,17 @@ import { Media } from "@/components/media";
 import { Section } from "@/components/layout/section";
 import { SectionHeading } from "@/components/layout/section-heading";
 import { Button } from "@/components/ui/button";
-import {
-  getServices,
-  type ServiceDetail,
-} from "@/content/services";
+import type {
+  ServiceCard,
+  ServiceDetailView,
+} from "@/lib/payload/services";
 
-export function ExploreServices({ service }: { service: ServiceDetail }) {
-  const related = getServices()
-    .filter((item) => item.slug !== service.slug)
-    .slice(0, 3);
-
+export function ExploreServices({
+  related,
+}: {
+  service: ServiceDetailView;
+  related: ServiceCard[];
+}) {
   return (
     <Section tone="alt">
       <SectionHeading
@@ -31,7 +32,7 @@ export function ExploreServices({ service }: { service: ServiceDetail }) {
           >
             <Media
               src={item.image}
-              alt={item.title}
+              alt={item.imageAlt}
               className="aspect-16/10"
               sizes="(min-width: 768px) 30vw, 90vw"
             />
@@ -41,7 +42,7 @@ export function ExploreServices({ service }: { service: ServiceDetail }) {
                 {item.excerpt}
               </p>
               <Link
-                href={`/services/${item.slug}`}
+                href={item.href}
                 className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-brand transition-colors hover:text-brand-dark"
               >
                 Explore Solution
@@ -61,12 +62,12 @@ export function ExploreServices({ service }: { service: ServiceDetail }) {
   );
 }
 
-export function ServiceOverview({ service }: { service: ServiceDetail }) {
+export function ServiceOverview({ service }: { service: ServiceDetailView }) {
   return (
     <Section tone="alt">
       <div className="grid items-center gap-10 lg:grid-cols-[20rem_minmax(0,1fr)]">
         <Media
-          src="/images/advantage-installation.jpg"
+          src={service.overviewImage}
           alt={`${service.detailTitle} installation`}
           className="aspect-4/3 rounded-md"
           sizes="20rem"
@@ -89,18 +90,18 @@ export function ServiceOverview({ service }: { service: ServiceDetail }) {
 
 const applicationIcons = [Dumbbell, Activity, Users];
 
-export function ServiceGuide({ service }: { service: ServiceDetail }) {
+export function ServiceGuide({ service }: { service: ServiceDetailView }) {
   return (
     <Section>
       <SectionHeading
         align="center"
         title={service.guideTitle}
-        description="Every project has unique structural demands. We provide application-specific guidance to protect athletes, users, equipment, and the subfloor."
+        description={service.guideDescription}
       />
 
       <ul className="mt-10 grid overflow-hidden rounded-md border border-border md:grid-cols-3">
         {service.applications.map((application, index) => {
-          const Icon = applicationIcons[index];
+          const Icon = applicationIcons[index % applicationIcons.length];
 
           return (
             <li

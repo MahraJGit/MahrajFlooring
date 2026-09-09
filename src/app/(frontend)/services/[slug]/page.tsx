@@ -23,25 +23,25 @@ import {
 } from "@/components/services/service-support";
 import {
   getServiceBySlug,
-  getServiceDetail,
-  getServices,
-} from "@/content/services";
+  getServiceSlugs,
+} from "@/lib/payload/services";
 
-export function generateStaticParams() {
-  return getServices().map((service) => ({ slug: service.slug }));
+export async function generateStaticParams() {
+  const slugs = await getServiceSlugs();
+  return slugs.map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({
   params,
 }: PageProps<"/services/[slug]">): Promise<Metadata> {
   const { slug } = await params;
-  const service = getServiceBySlug(slug);
+  const service = await getServiceBySlug(slug);
 
   if (!service) return {};
 
   return {
-    title: service.title,
-    description: service.excerpt,
+    title: service.seoTitle,
+    description: service.seoDescription,
   };
 }
 
@@ -49,26 +49,28 @@ export default async function ServiceDetailPage({
   params,
 }: PageProps<"/services/[slug]">) {
   const { slug } = await params;
-  const service = getServiceBySlug(slug);
+  const service = await getServiceBySlug(slug);
 
   if (!service) notFound();
 
-  const detail = getServiceDetail(slug);
-
-  if (detail) {
+  if (service.detailReady) {
     return (
       <>
-        <ServiceHero service={detail} />
-        <ExploreServices service={detail} />
-        <ServiceOverview service={detail} />
-        <ServiceGuide service={detail} />
-        <PerformanceMatrix />
-        <ServiceCaseStudies service={detail} />
+        <ServiceHero service={service} />
+        <ExploreServices service={service} related={service.related} />
+        <ServiceOverview service={service} />
+        <ServiceGuide service={service} />
+        {service.showPerformanceMatrix ? (
+          <PerformanceMatrix service={service} />
+        ) : null}
+        <ServiceCaseStudies service={service} />
         <ServiceAdvisory />
-        <SpaceRequirements />
+        {service.showSpaceRequirements ? (
+          <SpaceRequirements service={service} />
+        ) : null}
         <TechnicalResources />
         <ServiceProcess />
-        <OngoingProjects service={detail} />
+        <OngoingProjects service={service} />
         <IndustryReviews />
       </>
     );

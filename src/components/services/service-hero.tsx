@@ -1,36 +1,25 @@
-import { existsSync } from "node:fs";
-import path from "node:path";
-import Image from "next/image";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 
 import { Container } from "@/components/layout/container";
+import { Media } from "@/components/media";
 import { Button } from "@/components/ui/button";
-import type { ServiceDetail } from "@/content/services";
+import type { ServiceDetailView } from "@/lib/payload/services";
 
-function hasPublicAsset(src: string) {
-  return existsSync(path.join(process.cwd(), "public", src.replace(/^\//, "")));
-}
-
-export function ServiceHero({ service }: { service: ServiceDetail }) {
-  const showImage = hasPublicAsset(service.image);
-
+export function ServiceHero({ service }: { service: ServiceDetailView }) {
   return (
     <section className="relative isolate overflow-hidden bg-ink">
       <div
         aria-hidden
         className="absolute inset-0 -z-20 bg-gradient-to-br from-neutral-700 via-neutral-800 to-neutral-900"
       />
-      {showImage ? (
-        <Image
-          src={service.image}
-          alt=""
-          fill
-          priority
-          sizes="100vw"
-          className="-z-10 object-cover object-center"
-        />
-      ) : null}
+      <Media
+        src={service.image}
+        alt=""
+        className="absolute inset-0 -z-10 size-full"
+        sizes="100vw"
+        priority
+      />
       <div
         aria-hidden
         className="absolute inset-0 -z-10 bg-gradient-to-r from-black/90 via-black/60 to-black/20"
@@ -53,6 +42,17 @@ export function ServiceHero({ service }: { service: ServiceDetail }) {
                 Services
               </Link>
             </li>
+            {service.parentTitle ? (
+              <li className="flex items-center gap-1.5">
+                <ChevronRight className="size-3.5" />
+                <Link
+                  href="/services"
+                  className="transition-colors hover:text-white"
+                >
+                  {service.parentTitle}
+                </Link>
+              </li>
+            ) : null}
             <li className="flex items-center gap-1.5">
               <ChevronRight className="size-3.5" />
               <span className="text-white">{service.detailTitle}</span>

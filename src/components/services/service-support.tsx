@@ -13,7 +13,7 @@ import { Section } from "@/components/layout/section";
 import { SectionHeading } from "@/components/layout/section-heading";
 import { Button } from "@/components/ui/button";
 import { projects } from "@/content/home";
-import type { ServiceDetail } from "@/content/services";
+import type { ServiceDetailView } from "@/lib/payload/services";
 
 const advisors = [
   { name: "Jerome Bell", role: "General Manager" },
@@ -62,7 +62,11 @@ export function ServiceAdvisory() {
   );
 }
 
-export function SpaceRequirements() {
+export function SpaceRequirements({
+  service,
+}: {
+  service: ServiceDetailView;
+}) {
   return (
     <Section>
       <SectionHeading
@@ -90,28 +94,34 @@ export function SpaceRequirements() {
             </tr>
           </thead>
           <tbody>
-            {[
-              ["Home Fitness", "15mm - 20mm", "35%", "R10", "Medium", "Easy"],
-              ["Strength Machines", "20mm - 25mm", "48%", "R10", "High", "Easy"],
-              ["Free Weights", "30mm - 40mm", "62%", "R11", "High", "Medium"],
-              ["Olympic Lifting", "50mm Integrated", "74%", "R11", "Very High", "Medium"],
-            ].map((row, index) => (
-              <tr
-                key={row[0]}
-                className={index % 2 === 0 ? "bg-background" : "bg-surface-alt"}
-              >
-                {row.map((cell, cellIndex) => (
-                  <td
-                    key={`${row[0]}-${cell}`}
-                    className={`px-5 py-4 ${
-                      cellIndex === 0 ? "font-semibold text-ink" : "text-body"
-                    }`}
-                  >
-                    {cell}
-                  </td>
-                ))}
-              </tr>
-            ))}
+            {service.spaceRows.map((row, index) => {
+              const cells = [
+                row.useCase,
+                row.recommended,
+                row.impact,
+                row.slip,
+                row.acoustic,
+                row.maintenance,
+              ];
+
+              return (
+                <tr
+                  key={row.useCase}
+                  className={index % 2 === 0 ? "bg-background" : "bg-surface-alt"}
+                >
+                  {cells.map((cell, cellIndex) => (
+                    <td
+                      key={`${row.useCase}-${cell}`}
+                      className={`px-5 py-4 ${
+                        cellIndex === 0 ? "font-semibold text-ink" : "text-body"
+                      }`}
+                    >
+                      {cell}
+                    </td>
+                  ))}
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
@@ -218,7 +228,7 @@ export function ServiceProcess() {
   );
 }
 
-export function OngoingProjects({ service }: { service: ServiceDetail }) {
+export function OngoingProjects({ service }: { service: ServiceDetailView }) {
   return (
     <Section tone="alt">
       <SectionHeading align="center" title={service.projectsTitle} />
