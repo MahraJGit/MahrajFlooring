@@ -337,7 +337,10 @@ export const Services: CollectionConfig = {
         condition: isSub,
         description: "Which main service this sub-service belongs to.",
       },
-      validate: (value, { data }) => {
+      validate: (
+        value: unknown,
+        { data }: { data?: Partial<{ kind?: string | null }> }
+      ) => {
         if (data?.kind === "sub" && !value) {
           return "Select a main service parent.";
         }
