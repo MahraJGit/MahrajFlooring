@@ -39,7 +39,7 @@ export default async function BlogPage({
 
   return (
     <>
-      <BlogHero query={query} />
+      <BlogHero query={query} category={categorySlug} />
       <FeaturedBlogs posts={featured} />
       <ExploreByTopic categories={categories} />
       <WorkingOnSection />

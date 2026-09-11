@@ -2,8 +2,9 @@ import { existsSync } from "node:fs";
 import path from "node:path";
 import Image from "next/image";
 import Link from "next/link";
-import { ChevronRight, Search } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 
+import { BlogSearchForm } from "@/components/blog/blog-search-form";
 import { Container } from "@/components/layout/container";
 import { blogPage } from "@/content/blog";
 
@@ -11,7 +12,13 @@ function hasPublicAsset(src: string) {
   return existsSync(path.join(process.cwd(), "public", src.replace(/^\//, "")));
 }
 
-export function BlogHero({ query }: { query?: string }) {
+export function BlogHero({
+  query,
+  category,
+}: {
+  query?: string;
+  category?: string;
+}) {
   const showImage = hasPublicAsset(blogPage.hero.image);
 
   return (
@@ -50,38 +57,16 @@ export function BlogHero({ query }: { query?: string }) {
           </ol>
         </nav>
 
-        <div className="mt-8 max-w-3xl mx-auto text-center">
+        <div className="mx-auto mt-8 max-w-3xl text-center">
           <h1 className="font-heading text-4xl font-semibold leading-[1.12] text-white sm:text-5xl">
             {blogPage.hero.title}
           </h1>
-          <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-white/75 text-center md:text-base">
+          <p className="mx-auto mt-4 max-w-2xl text-center text-sm leading-relaxed text-white/75 md:text-base">
             {blogPage.hero.description}
           </p>
         </div>
 
-        <form
-          role="search"
-          action="/blog"
-          method="get"
-          className="mx-auto mt-8 flex w-full max-w-3xl items-center gap-3 rounded-full border border-white/20 bg-black/45 p-2 backdrop-blur-sm"
-        >
-          <input
-            type="search"
-            name="q"
-            defaultValue={query}
-            placeholder={blogPage.hero.searchPlaceholder}
-            aria-label="Search blog"
-            className="min-w-0 flex-1 bg-transparent px-4 text-sm text-white outline-none placeholder:text-white/80 sm:text-base"
-          />
-          <button
-            type="submit"
-            className="inline-flex size-12 shrink-0 items-center justify-center rounded-full bg-white text-brand transition-colors hover:bg-brand hover:text-white"
-            aria-label="Search blog"
-          >
-            <Search className="size-5" />
-          </button>
-        </form>
-   
+        <BlogSearchForm query={query} category={category} />
       </Container>
     </section>
   );

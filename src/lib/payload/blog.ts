@@ -14,6 +14,8 @@ export type BlogCard = {
   readTime: string;
   date: string;
   author: string;
+  authorImage: string;
+  authorImageAlt: string;
   category: string;
   categorySlug: string;
   href: string;
@@ -25,6 +27,7 @@ export type BlogCategory = {
   slug: string;
   subtitle: string;
   image: string;
+  postCount: number;
 };
 
 // The Local API runs with overrideAccess: true, so collection access control
@@ -59,6 +62,14 @@ function formatDate(value?: string | null) {
 
 export function toBlogCard(post: Post, imageSize?: "thumbnail" | "card" | "hero"): BlogCard {
   const image = resolveImage(post.coverImage, imageSize ?? "card");
+  const hasAuthorImage = Boolean(
+    post.authorImage &&
+      typeof post.authorImage === "object" &&
+      (post.authorImage.url || post.authorImage.sizes)
+  );
+  const authorImage = hasAuthorImage
+    ? resolveMediaUrl(post.authorImage as Media, "thumbnail")
+    : { url: "", alt: "" };
   const category = resolveCategory(post.category);
 
   return {
@@ -71,6 +82,8 @@ export function toBlogCard(post: Post, imageSize?: "thumbnail" | "card" | "hero"
     readTime: post.readTime ?? "",
     date: formatDate(post.publishedAt),
     author: post.author ?? "By Mahraj Engineering Team",
+    authorImage: authorImage.url,
+    authorImageAlt: authorImage.alt || post.author || "Article author",
     category: category.title,
     categorySlug: category.slug,
     href: `/blog/${post.slug ?? ""}`,
@@ -200,14 +213,26 @@ export async function getCategories(): Promise<BlogCategory[]> {
     sort: "title",
   });
 
-  return result.docs.map((category) => {
-    const image = resolveMediaUrl(category.image as Media | null, "card");
-    return {
-      id: String(category.id),
-      title: category.title,
-      slug: category.slug ?? "",
-      subtitle: category.subtitle ?? "",
-      image: image.url,
-    };
-  });
+  const categories = await Promise.all(
+    result.docs.map(async (category) => {
+      const image = resolveMediaUrl(category.image as Media | null, "card");
+      const count = await payload.count({
+        collection: "posts",
+        where: {
+          and: [publishedOnly, { category: { equals: category.id } }],
+        },
+      });
+
+      return {
+        id: String(category.id),
+        title: category.title,
+        slug: category.slug ?? "",
+        subtitle: category.subtitle ?? "",
+        image: image.url,
+        postCount: count.totalDocs,
+      };
+    })
+  );
+
+  return categories;
 }

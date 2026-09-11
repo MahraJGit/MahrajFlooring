@@ -335,6 +335,10 @@ export interface Post {
   category: string | Category;
   author?: string | null;
   /**
+   * Optional author photo shown with the article byline.
+   */
+  authorImage?: (string | null) | Media;
+  /**
    * For example: 9 min read
    */
   readTime?: string | null;
@@ -566,6 +570,7 @@ export interface PostsSelect<T extends boolean = true> {
   seoDescription?: T;
   category?: T;
   author?: T;
+  authorImage?: T;
   readTime?: T;
   publishedAt?: T;
   featured?: T;

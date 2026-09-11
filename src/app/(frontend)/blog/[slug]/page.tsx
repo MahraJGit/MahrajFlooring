@@ -145,7 +145,16 @@ export default async function BlogPostPage({
             <ul className="mt-8 flex flex-wrap items-center gap-2.5 text-xs text-white/80">
               {card.author ? (
                 <li className="flex items-center gap-1.5 rounded-full border border-white/20 bg-white/5 px-3 py-1.5">
-                  <UserRound className="size-3.5" />
+                  {card.authorImage ? (
+                    <Media
+                      src={card.authorImage}
+                      alt={card.authorImageAlt}
+                      className="size-5 rounded-full"
+                      sizes="1.25rem"
+                    />
+                  ) : (
+                    <UserRound className="size-3.5" />
+                  )}
                   {card.author}
                 </li>
               ) : null}
@@ -213,9 +222,18 @@ export default async function BlogPostPage({
 
             <div className="mt-12 flex flex-col gap-4 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-center gap-3">
-                <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-brand/10 text-brand">
-                  <UserRound className="size-5" />
-                </span>
+                {card.authorImage ? (
+                  <Media
+                    src={card.authorImage}
+                    alt={card.authorImageAlt}
+                    className="size-11 shrink-0 rounded-full"
+                    sizes="2.75rem"
+                  />
+                ) : (
+                  <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-brand/10 text-brand">
+                    <UserRound className="size-5" />
+                  </span>
+                )}
                 <div>
                   <p className="text-sm font-semibold text-ink">
                     {card.author || "Mahraj Engineering Team"}

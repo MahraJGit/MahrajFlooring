@@ -9,6 +9,10 @@ import {
 
 export const Posts: CollectionConfig = {
   slug: "posts",
+  labels: {
+    singular: "Blog",
+    plural: "Blogs",
+  },
   admin: {
     useAsTitle: "title",
     defaultColumns: ["title", "category", "publishedAt", "_status"],
@@ -16,6 +20,14 @@ export const Posts: CollectionConfig = {
     preview: (doc) => {
       const path = typeof doc?.slug === "string" ? `/blog/${doc.slug}` : "/blog";
       return `/preview?${new URLSearchParams({ path })}`;
+    },
+    components: {
+      edit: {
+        SaveDraftButton:
+          "./src/payload/components/return-to-list-buttons.tsx#SaveDraftAndReturnButton",
+        PublishButton:
+          "./src/payload/components/return-to-list-buttons.tsx#PublishAndReturnButton",
+      },
     },
   },
   access: {
@@ -107,6 +119,15 @@ export const Posts: CollectionConfig = {
       type: "text",
       defaultValue: "By Mahraj Engineering Team",
       admin: { position: "sidebar" },
+    },
+    {
+      name: "authorImage",
+      type: "upload",
+      relationTo: "media",
+      admin: {
+        position: "sidebar",
+        description: "Optional author photo shown with the article byline.",
+      },
     },
     {
       name: "readTime",

@@ -13,6 +13,12 @@ export const Categories: CollectionConfig = {
     useAsTitle: "title",
     defaultColumns: ["title", "slug"],
     group: "Content",
+    components: {
+      edit: {
+        SaveButton:
+          "./src/payload/components/return-to-list-buttons.tsx#SaveAndReturnButton",
+      },
+    },
   },
   access: {
     create: isEditor,

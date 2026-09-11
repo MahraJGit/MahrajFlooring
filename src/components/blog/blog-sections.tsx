@@ -1,5 +1,13 @@
 import Link from "next/link";
-import { ArrowRight, BookOpenText, Mail, Star, UserRoundSearch } from "lucide-react";
+import {
+  ArrowRight,
+  BookOpenText,
+  CalendarDays,
+  Clock,
+  Mail,
+  Star,
+  UserRoundSearch,
+} from "lucide-react";
 
 import { FeaturedBlogsCarousel } from "@/components/blog/featured-blogs-carousel";
 import { SubscribeForm } from "@/components/forms/subscribe-form";
@@ -29,36 +37,73 @@ export function ExploreByTopic({ categories }: { categories: BlogCategory[] }) {
     <Section>
       <SectionHeading title="Explore by Topic" />
       <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-        {categories.map((topic) => (
-          <li key={topic.id} className="group relative overflow-hidden rounded-md">
-            <Media
-              src={topic.image}
-              alt={topic.title}
-              className="aspect-[6/5] transition-transform duration-500 group-hover:scale-105"
-              sizes="(min-width: 1024px) 18vw, (min-width: 640px) 45vw, 90vw"
-            />
-            <div
-              aria-hidden
-              className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent"
-            />
-            <div className="absolute inset-x-0 bottom-0 p-3 text-white">
-              <h3 className="text-lg font-semibold text-white">{topic.title}</h3>
-              <p className="mt-1 text-xs text-white/75">{topic.subtitle}</p>
-              <Link
-                href={`/blog?category=${topic.slug}`}
-                className="mt-2 inline-flex items-center gap-1.5 text-sm font-semibold text-white transition-colors hover:text-brand"
-              >
-                Explore this topic
-                <ArrowRight className="size-4" />
-              </Link>
-            </div>
-          </li>
-        ))}
+        {categories.map((topic) => {
+          const hasArticles = topic.postCount > 0;
+          const href = `/blog?category=${topic.slug}#latest-insights`;
+          const countLabel =
+            topic.postCount === 1
+              ? "1 article"
+              : `${topic.postCount} articles`;
+
+          const content = (
+            <>
+              <Media
+                src={topic.image}
+                alt={topic.title}
+                className="aspect-[6/5] transition-transform duration-500 group-hover:scale-105"
+                sizes="(min-width: 1024px) 18vw, (min-width: 640px) 45vw, 90vw"
+              />
+              <div
+                aria-hidden
+                className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent"
+              />
+              <div className="absolute inset-x-0 bottom-0 p-3 text-white">
+                <h3 className="text-lg font-semibold text-white">{topic.title}</h3>
+                {topic.subtitle ? (
+                  <p className="mt-1 text-xs text-white/75">{topic.subtitle}</p>
+                ) : null}
+                <p className="mt-2 text-xs font-medium text-white/70">
+                  {hasArticles ? countLabel : "No articles yet"}
+                </p>
+                {hasArticles ? (
+                  <span className="mt-2 inline-flex items-center gap-1.5 text-sm font-semibold text-white transition-colors group-hover:text-brand">
+                    View articles
+                    <ArrowRight className="size-4" />
+                  </span>
+                ) : null}
+              </div>
+            </>
+          );
+
+          return (
+            <li
+              key={topic.id}
+              className={cn(
+                "group relative overflow-hidden rounded-md",
+                !hasArticles && "opacity-80"
+              )}
+            >
+              {hasArticles ? (
+                <Link
+                  href={href}
+                  className="block h-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
+                  aria-label={`View ${topic.postCount} ${topic.title} articles`}
+                >
+                  {content}
+                </Link>
+              ) : (
+                <div className="block h-full" aria-disabled="true">
+                  {content}
+                </div>
+              )}
+            </li>
+          );
+        })}
       </ul>
 
       <div className="mt-8 flex justify-center">
         <Button asChild variant="brand" size="xl">
-          <Link href="/blog">View all Categories</Link>
+          <Link href="/blog#latest-insights">View all articles</Link>
         </Button>
       </div>
     </Section>
@@ -134,14 +179,29 @@ export function BlogPostCard({ post }: { post: BlogCard }) {
           <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-body">
             {post.excerpt}
           </p>
+          {post.author ? (
+            <div className="mt-4 flex items-center gap-2 text-xs text-body">
+              {post.authorImage ? (
+                <Media
+                  src={post.authorImage}
+                  alt={post.authorImageAlt}
+                  className="size-7 shrink-0 rounded-full"
+                  sizes="1.75rem"
+                />
+              ) : null}
+              <span>{post.author}</span>
+            </div>
+          ) : null}
           <div className="mt-4 flex flex-wrap gap-2 text-[0.6875rem] text-body">
             {post.readTime ? (
-              <span className="rounded border border-border px-2 py-1">
+              <span className="inline-flex items-center gap-1.5 rounded border border-border px-2 py-1">
+                <Clock className="size-3.5 shrink-0" aria-hidden />
                 {post.readTime}
               </span>
             ) : null}
             {post.date ? (
-              <span className="rounded border border-border px-2 py-1">
+              <span className="inline-flex items-center gap-1.5 rounded border border-border px-2 py-1">
+                <CalendarDays className="size-3.5 shrink-0" aria-hidden />
                 {post.date}
               </span>
             ) : null}
