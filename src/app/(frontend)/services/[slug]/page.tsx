@@ -24,7 +24,7 @@ import {
 import {
   getServiceBySlug,
   getServiceSlugs,
-} from "@/lib/payload/services";
+} from "@/lib/public/services";
 
 export async function generateStaticParams() {
   const slugs = await getServiceSlugs();

@@ -13,7 +13,7 @@ import { Section } from "@/components/layout/section";
 import { SectionHeading } from "@/components/layout/section-heading";
 import { Button } from "@/components/ui/button";
 import { projects } from "@/content/home";
-import type { ServiceDetailView } from "@/lib/payload/services";
+import type { ServiceDetailView } from "@/lib/public/services";
 
 const advisors = [
   { name: "Jerome Bell", role: "General Manager" },

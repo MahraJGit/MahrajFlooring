@@ -9,7 +9,7 @@ import {
   LessonsAndCta,
   WorkingOnSection,
 } from "@/components/blog/blog-sections";
-import { getCategories, getFeaturedPosts, getPosts } from "@/lib/payload/blog";
+import { getCategories, getFeaturedPosts, getPosts } from "@/lib/public/blog";
 
 export const metadata: Metadata = {
   title: "Blog",

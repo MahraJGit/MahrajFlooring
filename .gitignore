@@ -40,5 +40,5 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# payload local uploads (S3 is used in production)
+# local uploads (S3 is used in production)
 /public/media

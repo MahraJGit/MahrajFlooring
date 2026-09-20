@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import type {
   ServiceCard,
   ServiceDetailView,
-} from "@/lib/payload/services";
+} from "@/lib/public/services";
 
 export function ExploreServices({
   related,

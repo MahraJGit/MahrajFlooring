@@ -1,5 +1,4 @@
 import type { NextConfig } from "next";
-import { withPayload } from "@payloadcms/next/withPayload";
 
 const s3Host =
   process.env.S3_BUCKET?.trim() && process.env.S3_REGION?.trim()
@@ -13,6 +12,20 @@ const nextConfig: NextConfig = {
       ? [{ protocol: "https", hostname: s3Host }]
       : [],
   },
+  async redirects() {
+    return [
+      {
+        source: "/manage",
+        destination: "/admin",
+        permanent: true,
+      },
+      {
+        source: "/manage/:path*",
+        destination: "/admin/:path*",
+        permanent: true,
+      },
+    ];
+  },
 };
 
-export default withPayload(nextConfig);
+export default nextConfig;

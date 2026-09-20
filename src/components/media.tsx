@@ -8,7 +8,7 @@ function existsInPublic(src: string) {
   return existsSync(path.join(process.cwd(), "public", src.replace(/^\//, "")));
 }
 
-// CMS uploads are served by Payload or S3, so there is no file to stat.
+// CMS uploads are served from S3 through /api/media/file, so there is no local file to stat.
 function isManagedAsset(src: string) {
   return /^https?:\/\//.test(src) || src.startsWith("/api/");
 }
@@ -48,7 +48,7 @@ export function Media({
     );
   }
 
-  // Payload/S3 URLs are served as plain <img> tags so the browser never goes
+  // S3 URLs are served as plain <img> tags so the browser never goes
   // through Next Image optimization (which breaks on S3 redirect responses).
   if (managed) {
     return (

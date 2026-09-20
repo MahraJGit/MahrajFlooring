@@ -55,7 +55,7 @@ export function FeaturedBlogsCarousel({
       <article className="mt-10 grid items-center gap-7 rounded-md border border-border bg-background p-5 lg:grid-cols-[1.1fr_minmax(0,1fr)]">
         <div className="relative overflow-hidden rounded-md">
           {isManagedAsset(current.image) ? (
-            // Plain img for Payload/S3 — avoids Next Image optimizer issues.
+            // Plain img for S3 — avoids Next Image optimizer issues.
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={current.image}

@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { draftMode } from "next/headers";
 import { notFound } from "next/navigation";
 import {
   ArrowLeft,
@@ -28,9 +27,8 @@ import {
   getPostSlugs,
   getRelatedPosts,
   toBlogCard,
-} from "@/lib/payload/blog";
-import { extractHeadings } from "@/lib/payload/rich-text";
-import type { Category, Media as MediaDoc } from "@/payload/payload-types";
+} from "@/lib/public/blog";
+import { extractHeadings } from "@/lib/public/rich-text";
 
 export async function generateStaticParams() {
   const slugs = await getPostSlugs();
@@ -45,8 +43,6 @@ export async function generateMetadata({
 
   if (!post) return {};
 
-  const cover = post.coverImage as MediaDoc | null;
-
   return {
     title: post.seoTitle || post.title,
     description: post.seoDescription || post.excerpt,
@@ -56,7 +52,7 @@ export async function generateMetadata({
       description: post.seoDescription || post.excerpt,
       type: "article",
       publishedTime: post.publishedAt ?? undefined,
-      images: cover?.url ? [{ url: cover.url }] : undefined,
+      images: post.coverImage?.url ? [{ url: post.coverImage.url }] : undefined,
     },
   };
 }
@@ -65,23 +61,14 @@ export default async function BlogPostPage({
   params,
 }: PageProps<"/blog/[slug]">) {
   const { slug } = await params;
-  const draft = await draftMode();
-  const post = await getPostBySlug(slug, draft.isEnabled);
+  const post = await getPostBySlug(slug);
 
   if (!post) notFound();
 
-  // Preview cookies can outlive the admin session; don't keep draft mode on for
-  // published posts the visitor is reading normally.
-  if (draft.isEnabled && post._status === "published") {
-    draft.disable();
-  }
-
-  const showDraftBanner = draft.isEnabled && post._status === "draft";
   const card = toBlogCard(post, "hero");
-  const category = post.category as Category | null;
-  const related = await getRelatedPosts(category?.slug ?? "", String(post.id));
+  const related = await getRelatedPosts(post.category?.slug ?? "", post.id);
   const headings = extractHeadings(post.content);
-  const shareUrl = `${site.url}/blog/${post.slug ?? ""}`;
+  const shareUrl = `${site.url}/blog/${post.slug}`;
 
   return (
     <>
@@ -124,13 +111,13 @@ export default async function BlogPostPage({
           </nav>
 
           <div className="mt-8 max-w-3xl">
-            {category ? (
+            {post.category ? (
               <Link
-                href={`/blog?category=${category.slug}`}
+                href={`/blog?category=${post.category.slug}`}
                 className="inline-flex items-center gap-1.5 rounded bg-brand px-3 py-1 text-xs font-semibold text-white transition-opacity hover:opacity-90"
               >
                 <Tag className="size-3.5" />
-                {category.title}
+                {post.category.title}
               </Link>
             ) : null}
 
@@ -175,15 +162,6 @@ export default async function BlogPostPage({
         </Container>
       </section>
 
-      {showDraftBanner ? (
-        <div className="bg-brand px-4 py-2 text-center text-sm font-medium text-white">
-          Draft preview — this version is not published.{" "}
-          <a href={`/exit-preview?redirect=/blog/${post.slug}`} className="underline">
-            Exit preview
-          </a>
-        </div>
-      ) : null}
-
       <Section tone="alt">
         <div className="grid gap-8 lg:grid-cols-[17rem_minmax(0,1fr)] lg:items-start lg:gap-12">
           <aside className="space-y-6 lg:sticky lg:top-28">
@@ -215,7 +193,7 @@ export default async function BlogPostPage({
             </p>
 
             {post.content ? (
-              <BlogArticleBody data={post.content} />
+              <BlogArticleBody data={post.content} mediaById={post.inlineMedia} />
             ) : (
               <p className="mt-8 text-body">This article is being written.</p>
             )}

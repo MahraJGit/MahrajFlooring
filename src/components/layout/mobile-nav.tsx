@@ -19,7 +19,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { mainNav, site } from "@/content/site";
-import type { MegaMenuColumn } from "@/lib/payload/services";
+import type { MegaMenuColumn } from "@/lib/public/services";
 
 export function MobileNav({ megaMenu }: { megaMenu: MegaMenuColumn[] }) {
   const [open, setOpen] = useState(false);

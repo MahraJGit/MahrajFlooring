@@ -4,7 +4,7 @@ import { ChevronRight } from "lucide-react";
 import { Container } from "@/components/layout/container";
 import { Media } from "@/components/media";
 import { Button } from "@/components/ui/button";
-import type { ServiceDetailView } from "@/lib/payload/services";
+import type { ServiceDetailView } from "@/lib/public/services";
 
 export function ServiceHero({ service }: { service: ServiceDetailView }) {
   return (

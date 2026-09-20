@@ -14,7 +14,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import type { SearchEntry } from "@/lib/payload/services";
+import type { SearchEntry } from "@/lib/public/services";
 
 export function SiteSearch({ searchIndex }: { searchIndex: SearchEntry[] }) {
   const [open, setOpen] = useState(false);

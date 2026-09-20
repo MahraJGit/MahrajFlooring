@@ -5,7 +5,7 @@ import { Media } from "@/components/media";
 import { Section } from "@/components/layout/section";
 import { SectionHeading } from "@/components/layout/section-heading";
 import { Button } from "@/components/ui/button";
-import { getServices } from "@/lib/payload/services";
+import { getServices } from "@/lib/public/services";
 
 export async function FlooringCategories() {
   const services = (await getServices()).slice(0, 6);

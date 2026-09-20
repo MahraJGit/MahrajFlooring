@@ -19,7 +19,7 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
 import { mainNav, site } from "@/content/site";
-import type { MegaMenuColumn, SearchEntry } from "@/lib/payload/services";
+import type { MegaMenuColumn, SearchEntry } from "@/lib/public/services";
 import { cn } from "@/lib/utils";
 
 function TopBar() {

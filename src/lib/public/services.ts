@@ -1,0 +1,485 @@
+import { asObjectId, isObjectId, toId } from "@/lib/db/ids";
+import { getModels } from "@/lib/db/models";
+import {
+  loadMediaMap,
+  resolveMediaUrl,
+  type PublicMedia,
+} from "@/lib/public/media";
+
+export type ServiceCard = {
+  id: string;
+  slug: string;
+  title: string;
+  excerpt: string;
+  image: string;
+  imageAlt: string;
+  href: string;
+  parentId: string | null;
+  parentTitle: string | null;
+};
+
+export type ServiceGroup = {
+  id: string;
+  slug: string;
+  title: string;
+  sortOrder: number;
+  children: ServiceCard[];
+};
+
+export type ServiceApplication = {
+  title: string;
+  description: string;
+  points: string[];
+};
+
+export type PerformanceRow = {
+  useCase: string;
+  recommended: string;
+  forceReduction: string;
+};
+
+export type SpaceRow = {
+  useCase: string;
+  recommended: string;
+  impact: string;
+  slip: string;
+  acoustic: string;
+  maintenance: string;
+};
+
+export type ServiceDetailView = ServiceCard & {
+  detailReady: boolean;
+  detailTitle: string;
+  heroTitle: string;
+  heroDescription: string;
+  overviewTitle: string;
+  overviewDescription: string;
+  overviewImage: string;
+  guideTitle: string;
+  guideDescription: string;
+  applications: ServiceApplication[];
+  showPerformanceMatrix: boolean;
+  performanceRows: PerformanceRow[];
+  density: string;
+  warranty: string;
+  brandingTitle: string;
+  brandingDescription: string;
+  showSpaceRequirements: boolean;
+  spaceRows: SpaceRow[];
+  caseStudiesTitle: string;
+  projectsTitle: string;
+  related: ServiceCard[];
+  siblings: ServiceCard[];
+  seoTitle: string;
+  seoDescription: string;
+};
+
+export type MegaMenuColumn = {
+  title: string;
+  href?: string;
+  links: { label: string; href: string }[];
+};
+
+export type SearchEntry = {
+  label: string;
+  href: string;
+  group: string;
+};
+
+const published = { _status: "published" } as const;
+
+type LeanDoc = Record<string, unknown> & { _id?: unknown };
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return Boolean(value) && typeof value === "object" && !Array.isArray(value);
+}
+
+function sortOrder(value: unknown) {
+  return typeof value === "number" && Number.isFinite(value) ? value : 0;
+}
+
+function mediaFromMap(
+  value: unknown,
+  media: Map<string, PublicMedia>
+): PublicMedia | null {
+  const id = toId(value);
+  if (!id) return null;
+  return media.get(id) ?? null;
+}
+
+function resolveImage(
+  value: unknown,
+  media: Map<string, PublicMedia>,
+  size?: "thumbnail" | "card" | "hero"
+) {
+  const doc = mediaFromMap(value, media);
+  if (!doc) {
+    return { url: "/images/advantage-installation.jpg", alt: "" };
+  }
+  const resolved = resolveMediaUrl(doc, size);
+  return {
+    url: resolved.url || "/images/advantage-installation.jpg",
+    alt: resolved.alt,
+  };
+}
+
+function resolveParent(
+  value: unknown,
+  parents: Map<string, { id: string; title: string }>
+) {
+  const id = toId(value);
+  if (!id) return { id: null, title: null as string | null };
+  const parent = parents.get(id);
+  return { id, title: parent?.title ?? null };
+}
+
+function toServiceCard(
+  service: LeanDoc,
+  media: Map<string, PublicMedia>,
+  parents: Map<string, { id: string; title: string }>,
+  imageSize?: "thumbnail" | "card" | "hero"
+): ServiceCard {
+  const image = resolveImage(service.image, media, imageSize ?? "card");
+  const parent = resolveParent(service.parent, parents);
+  const slug = typeof service.slug === "string" ? service.slug : "";
+
+  return {
+    id: toId(service._id),
+    slug,
+    title: typeof service.title === "string" ? service.title : "",
+    excerpt: typeof service.excerpt === "string" ? service.excerpt : "",
+    image: image.url,
+    imageAlt: image.alt || (typeof service.title === "string" ? service.title : ""),
+    href: `/services/${slug}`,
+    parentId: parent.id,
+    parentTitle: parent.title,
+  };
+}
+
+function collectMediaIds(docs: LeanDoc[]) {
+  const ids: string[] = [];
+  for (const doc of docs) {
+    const image = toId(doc.image);
+    const overview = toId(doc.overviewImage);
+    if (image) ids.push(image);
+    if (overview) ids.push(overview);
+  }
+  return ids;
+}
+
+async function loadParents(ids: string[]) {
+  const unique = [...new Set(ids.filter((id) => isObjectId(id)))];
+  const map = new Map<string, { id: string; title: string }>();
+  if (unique.length === 0) return map;
+
+  const { MainService } = await getModels();
+  const docs = await MainService.find({ _id: { $in: unique.map(asObjectId) } })
+    .select("title")
+    .lean();
+  for (const doc of docs) {
+    map.set(toId(doc._id), {
+      id: toId(doc._id),
+      title: typeof doc.title === "string" ? doc.title : "",
+    });
+  }
+  return map;
+}
+
+function toDetailView(
+  service: LeanDoc,
+  media: Map<string, PublicMedia>,
+  parents: Map<string, { id: string; title: string }>,
+  related: ServiceCard[],
+  siblings: ServiceCard[]
+): ServiceDetailView {
+  const card = toServiceCard(service, media, parents, "hero");
+  const overview = resolveImage(
+    service.overviewImage ?? service.image,
+    media,
+    "card"
+  );
+  const title = card.title;
+  const applications = Array.isArray(service.applications)
+    ? service.applications.map((application) => {
+        const row = isRecord(application) ? application : {};
+        return {
+          title: typeof row.title === "string" ? row.title : "",
+          description: typeof row.description === "string" ? row.description : "",
+          points: Array.isArray(row.points)
+            ? row.points.map((point) =>
+                isRecord(point) && typeof point.label === "string"
+                  ? point.label
+                  : ""
+              )
+            : [],
+        };
+      })
+    : [];
+
+  return {
+    ...card,
+    detailReady: Boolean(service.detailReady),
+    detailTitle:
+      (typeof service.detailTitle === "string" && service.detailTitle) || title,
+    heroTitle:
+      (typeof service.heroTitle === "string" && service.heroTitle) || title,
+    heroDescription:
+      (typeof service.heroDescription === "string" && service.heroDescription) ||
+      card.excerpt,
+    overviewTitle:
+      (typeof service.overviewTitle === "string" && service.overviewTitle) ||
+      `Complete ${title} Support - From Specification to Installation`,
+    overviewDescription:
+      (typeof service.overviewDescription === "string" &&
+        service.overviewDescription) ||
+      "Our team supports the full project cycle with site assessment, product selection, technical submittals, preparation, installation, and documented handover.",
+    overviewImage: overview.url,
+    guideTitle:
+      (typeof service.guideTitle === "string" && service.guideTitle) ||
+      `The ${title} Guide`,
+    guideDescription:
+      (typeof service.guideDescription === "string" && service.guideDescription) ||
+      "Every project has unique structural demands. We provide application-specific guidance to protect athletes, users, equipment, and the subfloor.",
+    applications,
+    showPerformanceMatrix: Boolean(service.showPerformanceMatrix),
+    performanceRows: Array.isArray(service.performanceRows)
+      ? service.performanceRows.map((row) => {
+          const item = isRecord(row) ? row : {};
+          return {
+            useCase: typeof item.useCase === "string" ? item.useCase : "",
+            recommended:
+              typeof item.recommended === "string" ? item.recommended : "",
+            forceReduction:
+              typeof item.forceReduction === "string" ? item.forceReduction : "",
+          };
+        })
+      : [],
+    density:
+      (typeof service.density === "string" && service.density) || "1100 kg/m³",
+    warranty:
+      (typeof service.warranty === "string" && service.warranty) || "5 - 10 Years",
+    brandingTitle:
+      (typeof service.brandingTitle === "string" && service.brandingTitle) ||
+      "Custom Branding & Color",
+    brandingDescription:
+      (typeof service.brandingDescription === "string" &&
+        service.brandingDescription) ||
+      "Add custom logos, zone markings, and colourways using precision-cut inserts and application-specific finishes.",
+    showSpaceRequirements: Boolean(service.showSpaceRequirements),
+    spaceRows: Array.isArray(service.spaceRows)
+      ? service.spaceRows.map((row) => {
+          const item = isRecord(row) ? row : {};
+          return {
+            useCase: typeof item.useCase === "string" ? item.useCase : "",
+            recommended:
+              typeof item.recommended === "string" ? item.recommended : "",
+            impact: typeof item.impact === "string" ? item.impact : "",
+            slip: typeof item.slip === "string" ? item.slip : "",
+            acoustic: typeof item.acoustic === "string" ? item.acoustic : "",
+            maintenance:
+              typeof item.maintenance === "string" ? item.maintenance : "",
+          };
+        })
+      : [],
+    caseStudiesTitle:
+      (typeof service.caseStudiesTitle === "string" &&
+        service.caseStudiesTitle) ||
+      `${title} Case Studies`,
+    projectsTitle:
+      (typeof service.projectsTitle === "string" && service.projectsTitle) ||
+      `${title} Ongoing Projects`,
+    related,
+    siblings,
+    seoTitle:
+      (typeof service.seoTitle === "string" && service.seoTitle) || title,
+    seoDescription:
+      (typeof service.seoDescription === "string" && service.seoDescription) ||
+      card.excerpt,
+  };
+}
+
+export async function getServices(limit = 100): Promise<ServiceCard[]> {
+  const { Service } = await getModels();
+  const docs = (await Service.find(published)
+    .sort({ sortOrder: 1 })
+    .limit(limit)
+    .lean()) as LeanDoc[];
+
+  const [media, parents] = await Promise.all([
+    loadMediaMap(collectMediaIds(docs)),
+    loadParents(docs.map((doc) => toId(doc.parent))),
+  ]);
+
+  return docs.map((doc) => toServiceCard(doc, media, parents));
+}
+
+export async function getServiceGroups(): Promise<ServiceGroup[]> {
+  const { MainService, Service } = await getModels();
+  const [mains, subs] = await Promise.all([
+    MainService.find(published).sort({ sortOrder: 1 }).limit(50).lean(),
+    Service.find(published).sort({ sortOrder: 1 }).limit(200).lean() as Promise<
+      LeanDoc[]
+    >,
+  ]);
+
+  const [media, parents] = await Promise.all([
+    loadMediaMap(collectMediaIds(subs)),
+    loadParents(subs.map((doc) => toId(doc.parent))),
+  ]);
+
+  const childrenByParent = new Map<string, ServiceCard[]>();
+  for (const sub of subs) {
+    const card = toServiceCard(sub, media, parents);
+    if (!card.parentId) continue;
+    const list = childrenByParent.get(card.parentId) ?? [];
+    list.push(card);
+    childrenByParent.set(card.parentId, list);
+  }
+
+  return mains
+    .map((main) => ({
+      id: toId(main._id),
+      slug: typeof main.slug === "string" ? main.slug : "",
+      title: typeof main.title === "string" ? main.title : "",
+      sortOrder: sortOrder(main.sortOrder),
+      children: childrenByParent.get(toId(main._id)) ?? [],
+    }))
+    .filter((group) => group.children.length > 0);
+}
+
+export async function getServiceBySlug(
+  slug: string
+): Promise<ServiceDetailView | null> {
+  if (!slug) return null;
+
+  const { Service } = await getModels();
+  const service = (await Service.findOne({ ...published, slug }).lean()) as
+    | LeanDoc
+    | null;
+  if (!service) return null;
+
+  const relatedIds = Array.isArray(service.relatedServices)
+    ? service.relatedServices.map((item) => toId(item)).filter(isObjectId)
+    : [];
+  const parentId = toId(service.parent);
+
+  const [relatedDocs, siblingDocs, otherDocs] = await Promise.all([
+    relatedIds.length
+      ? (Service.find({
+          ...published,
+          _id: { $in: relatedIds.map(asObjectId) },
+        }).lean() as Promise<LeanDoc[]>)
+      : Promise.resolve([] as LeanDoc[]),
+    parentId && isObjectId(parentId)
+      ? (Service.find({
+          ...published,
+          parent: asObjectId(parentId),
+          slug: { $ne: slug },
+        })
+          .sort({ sortOrder: 1 })
+          .limit(12)
+          .lean() as Promise<LeanDoc[]>)
+      : Promise.resolve([] as LeanDoc[]),
+    Service.find({ ...published, slug: { $ne: slug } })
+      .sort({ sortOrder: 1 })
+      .limit(3)
+      .lean() as Promise<LeanDoc[]>,
+  ]);
+
+  const relatedById = new Map(relatedDocs.map((doc) => [toId(doc._id), doc]));
+  const orderedRelated = relatedIds
+    .map((id) => relatedById.get(id))
+    .filter((doc): doc is LeanDoc => Boolean(doc))
+    .slice(0, 3);
+
+  const allDocs = [service, ...orderedRelated, ...siblingDocs, ...otherDocs];
+  const [media, parents] = await Promise.all([
+    loadMediaMap(collectMediaIds(allDocs)),
+    loadParents(allDocs.map((doc) => toId(doc.parent))),
+  ]);
+
+  let related = orderedRelated.map((doc) => toServiceCard(doc, media, parents));
+  const siblings = siblingDocs.map((doc) => toServiceCard(doc, media, parents));
+
+  if (related.length === 0) {
+    related = siblings.slice(0, 3);
+  }
+  if (related.length === 0) {
+    related = otherDocs.map((doc) => toServiceCard(doc, media, parents));
+  }
+
+  return toDetailView(service, media, parents, related, siblings);
+}
+
+export async function getServiceSlugs(): Promise<string[]> {
+  const { Service } = await getModels();
+  const docs = await Service.find(published)
+    .select("slug")
+    .limit(200)
+    .lean();
+
+  return docs
+    .map((doc) => (typeof doc.slug === "string" ? doc.slug : ""))
+    .filter(Boolean);
+}
+
+export async function getServiceMegaMenu(): Promise<MegaMenuColumn[]> {
+  const { MainService, Service } = await getModels();
+  const [mains, subs] = await Promise.all([
+    MainService.find({ ...published, showInMegaMenu: true })
+      .sort({ sortOrder: 1 })
+      .limit(50)
+      .select("title")
+      .lean(),
+    Service.find({ ...published, showInMegaMenu: true })
+      .sort({ sortOrder: 1 })
+      .limit(200)
+      .select("title slug parent sortOrder")
+      .lean(),
+  ]);
+
+  const linksByParent = new Map<string, { label: string; href: string }[]>();
+  for (const sub of subs) {
+    const parentId = toId(sub.parent);
+    const slug = typeof sub.slug === "string" ? sub.slug : "";
+    if (!parentId || !slug) continue;
+    const list = linksByParent.get(parentId) ?? [];
+    list.push({
+      label: typeof sub.title === "string" ? sub.title : "",
+      href: `/services/${slug}`,
+    });
+    linksByParent.set(parentId, list);
+  }
+
+  return mains
+    .map((main) => ({
+      title: typeof main.title === "string" ? main.title : "",
+      links: linksByParent.get(toId(main._id)) ?? [],
+    }))
+    .filter((column) => column.links.length > 0);
+}
+
+export async function getServiceSearchIndex(): Promise<SearchEntry[]> {
+  const [groups, megaMenu] = await Promise.all([
+    getServiceGroups(),
+    getServiceMegaMenu(),
+  ]);
+
+  const fromGroups = groups.flatMap((group) =>
+    group.children.map((service) => ({
+      label: service.title,
+      href: service.href,
+      group: group.title,
+    }))
+  );
+
+  if (fromGroups.length > 0) return fromGroups;
+
+  return megaMenu.flatMap((column) =>
+    column.links.map((link) => ({
+      label: link.label,
+      href: link.href,
+      group: column.title,
+    }))
+  );
+}

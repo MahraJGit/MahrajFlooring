@@ -16,7 +16,7 @@ import { Section } from "@/components/layout/section";
 import { SectionHeading } from "@/components/layout/section-heading";
 import { Button } from "@/components/ui/button";
 import { blogPage } from "@/content/blog";
-import type { BlogCard, BlogCategory } from "@/lib/payload/blog";
+import type { BlogCard, BlogCategory } from "@/lib/public/blog";
 import { cn } from "@/lib/utils";
 
 export function FeaturedBlogs({ posts }: { posts: BlogCard[] }) {

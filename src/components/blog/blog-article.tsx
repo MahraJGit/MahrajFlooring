@@ -1,26 +1,13 @@
-import { RichText } from "@payloadcms/richtext-lexical/react";
-import type { JSXConvertersFunction } from "@payloadcms/richtext-lexical/react";
-import type { SerializedEditorState } from "@payloadcms/richtext-lexical/lexical";
+import { LexicalArticle } from "@/components/blog/lexical-article";
+import type { PublicMedia } from "@/lib/public/media";
 
-import { buildHeadingIds } from "@/lib/payload/rich-text";
-
-export function BlogArticleBody({ data }: { data: SerializedEditorState }) {
-  // Keyed by node identity so anchors match the sidebar exactly, even when two
-  // headings share the same text.
-  const headingIds = buildHeadingIds(data as never);
-
-  const converters: JSXConvertersFunction = ({ defaultConverters }) => ({
-    ...defaultConverters,
-    heading: ({ node, nodesToJSX }) => {
-      const Tag = node.tag;
-      return (
-        <Tag id={headingIds.get(node)} className="scroll-mt-28">
-          {nodesToJSX({ nodes: node.children })}
-        </Tag>
-      );
-    },
-  });
-
+export function BlogArticleBody({
+  data,
+  mediaById = {},
+}: {
+  data: unknown;
+  mediaById?: Record<string, PublicMedia>;
+}) {
   return (
     <div
       className={[
@@ -39,9 +26,11 @@ export function BlogArticleBody({ data }: { data: SerializedEditorState }) {
         "[&_img]:mt-7 [&_img]:rounded-md",
         "[&_hr]:my-10 [&_hr]:border-border",
         "[&_strong]:font-semibold [&_strong]:text-ink",
+        "[&_pre]:mt-6 [&_pre]:overflow-x-auto [&_pre]:rounded-md [&_pre]:bg-ink [&_pre]:p-4 [&_pre]:text-sm [&_pre]:text-white",
+        "[&_figcaption]:mt-2 [&_figcaption]:text-sm [&_figcaption]:text-body",
       ].join(" ")}
     >
-      <RichText data={data} converters={converters} disableContainer />
+      <LexicalArticle data={data} mediaById={mediaById} />
     </div>
   );
 }

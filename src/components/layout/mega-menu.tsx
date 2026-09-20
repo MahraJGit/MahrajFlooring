@@ -4,7 +4,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 import { Container } from "@/components/layout/container";
-import type { MegaMenuColumn } from "@/lib/payload/services";
+import type { MegaMenuColumn } from "@/lib/public/services";
 
 export function MegaMenuPanel({ columns }: { columns: MegaMenuColumn[] }) {
   return (

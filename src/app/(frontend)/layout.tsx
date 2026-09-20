@@ -9,7 +9,7 @@ import { site } from "@/content/site";
 import {
   getServiceMegaMenu,
   getServiceSearchIndex,
-} from "@/lib/payload/services";
+} from "@/lib/public/services";
 import "../globals.css";
 
 const inter = Inter({

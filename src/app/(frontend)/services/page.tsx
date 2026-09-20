@@ -5,7 +5,7 @@ import { ArrowRight } from "lucide-react";
 import { PageHero } from "@/components/layout/page-hero";
 import { Section } from "@/components/layout/section";
 import { Media } from "@/components/media";
-import { getServiceGroups } from "@/lib/payload/services";
+import { getServiceGroups } from "@/lib/public/services";
 
 export const metadata: Metadata = {
   title: "Flooring Solutions",
