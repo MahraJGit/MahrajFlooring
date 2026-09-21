@@ -9,6 +9,7 @@ import { uniqueFilename } from "@/lib/cms/slug";
 import { getModels } from "@/lib/db/models";
 import { toId } from "@/lib/db/ids";
 import { listMedia, type MediaListItem } from "@/lib/media/queries";
+import { putObject, s3Enabled } from "@/lib/media/s3";
 
 const MAX_BYTES = 8 * 1024 * 1024;
 const ALLOWED = new Set(["image/jpeg", "image/png", "image/webp", "image/gif"]);
@@ -18,35 +19,6 @@ const SIZES = {
   card: { width: 768, height: 480 },
   hero: { width: 1600, height: 900 },
 } as const;
-
-function s3Enabled() {
-  return Boolean(
-    process.env.S3_BUCKET?.trim() &&
-      process.env.S3_REGION?.trim() &&
-      process.env.S3_ACCESS_KEY_ID &&
-      process.env.S3_SECRET_ACCESS_KEY
-  );
-}
-
-async function putObject(key: string, body: Buffer, contentType: string) {
-  const { S3Client, PutObjectCommand } = await import("@aws-sdk/client-s3");
-  const client = new S3Client({
-    region: process.env.S3_REGION,
-    followRegionRedirects: true,
-    credentials: {
-      accessKeyId: process.env.S3_ACCESS_KEY_ID || "",
-      secretAccessKey: process.env.S3_SECRET_ACCESS_KEY || "",
-    },
-  });
-  await client.send(
-    new PutObjectCommand({
-      Bucket: process.env.S3_BUCKET,
-      Key: key,
-      Body: body,
-      ContentType: contentType,
-    })
-  );
-}
 
 function mediaUrl(filename: string) {
   return `/api/media/file/${filename}`;
@@ -110,7 +82,7 @@ export async function uploadMedia(formData: FormData): Promise<
   }
 
   const filename = uniqueFilename(file.name || "image.jpg");
-  let meta: sharp.Metadata;
+  let meta;
   try {
     meta = await sharp(buffer).metadata();
   } catch {

@@ -163,8 +163,8 @@ export function MediaPicker({
                     start(async () => {
                       setMessage(null);
                       const result = await uploadMedia(data);
-                      if (result.error) {
-                        setMessage(result.error);
+                      if (result.error || !result.item) {
+                        setMessage(result.error ?? "The image could not be uploaded.");
                         return;
                       }
                       onChange({

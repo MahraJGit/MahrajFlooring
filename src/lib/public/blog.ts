@@ -232,7 +232,7 @@ export async function getPosts({
       .sort({ publishedAt: -1 })
       .skip(skip)
       .limit(limit)
-      .lean() as Promise<LeanDoc[]>,
+      .lean(),
     Post.countDocuments(filter),
   ]);
 

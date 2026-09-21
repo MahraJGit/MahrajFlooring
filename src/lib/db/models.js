@@ -1,4 +1,3 @@
-import type { Connection, Model } from "mongoose";
 import { Schema } from "mongoose";
 
 import { connectDb } from "./connect";
@@ -8,7 +7,7 @@ import { connectDb } from "./connect";
  * strip data we have not modelled yet.
  */
 const options = {
-  strict: false as const,
+  strict: false,
   timestamps: true,
 };
 
@@ -123,12 +122,8 @@ const ServiceSchema = new Schema(
   { ...options, collection: "services" }
 );
 
-function modelOn<T>(
-  conn: Connection,
-  name: string,
-  schema: Schema
-): Model<T> {
-  return (conn.models[name] as Model<T> | undefined) ?? conn.model<T>(name, schema);
+function modelOn(conn, name, schema) {
+  return conn.models[name] ?? conn.model(name, schema);
 }
 
 export async function getModels() {

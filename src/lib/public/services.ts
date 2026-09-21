@@ -317,9 +317,7 @@ export async function getServiceGroups(): Promise<ServiceGroup[]> {
   const { MainService, Service } = await getModels();
   const [mains, subs] = await Promise.all([
     MainService.find(published).sort({ sortOrder: 1 }).limit(50).lean(),
-    Service.find(published).sort({ sortOrder: 1 }).limit(200).lean() as Promise<
-      LeanDoc[]
-    >,
+    Service.find(published).sort({ sortOrder: 1 }).limit(200).lean(),
   ]);
 
   const [media, parents] = await Promise.all([
@@ -365,25 +363,25 @@ export async function getServiceBySlug(
 
   const [relatedDocs, siblingDocs, otherDocs] = await Promise.all([
     relatedIds.length
-      ? (Service.find({
+      ? Service.find({
           ...published,
           _id: { $in: relatedIds.map(asObjectId) },
-        }).lean() as Promise<LeanDoc[]>)
+        }).lean()
       : Promise.resolve([] as LeanDoc[]),
     parentId && isObjectId(parentId)
-      ? (Service.find({
+      ? Service.find({
           ...published,
           parent: asObjectId(parentId),
           slug: { $ne: slug },
         })
           .sort({ sortOrder: 1 })
           .limit(12)
-          .lean() as Promise<LeanDoc[]>)
+          .lean()
       : Promise.resolve([] as LeanDoc[]),
     Service.find({ ...published, slug: { $ne: slug } })
       .sort({ sortOrder: 1 })
       .limit(3)
-      .lean() as Promise<LeanDoc[]>,
+      .lean(),
   ]);
 
   const relatedById = new Map(relatedDocs.map((doc) => [toId(doc._id), doc]));

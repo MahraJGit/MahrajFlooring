@@ -2,16 +2,9 @@ import mongoose from "mongoose";
 
 const uri = process.env.DATABASE_URI;
 
-type MongooseCache = {
-  conn: mongoose.Connection | null;
-  promise: Promise<mongoose.Connection> | null;
-};
+const globalForMongoose = globalThis;
 
-const globalForMongoose = globalThis as typeof globalThis & {
-  __mahrajMongoose?: MongooseCache;
-};
-
-const cache: MongooseCache = globalForMongoose.__mahrajMongoose ?? {
+const cache = globalForMongoose.__mahrajMongoose ?? {
   conn: null,
   promise: null,
 };
@@ -22,7 +15,7 @@ globalForMongoose.__mahrajMongoose = cache;
  * Dedicated Mongoose connection for the custom CMS and public reads.
  * Do not use the default mongoose connection.
  */
-export async function connectDb(): Promise<mongoose.Connection> {
+export async function connectDb() {
   if (!uri) {
     throw new Error("DATABASE_URI is not set.");
   }

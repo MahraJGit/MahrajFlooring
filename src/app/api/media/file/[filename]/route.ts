@@ -1,32 +1,12 @@
-import { GetObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { NextResponse } from "next/server";
 
 import { getModels } from "@/lib/db/models";
+import { getObjectStream, s3Enabled } from "@/lib/media/s3";
 import { isSafeMediaFilename } from "@/lib/public/media";
 
 export const runtime = "nodejs";
 
 const SIZE_KEYS = ["thumbnail", "card", "hero"] as const;
-
-function s3Enabled() {
-  return Boolean(
-    process.env.S3_BUCKET?.trim() &&
-      process.env.S3_REGION?.trim() &&
-      process.env.S3_ACCESS_KEY_ID &&
-      process.env.S3_SECRET_ACCESS_KEY
-  );
-}
-
-function client() {
-  return new S3Client({
-    region: process.env.S3_REGION,
-    followRegionRedirects: true,
-    credentials: {
-      accessKeyId: process.env.S3_ACCESS_KEY_ID || "",
-      secretAccessKey: process.env.S3_SECRET_ACCESS_KEY || "",
-    },
-  });
-}
 
 function normalizeFilename(raw: string) {
   let value = raw;
@@ -100,22 +80,16 @@ export async function GET(
       return new NextResponse("Not found", { status: 404 });
     }
 
-    const result = await client().send(
-      new GetObjectCommand({
-        Bucket: process.env.S3_BUCKET,
-        Key: filename,
-      })
-    );
+    const object = await getObjectStream(filename);
 
-    if (!result.Body) {
+    if (!object) {
       return new NextResponse("Not found", { status: 404 });
     }
 
-    const body = result.Body.transformToWebStream();
     const contentType =
-      result.ContentType || mimeForFile(filename, doc as Record<string, unknown>);
+      object.contentType || mimeForFile(filename, doc as Record<string, unknown>);
 
-    return new NextResponse(body, {
+    return new NextResponse(object.stream, {
       status: 200,
       headers: {
         "Content-Type": contentType,
@@ -123,20 +97,7 @@ export async function GET(
         "X-Content-Type-Options": "nosniff",
       },
     });
-  } catch (error) {
-    const status =
-      error &&
-      typeof error === "object" &&
-      "$metadata" in error &&
-      error.$metadata &&
-      typeof error.$metadata === "object" &&
-      "httpStatusCode" in error.$metadata
-        ? Number(error.$metadata.httpStatusCode)
-        : 0;
-    const name = error instanceof Error ? error.name : "";
-    if (name === "NoSuchKey" || name === "NotFound" || status === 404) {
-      return new NextResponse("Not found", { status: 404 });
-    }
+  } catch {
     return new NextResponse("Not found", { status: 404 });
   }
 }

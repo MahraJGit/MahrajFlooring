@@ -1,9 +1,9 @@
-import type { Model } from "mongoose";
+import type { DbModel } from "@/lib/db/models";
 
 type SortDoc = { _id: unknown; sortOrder?: number };
 
 export async function swapAdjacentSortOrder(
-  Model: Model<unknown>,
+  Model: DbModel,
   id: string,
   direction: "earlier" | "later",
   filter: Record<string, unknown> = {}

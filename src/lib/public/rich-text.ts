@@ -63,16 +63,21 @@ function collectHeadings(content: LexicalContent) {
   });
 }
 
-export function extractHeadings(content: LexicalContent): ArticleHeading[] {
-  return collectHeadings(content).map(({ id, title, level }) => ({
+function asLexical(content: unknown): LexicalContent {
+  if (!content || typeof content !== "object") return null;
+  return content as LexicalContent;
+}
+
+export function extractHeadings(content: unknown): ArticleHeading[] {
+  return collectHeadings(asLexical(content)).map(({ id, title, level }) => ({
     id,
     title,
     level,
   }));
 }
 
-export function buildHeadingIds(content: LexicalContent) {
+export function buildHeadingIds(content: unknown) {
   return new Map<unknown, string>(
-    collectHeadings(content).map(({ node, id }) => [node, id])
+    collectHeadings(asLexical(content)).map(({ node, id }) => [node, id])
   );
 }
