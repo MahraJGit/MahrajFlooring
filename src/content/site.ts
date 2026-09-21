@@ -4,7 +4,7 @@ export const site = {
   description:
     "Specialist supplier and installer of technical flooring systems for commercial gyms, elite sports venues, healthcare, hospitality and industrial spaces across the UAE and GCC.",
   url: "https://mahrajflooring.com",
-  phone: "+971 4 000 0000",
+  phone: "+97150 882 0457",
   phoneHref: "tel:+97140000000",
   email: "info@mahrajfloors.com",
   salesEmail: "sales@mahrajfloors.com",

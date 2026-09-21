@@ -239,7 +239,7 @@ export const termsDocument: LegalDocument = {
       id: "contact-terms",
       title: "Questions about these Terms",
       paragraphs: [
-        "If you need clarification before placing an order, contact our commercial team at info@mahrajfloors.com or call +971 4 000 0000. Written project documents always take priority for live installations.",
+        "If you need clarification before placing an order, contact our commercial team at info@mahrajfloors.com or call +97150 882 0457. Written project documents always take priority for live installations.",
       ],
     },
   ],
@@ -431,7 +431,7 @@ export const privacyDocument: LegalDocument = {
       id: "contact-privacy",
       title: "Contact us about privacy",
       paragraphs: [
-        "For questions or requests relating to personal data, email info@mahrajfloors.com, call +971 4 000 0000, or write to Mahraj Flooring, Industrial Area 4, Al Qusais, Dubai, UAE.",
+        "For questions or requests relating to personal data, email info@mahrajfloors.com, call +97150 882 0457, or write to Mahraj Flooring, Industrial Area 4, Al Qusais, Dubai, UAE.",
       ],
     },
   ],
