@@ -1,4 +1,5 @@
 import {
+  DeleteObjectCommand,
   GetObjectCommand,
   PutObjectCommand,
   S3Client,
@@ -33,6 +34,25 @@ export async function putObject(key, body, contentType) {
       ContentType: contentType,
     })
   );
+}
+
+export async function deleteObject(key) {
+  if (!key) return;
+  try {
+    await createClient().send(
+      new DeleteObjectCommand({
+        Bucket: process.env.S3_BUCKET,
+        Key: key,
+      })
+    );
+  } catch (error) {
+    const status = error?.$metadata?.httpStatusCode;
+    const name = error?.name;
+    if (name === "NoSuchKey" || name === "NotFound" || status === 404) {
+      return;
+    }
+    throw error;
+  }
 }
 
 export async function getObjectStream(key) {

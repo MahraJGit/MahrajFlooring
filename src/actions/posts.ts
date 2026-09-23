@@ -176,8 +176,9 @@ export async function savePost(
   revalidatePath("/admin/blog");
   if (savedId) revalidatePath(`/admin/blog/${savedId}`);
   revalidatePath("/admin");
+  const saved = data._status === "published" ? "published" : "draft";
   return {
-    href: `/admin/blog/${savedId}?saved=${data._status === "published" ? "published" : "draft"}`,
+    href: id ? `/admin/blog/${savedId}?saved=${saved}` : `/admin/blog?saved=${saved}`,
   };
 }
 

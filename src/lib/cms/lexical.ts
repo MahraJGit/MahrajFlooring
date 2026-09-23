@@ -37,6 +37,7 @@ export type EditorBlock =
       mediaId: string;
       url?: string;
       alt?: string;
+      caption?: string;
       filename?: string;
       width?: number | null;
       height?: number | null;
@@ -343,15 +344,29 @@ function nodeToBlock(
     const mediaId = mediaIdFromValue(node.value);
     if (!mediaId) return rawBlock(node);
     const media = mediaById[mediaId];
+    const populated = isRecord(node.value) ? node.value : null;
+    const fields = isRecord(node.fields) ? node.fields : null;
+    const caption =
+      fields && typeof fields.caption === "string" ? fields.caption : "";
     return {
       id: newBlockId(),
       type: "image",
       mediaId,
-      url: media?.url,
-      alt: media?.alt,
-      filename: media?.filename,
-      width: media?.width ?? null,
-      height: media?.height ?? null,
+      url:
+        media?.url ||
+        (populated && typeof populated.url === "string" ? populated.url : undefined),
+      alt:
+        media?.alt ||
+        (populated && typeof populated.alt === "string" ? populated.alt : undefined),
+      caption,
+      filename:
+        media?.filename ||
+        (populated && typeof populated.filename === "string"
+          ? populated.filename
+          : undefined),
+      width: media?.width ?? (typeof populated?.width === "number" ? populated.width : null),
+      height:
+        media?.height ?? (typeof populated?.height === "number" ? populated.height : null),
     };
   }
 
@@ -449,7 +464,10 @@ function blockToNode(block: EditorBlock): LexicalNode | null {
       version: 3,
       relationTo: "media",
       value: block.mediaId,
-      fields: {},
+      fields: {
+        caption: block.caption?.trim() || "",
+        alt: block.alt?.trim() || "",
+      },
     };
   }
   if (block.type === "list") {
@@ -579,10 +597,18 @@ function readNodeText(node: LexicalNode): string {
 
 function mediaIdFromValue(value: unknown): string {
   if (typeof value === "string" && /^[a-f0-9]{24}$/i.test(value)) return value;
+  if (value && typeof value === "object" && "toHexString" in value) {
+    const hex = (value as { toHexString: () => string }).toHexString();
+    if (typeof hex === "string" && /^[a-f0-9]{24}$/i.test(hex)) return hex;
+  }
   if (isRecord(value)) {
     const id = value.id ?? value._id;
     if (typeof id === "string" && /^[a-f0-9]{24}$/i.test(id)) return id;
-    if (id && typeof id === "object" && "toString" in id) {
+    if (id && typeof id === "object") {
+      if ("toHexString" in id) {
+        const hex = (id as { toHexString: () => string }).toHexString();
+        if (typeof hex === "string" && /^[a-f0-9]{24}$/i.test(hex)) return hex;
+      }
       const next = String(id);
       if (/^[a-f0-9]{24}$/i.test(next)) return next;
     }

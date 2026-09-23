@@ -108,7 +108,10 @@ export async function deleteCategory(id: string): Promise<ActionResult> {
   const used = await Post.countDocuments({ category: asObjectId(id) });
   if (used > 0) {
     return {
-      error: `This category is used by ${used} ${used === 1 ? "post" : "posts"}. Reassign ${used === 1 ? "it" : "them"} before deleting the category.`,
+      error:
+        used === 1
+          ? "This category cannot be deleted because it is assigned to 1 blog post. Reassign that post first."
+          : `This category cannot be deleted because it is assigned to ${used} blog posts. Reassign those posts first.`,
     };
   }
 

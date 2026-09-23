@@ -168,7 +168,10 @@ export async function listPosts(query: ListQuery = {}) {
         ? { updatedAt: -1 as const }
         : { publishedAt: -1 as const, updatedAt: -1 as const };
 
-  const [docs, total] = await Promise.all([
+  const statusless: Record<string, unknown> = { ...filter };
+  delete statusless._status;
+
+  const [docs, total, allCount, publishedCount, draftCount] = await Promise.all([
     Post.find(filter)
       .sort(sort)
       .skip((page - 1) * limit)
@@ -177,6 +180,9 @@ export async function listPosts(query: ListQuery = {}) {
       .populate("coverImage", "url alt filename")
       .lean(),
     Post.countDocuments(filter),
+    Post.countDocuments(statusless),
+    Post.countDocuments({ ...statusless, _status: "published" }),
+    Post.countDocuments({ ...statusless, _status: "draft" }),
   ]);
 
   const items: PostListItem[] = docs.map((doc) => {
@@ -199,7 +205,17 @@ export async function listPosts(query: ListQuery = {}) {
     };
   });
 
-  return { items, total, page, pageCount: Math.max(1, Math.ceil(total / limit)) };
+  return {
+    items,
+    total,
+    page,
+    pageCount: Math.max(1, Math.ceil(total / limit)),
+    counts: {
+      all: allCount,
+      published: publishedCount,
+      draft: draftCount,
+    },
+  };
 }
 
 export async function listCategoryOptions(): Promise<CategoryOption[]> {

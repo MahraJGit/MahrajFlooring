@@ -1,15 +1,17 @@
 "use server";
 
 import { createHash } from "node:crypto";
+import { revalidatePath } from "next/cache";
 
 import sharp from "sharp";
 
 import { requireServiceEditor } from "@/lib/cms/permissions";
 import { uniqueFilename } from "@/lib/cms/slug";
+import { asObjectId, isObjectId } from "@/lib/db/ids";
 import { getModels } from "@/lib/db/models";
-import { toId } from "@/lib/db/ids";
-import { listMedia, type MediaListItem } from "@/lib/media/queries";
-import { putObject, s3Enabled } from "@/lib/media/s3";
+import { isSafeMediaFilename } from "@/lib/public/media";
+import { listMedia, toMediaListItem, type MediaListItem } from "@/lib/media/queries";
+import { deleteObject, putObject, s3Enabled } from "@/lib/media/s3";
 
 const MAX_BYTES = 8 * 1024 * 1024;
 const ALLOWED = new Set(["image/jpeg", "image/png", "image/webp", "image/gif"]);
@@ -24,26 +26,45 @@ function mediaUrl(filename: string) {
   return `/api/media/file/${filename}`;
 }
 
-function toItem(doc: {
-  _id?: unknown;
-  alt?: unknown;
-  filename?: unknown;
-  mimeType?: unknown;
-  filesize?: unknown;
-  width?: unknown;
-  height?: unknown;
-  url?: unknown;
-}): MediaListItem {
-  return {
-    id: toId(doc._id),
-    alt: String(doc.alt ?? ""),
-    filename: String(doc.filename ?? ""),
-    mimeType: String(doc.mimeType ?? ""),
-    filesize: Number(doc.filesize ?? 0),
-    width: typeof doc.width === "number" ? doc.width : null,
-    height: typeof doc.height === "number" ? doc.height : null,
-    url: String(doc.url ?? ""),
+function titled(doc: { title?: unknown } | null, kind: string) {
+  if (!doc) return null;
+  const title = String(doc.title ?? "").trim() || "Untitled";
+  return `${kind} “${title}”`;
+}
+
+async function findMediaUsage(id: string) {
+  const { Post, Category, Service } = await getModels();
+  const inline = {
+    $or: [0, 1, 2].flatMap((depth) => {
+      const base = ["content", "root", ...Array(depth + 1).fill("children")].join(".");
+      return [{ [`${base}.value`]: id }, { [`${base}.value.id`]: id }];
+    }),
   };
+  const [post, embedded, category, service] = await Promise.all([
+    Post.findOne({ $or: [{ coverImage: id }, { authorImage: id }] }).select("title").lean(),
+    Post.findOne(inline).select("title").lean(),
+    Category.findOne({ image: id }).select("title").lean(),
+    Service.findOne({ $or: [{ image: id }, { overviewImage: id }] }).select("title").lean(),
+  ]);
+  return (
+    titled(post, "the post") ||
+    titled(embedded, "the post") ||
+    titled(category, "the category") ||
+    titled(service, "the service")
+  );
+}
+
+function storageKeys(doc: { filename?: unknown; sizes?: unknown }) {
+  const keys: string[] = [];
+  const filename = String(doc.filename ?? "");
+  if (isSafeMediaFilename(filename)) keys.push(filename);
+  if (!doc.sizes || typeof doc.sizes !== "object") return keys;
+  for (const size of Object.values(doc.sizes as Record<string, unknown>)) {
+    if (!size || typeof size !== "object") continue;
+    const name = String((size as { filename?: unknown }).filename ?? "");
+    if (isSafeMediaFilename(name) && !keys.includes(name)) keys.push(name);
+  }
+  return keys;
 }
 
 export async function searchMedia(query?: string): Promise<MediaListItem[]> {
@@ -78,7 +99,7 @@ export async function uploadMedia(formData: FormData): Promise<
   const { Media } = await getModels();
   const existing = await Media.findOne({ checksum }).lean();
   if (existing) {
-    return { item: toItem(existing) };
+    return { item: toMediaListItem(existing) };
   }
 
   const filename = uniqueFilename(file.name || "image.jpg");
@@ -139,5 +160,35 @@ export async function uploadMedia(formData: FormData): Promise<
     focalY: 50,
   });
 
-  return { item: toItem(created) };
+  return { item: toMediaListItem(created) };
+}
+
+export async function deleteMedia(id: string): Promise<{ error?: string; href?: string }> {
+  await requireServiceEditor();
+  if (!isObjectId(id)) return { error: "This image could not be found." };
+
+  const { Media } = await getModels();
+  const doc = await Media.findById(id).select("filename sizes").lean();
+  if (!doc) return { error: "This image could not be found." };
+
+  const usage = await findMediaUsage(id);
+  if (usage) {
+    return {
+      error: `This image is used by ${usage}. Remove it there before deleting.`,
+    };
+  }
+
+  if (s3Enabled()) {
+    try {
+      for (const key of storageKeys(doc)) {
+        await deleteObject(key);
+      }
+    } catch {
+      return { error: "The file could not be removed from storage. Please try again." };
+    }
+  }
+
+  await Media.deleteOne({ _id: asObjectId(id) });
+  revalidatePath("/admin/media");
+  return { href: "/admin/media?saved=deleted" };
 }

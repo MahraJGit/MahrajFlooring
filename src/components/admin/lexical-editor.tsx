@@ -12,7 +12,7 @@ import {
   List,
   ListOrdered,
   Minus,
-  Plus,
+  Pilcrow,
   Quote,
   Trash2,
   Underline,
@@ -20,6 +20,13 @@ import {
 
 import { MediaPicker } from "@/components/admin/media-picker";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import {
   blocksToLexical,
   emptyParagraph,
@@ -42,7 +49,6 @@ const BLOCK_TYPES = [
   { value: "ordered", label: "Numbered list" },
   { value: "quote", label: "Quote" },
   { value: "code", label: "Code" },
-  { value: "hr", label: "Divider" },
 ] as const;
 
 export function LexicalEditor({
@@ -59,6 +65,7 @@ export function LexicalEditor({
   const [blocks, setBlocks] = useState<EditorBlock[]>(() =>
     lexicalToBlocks(value, mediaById)
   );
+  const [activeId, setActiveId] = useState<string | null>(blocks[0]?.id ?? null);
   const [pickerFor, setPickerFor] = useState<string | null>(null);
   const skipEmit = useRef(true);
 
@@ -72,8 +79,14 @@ export function LexicalEditor({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [blocks]);
 
+  const active = blocks.find((block) => block.id === activeId) ?? blocks.at(-1) ?? null;
+
   function updateBlocks(next: EditorBlock[]) {
-    setBlocks(next.length > 0 ? next : [emptyParagraph()]);
+    const safe = next.length > 0 ? next : [emptyParagraph()];
+    setBlocks(safe);
+    if (!safe.some((block) => block.id === activeId)) {
+      setActiveId(safe[0]?.id ?? null);
+    }
   }
 
   function replace(id: string, next: EditorBlock) {
@@ -87,17 +100,19 @@ export function LexicalEditor({
   function insert(afterId: string | null, block: EditorBlock) {
     if (!afterId) {
       updateBlocks([...blocks, block]);
-      return;
+    } else {
+      const index = blocks.findIndex((item) => item.id === afterId);
+      const next = [...blocks];
+      next.splice(index < 0 ? next.length : index + 1, 0, block);
+      updateBlocks(next);
     }
-    const index = blocks.findIndex((item) => item.id === afterId);
-    const next = [...blocks];
-    next.splice(index + 1, 0, block);
-    updateBlocks(next);
+    setActiveId(block.id);
+    return block;
   }
 
   function convert(id: string, kind: string) {
     const current = blocks.find((block) => block.id === id);
-    if (!current) return;
+    if (!current || current.type === "raw") return;
     const spans =
       "spans" in current
         ? current.spans
@@ -108,7 +123,7 @@ export function LexicalEditor({
             : [{ text: "" }];
     const text = spansToPlainText(spans);
 
-    let next: EditorBlock = emptyParagraph();
+    let next: EditorBlock = { id, type: "paragraph", spans };
     if (kind === "heading-2") next = { id, type: "heading", level: 2, spans };
     else if (kind === "heading-3") next = { id, type: "heading", level: 3, spans };
     else if (kind === "list") next = { id, type: "list", ordered: false, items: [spans] };
@@ -116,128 +131,62 @@ export function LexicalEditor({
     else if (kind === "quote") next = { id, type: "quote", spans };
     else if (kind === "code") next = { id, type: "code", text };
     else if (kind === "hr") next = { id, type: "hr" };
-    else next = { id, type: "paragraph", spans };
 
     replace(id, next);
+    setActiveId(id);
   }
 
-  return (
-    <div className="space-y-3">
-      <div className="flex flex-wrap gap-1.5 rounded-xl border border-border bg-muted/40 p-2">
-        <ToolbarButton
-          icon={Heading2}
-          label="Heading"
-          onClick={() => insert(blocks.at(-1)?.id ?? null, { id: newBlockId(), type: "heading", level: 2, spans: [{ text: "" }] })}
-        />
-        <ToolbarButton
-          icon={Heading3}
-          label="Subheading"
-          onClick={() => insert(blocks.at(-1)?.id ?? null, { id: newBlockId(), type: "heading", level: 3, spans: [{ text: "" }] })}
-        />
-        <ToolbarButton
-          icon={List}
-          label="Bulleted list"
-          onClick={() => insert(blocks.at(-1)?.id ?? null, { id: newBlockId(), type: "list", ordered: false, items: [[{ text: "" }]] })}
-        />
-        <ToolbarButton
-          icon={ListOrdered}
-          label="Numbered list"
-          onClick={() => insert(blocks.at(-1)?.id ?? null, { id: newBlockId(), type: "list", ordered: true, items: [[{ text: "" }]] })}
-        />
-        <ToolbarButton
-          icon={Quote}
-          label="Quote"
-          onClick={() => insert(blocks.at(-1)?.id ?? null, { id: newBlockId(), type: "quote", spans: [{ text: "" }] })}
-        />
-        <ToolbarButton
-          icon={Code}
-          label="Code"
-          onClick={() => insert(blocks.at(-1)?.id ?? null, { id: newBlockId(), type: "code", text: "" })}
-        />
-        <ToolbarButton
-          icon={Minus}
-          label="Divider"
-          onClick={() => insert(blocks.at(-1)?.id ?? null, { id: newBlockId(), type: "hr" })}
-        />
-        <ToolbarButton
-          icon={ImagePlus}
-          label="Image"
-          onClick={() => {
-            const block = { id: newBlockId(), type: "image" as const, mediaId: "" };
-            insert(blocks.at(-1)?.id ?? null, block);
-            setPickerFor(block.id);
-          }}
-        />
-        <ToolbarButton
-          icon={Plus}
-          label="Paragraph"
-          onClick={() => insert(blocks.at(-1)?.id ?? null, emptyParagraph())}
-        />
-      </div>
+  function applyKind(kind: string) {
+    if (active && active.type !== "image" && active.type !== "raw" && active.type !== "hr") {
+      convert(active.id, kind);
+      return;
+    }
+    const id = newBlockId();
+    if (kind === "heading-2") {
+      insert(active?.id ?? null, { id, type: "heading", level: 2, spans: [{ text: "" }] });
+    } else if (kind === "heading-3") {
+      insert(active?.id ?? null, { id, type: "heading", level: 3, spans: [{ text: "" }] });
+    } else if (kind === "list") {
+      insert(active?.id ?? null, { id, type: "list", ordered: false, items: [[{ text: "" }]] });
+    } else if (kind === "ordered") {
+      insert(active?.id ?? null, { id, type: "list", ordered: true, items: [[{ text: "" }]] });
+    } else if (kind === "quote") {
+      insert(active?.id ?? null, { id, type: "quote", spans: [{ text: "" }] });
+    } else if (kind === "code") {
+      insert(active?.id ?? null, { id, type: "code", text: "" });
+    } else if (kind === "hr") {
+      insert(active?.id ?? null, { id, type: "hr" });
+    } else {
+      insert(active?.id ?? null, emptyParagraph());
+    }
+  }
 
-      <div className="space-y-3 rounded-xl border border-border bg-white p-3 sm:p-4">
-        {blocks.map((block) => (
-          <BlockCard
-            key={block.id}
-            block={block}
-            pickerOpen={pickerFor === block.id}
-            onPickerOpen={() => setPickerFor(block.id)}
-            onPickerClose={() => setPickerFor(null)}
-            onChange={(next) => replace(block.id, next)}
-            onConvert={(kind) => convert(block.id, kind)}
-            onRemove={() => remove(block.id)}
-            onInsertAfter={() => insert(block.id, emptyParagraph())}
-          />
-        ))}
-      </div>
-      {error ? (
-        <p className="text-xs text-destructive" role="alert">
-          {error}
-        </p>
-      ) : (
-        <p className="text-xs text-muted-foreground">
-          Content is stored in the same format the public blog already uses.
-        </p>
-      )}
-    </div>
-  );
-}
+  function insertImage() {
+    const block: EditorBlock = { id: newBlockId(), type: "image", mediaId: "", caption: "" };
+    insert(active?.id ?? null, block);
+    setPickerFor(block.id);
+  }
 
-function BlockCard({
-  block,
-  pickerOpen,
-  onPickerOpen,
-  onPickerClose,
-  onChange,
-  onConvert,
-  onRemove,
-  onInsertAfter,
-}: {
-  block: EditorBlock;
-  pickerOpen: boolean;
-  onPickerOpen: () => void;
-  onPickerClose: () => void;
-  onChange: (next: EditorBlock) => void;
-  onConvert: (kind: string) => void;
-  onRemove: () => void;
-  onInsertAfter: () => void;
-}) {
+  const activeKind =
+    !active || active.type === "image" || active.type === "hr" || active.type === "raw"
+      ? ""
+      : active.type === "heading"
+        ? `heading-${active.level}`
+        : active.type === "list"
+          ? active.ordered
+            ? "ordered"
+            : "list"
+          : active.type;
+
   return (
-    <div className="rounded-lg border border-transparent p-2 hover:border-border hover:bg-muted/20">
-      <div className="mb-2 flex flex-wrap items-center gap-2">
-        {block.type !== "raw" && block.type !== "image" && block.type !== "hr" ? (
+    <TooltipProvider delayDuration={400}>
+      <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
+        <div className="sticky top-0 z-10 flex flex-wrap items-center gap-1 border-b border-border bg-card/95 px-2 py-2 backdrop-blur-sm">
           <select
-            className="h-8 rounded-md border border-input bg-transparent px-2 text-xs"
-            value={
-              block.type === "heading"
-                ? `heading-${block.level}`
-                : block.type === "list"
-                  ? block.ordered
-                    ? "ordered"
-                    : "list"
-                  : block.type
-            }
-            onChange={(event) => onConvert(event.target.value)}
+            aria-label="Block style"
+            className="h-8 rounded-lg border border-input bg-background px-2 text-sm"
+            value={activeKind || "paragraph"}
+            onChange={(event) => applyKind(event.target.value)}
           >
             {BLOCK_TYPES.map((item) => (
               <option key={item.value} value={item.value}>
@@ -245,28 +194,104 @@ function BlockCard({
               </option>
             ))}
           </select>
-        ) : (
-          <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-            {block.type === "raw"
-              ? `Preserved ${String(block.node.type ?? "block")}`
-              : block.type === "hr"
-                ? "Divider"
-                : "Image"}
-          </span>
-        )}
-        <InlineToolbar />
-        <div className="ml-auto flex gap-1">
-          <Button type="button" variant="ghost" size="sm" onClick={onInsertAfter}>
-            Add
-          </Button>
-          <Button type="button" variant="ghost" size="icon-sm" onClick={onRemove} aria-label="Remove block">
-            <Trash2 className="size-3.5" />
-          </Button>
+          <ToolbarDivider />
+          <MarkButton icon={Bold} label="Bold" command="bold" />
+          <MarkButton icon={Italic} label="Italic" command="italic" />
+          <MarkButton icon={Underline} label="Underline" command="underline" />
+          <LinkButton />
+          <ToolbarDivider />
+          <ToolbarButton icon={Pilcrow} label="Paragraph" onClick={() => applyKind("paragraph")} />
+          <ToolbarButton icon={Heading2} label="Heading" onClick={() => applyKind("heading-2")} />
+          <ToolbarButton icon={Heading3} label="Subheading" onClick={() => applyKind("heading-3")} />
+          <ToolbarButton icon={List} label="Bulleted list" onClick={() => applyKind("list")} />
+          <ToolbarButton icon={ListOrdered} label="Numbered list" onClick={() => applyKind("ordered")} />
+          <ToolbarButton icon={Quote} label="Quote" onClick={() => applyKind("quote")} />
+          <ToolbarButton icon={Code} label="Code" onClick={() => applyKind("code")} />
+          <ToolbarDivider />
+          <ToolbarButton icon={ImagePlus} label="Image" onClick={insertImage} />
+          <ToolbarButton icon={Minus} label="Divider" onClick={() => applyKind("hr")} />
         </div>
+
+        <div className="space-y-1 px-3 py-5 sm:px-8 sm:py-7">
+          {blocks.map((block) => (
+            <EditorBlockView
+              key={block.id}
+              block={block}
+              active={block.id === active?.id}
+              pickerOpen={pickerFor === block.id}
+              onFocus={() => setActiveId(block.id)}
+              onReplace={() => setPickerFor(block.id)}
+              onPickerClose={() => setPickerFor(null)}
+              onChange={(next) => replace(block.id, next)}
+              onRemove={() => remove(block.id)}
+              onInsertAfter={() => insert(block.id, emptyParagraph())}
+            />
+          ))}
+        </div>
+      </div>
+      {error ? (
+        <p className="mt-2 text-xs text-destructive" role="alert">
+          {error}
+        </p>
+      ) : (
+        <p className="mt-2 text-xs text-muted-foreground">
+          Select text to format it. Images are stored in Media and shown on the published article.
+        </p>
+      )}
+    </TooltipProvider>
+  );
+}
+
+function EditorBlockView({
+  block,
+  active,
+  pickerOpen,
+  onFocus,
+  onReplace,
+  onPickerClose,
+  onChange,
+  onRemove,
+  onInsertAfter,
+}: {
+  block: EditorBlock;
+  active: boolean;
+  pickerOpen: boolean;
+  onFocus: () => void;
+  onReplace: () => void;
+  onPickerClose: () => void;
+  onChange: (next: EditorBlock) => void;
+  onRemove: () => void;
+  onInsertAfter: () => void;
+}) {
+  return (
+    <div
+      className={cn(
+        "group relative rounded-lg px-2 py-1.5",
+        active && "bg-muted/30"
+      )}
+      onFocus={onFocus}
+      onMouseDown={onFocus}
+    >
+      <div className="absolute top-1 right-1 z-10 flex gap-1 rounded-lg bg-card/90 opacity-0 shadow-sm transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
+        <Button type="button" variant="ghost" size="sm" onClick={onInsertAfter}>
+          Add paragraph
+        </Button>
+        <Button type="button" variant="ghost" size="icon-sm" onClick={onRemove} aria-label="Remove block">
+          <Trash2 />
+        </Button>
       </div>
 
       {block.type === "paragraph" || block.type === "heading" || block.type === "quote" ? (
         <RichLine
+          placeholder={
+            block.type === "heading"
+              ? block.level === 2
+                ? "Heading"
+                : "Subheading"
+              : block.type === "quote"
+                ? "Quote"
+                : "Write…"
+          }
           className={
             block.type === "heading"
               ? block.level === 2
@@ -274,7 +299,7 @@ function BlockCard({
                 : "font-heading text-xl font-semibold"
               : block.type === "quote"
                 ? "border-s-4 border-brand bg-surface-alt px-4 py-3 italic"
-                : "text-base leading-relaxed"
+                : "text-base leading-7"
           }
           spans={block.spans}
           onChange={(spans) => onChange({ ...block, spans })}
@@ -282,14 +307,15 @@ function BlockCard({
       ) : null}
 
       {block.type === "list" ? (
-        <div className="space-y-2">
+        <div className="space-y-1.5">
           {block.items.map((item, index) => (
-            <div key={`${block.id}-${index}`} className="flex gap-2">
-              <span className="mt-2 w-5 text-sm text-muted-foreground">
+            <div key={`${block.id}-${index}`} className="flex items-start gap-2">
+              <span className="mt-2 w-6 shrink-0 text-sm text-muted-foreground">
                 {block.ordered ? `${index + 1}.` : "•"}
               </span>
               <RichLine
-                className="flex-1"
+                className="flex-1 text-base leading-7"
+                placeholder="List item"
                 spans={item}
                 onChange={(spans) => {
                   const items = block.items.map((current, itemIndex) =>
@@ -297,20 +323,26 @@ function BlockCard({
                   );
                   onChange({ ...block, items });
                 }}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" && !event.shiftKey) {
+                    event.preventDefault();
+                    const items = [...block.items];
+                    items.splice(index + 1, 0, [{ text: "" }]);
+                    onChange({ ...block, items });
+                  }
+                  if (
+                    event.key === "Backspace" &&
+                    spansToPlainText(item).length === 0 &&
+                    block.items.length > 1
+                  ) {
+                    event.preventDefault();
+                    onChange({
+                      ...block,
+                      items: block.items.filter((_, itemIndex) => itemIndex !== index),
+                    });
+                  }
+                }}
               />
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                onClick={() =>
-                  onChange({
-                    ...block,
-                    items: block.items.filter((_, itemIndex) => itemIndex !== index),
-                  })
-                }
-              >
-                Remove
-              </Button>
             </div>
           ))}
           <Button
@@ -326,61 +358,120 @@ function BlockCard({
 
       {block.type === "code" ? (
         <textarea
-          className="min-h-28 w-full rounded-md border border-input bg-muted/40 p-3 font-mono text-sm"
+          className="min-h-28 w-full rounded-lg border border-input bg-muted/40 p-3 font-mono text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring/40"
+          placeholder="Code"
           value={block.text}
           onChange={(event) => onChange({ ...block, text: event.target.value })}
+          onFocus={onFocus}
         />
       ) : null}
 
       {block.type === "hr" ? <hr className="my-4 border-border" /> : null}
 
       {block.type === "image" ? (
-        <div>
-          {pickerOpen || !block.mediaId ? (
-            <MediaPicker
-              label="Article image"
-              value={block.mediaId}
-              previewUrl={block.url}
-              previewAlt={block.alt}
-              previewFilename={block.filename}
-              previewWidth={block.width}
-              previewHeight={block.height}
-              onChange={(next) => {
-                onChange({
-                  ...block,
-                  mediaId: next.id,
-                  url: next.url,
-                  alt: next.alt,
-                  filename: next.filename,
-                  width: next.width ?? null,
-                  height: next.height ?? null,
-                });
-                if (next.id) onPickerClose();
-              }}
-            />
-          ) : (
-            <button type="button" className="block w-full text-left" onClick={onPickerOpen}>
-              {block.url ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={block.url}
-                  alt={block.alt || ""}
-                  className="max-h-72 rounded-md object-cover"
-                />
-              ) : (
-                <p className="text-sm text-muted-foreground">Image selected. Click to replace.</p>
-              )}
-            </button>
-          )}
-        </div>
+        <ImageBlock
+          block={block}
+          pickerOpen={pickerOpen}
+          onChange={onChange}
+          onReplace={onReplace}
+          onPickerClose={onPickerClose}
+          onRemove={onRemove}
+        />
       ) : null}
 
       {block.type === "raw" ? (
-        <p className="rounded-md bg-amber-50 px-3 py-2 text-sm text-amber-950">
-          This block is kept exactly as it appears on the live article so existing
-          formatting is not rewritten.
+        <p className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-950">
+          This block is kept as it appears on the live article so existing formatting is not rewritten.
         </p>
       ) : null}
+    </div>
+  );
+}
+
+function ImageBlock({
+  block,
+  pickerOpen,
+  onChange,
+  onReplace,
+  onPickerClose,
+  onRemove,
+}: {
+  block: Extract<EditorBlock, { type: "image" }>;
+  pickerOpen: boolean;
+  onChange: (next: EditorBlock) => void;
+  onReplace: () => void;
+  onPickerClose: () => void;
+  onRemove: () => void;
+}) {
+  const [broken, setBroken] = useState(false);
+  const choosing = pickerOpen || !block.mediaId;
+
+  return (
+    <div className="space-y-3 rounded-xl border border-border bg-background p-3">
+      {choosing ? (
+        <MediaPicker
+          label="Article image"
+          value={block.mediaId}
+          previewUrl={block.url}
+          previewAlt={block.alt}
+          previewFilename={block.filename}
+          previewWidth={block.width}
+          previewHeight={block.height}
+          startOpen={pickerOpen || !block.mediaId}
+          onDismiss={() => {
+            if (!block.mediaId) onRemove();
+            else onPickerClose();
+          }}
+          onChange={(next) => {
+            if (!next.id) {
+              onRemove();
+              return;
+            }
+            onChange({
+              ...block,
+              mediaId: next.id,
+              url: next.url,
+              alt: next.alt,
+              filename: next.filename,
+              width: next.width ?? null,
+              height: next.height ?? null,
+            });
+            setBroken(false);
+            onPickerClose();
+          }}
+        />
+      ) : (
+        <div className="space-y-3">
+          {block.url && !broken ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={block.url}
+              alt={block.alt || ""}
+              className="mx-auto max-h-96 w-full rounded-lg bg-muted object-contain"
+              onError={() => setBroken(true)}
+            />
+          ) : (
+            <p className="rounded-lg bg-destructive/5 px-3 py-6 text-center text-sm text-destructive" role="alert">
+              This image could not be loaded. Replace it or remove the block.
+            </p>
+          )}
+          <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground">
+            <p className="min-w-0 truncate">
+              {block.alt ? `Alt: ${block.alt}` : "No alt text"}
+              {block.filename ? ` · ${block.filename}` : ""}
+            </p>
+            <Button type="button" variant="outline" size="sm" onClick={onReplace}>
+              Replace
+            </Button>
+          </div>
+          <Input
+            value={block.caption ?? ""}
+            placeholder="Caption (optional)"
+            aria-label="Image caption"
+            onChange={(event) => onChange({ ...block, caption: event.target.value })}
+          />
+        </div>
+      )}
     </div>
   );
 }
@@ -388,14 +479,19 @@ function BlockCard({
 function RichLine({
   spans,
   onChange,
+  onKeyDown,
   className,
+  placeholder,
 }: {
   spans: InlineSpan[];
   onChange: (spans: InlineSpan[]) => void;
+  onKeyDown?: (event: React.KeyboardEvent<HTMLDivElement>) => void;
   className?: string;
+  placeholder?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const html = spansToHtml(spans);
+  const empty = spansToPlainText(spans).trim().length === 0;
 
   useEffect(() => {
     if (!ref.current) return;
@@ -409,10 +505,16 @@ function RichLine({
       ref={ref}
       contentEditable
       suppressContentEditableWarning
+      role="textbox"
+      aria-multiline="true"
+      data-placeholder={placeholder}
+      data-empty={empty ? "true" : "false"}
       className={cn(
         "min-h-10 rounded-md px-1 py-1 outline-none focus-visible:ring-2 focus-visible:ring-ring/40",
+        "data-[empty=true]:before:pointer-events-none data-[empty=true]:before:text-muted-foreground data-[empty=true]:before:content-[attr(data-placeholder)]",
         className
       )}
+      onKeyDown={onKeyDown}
       onInput={() => {
         if (!ref.current) return;
         onChange(htmlToSpans(ref.current.innerHTML));
@@ -425,25 +527,28 @@ function RichLine({
   );
 }
 
-function InlineToolbar() {
+function ToolbarDivider() {
+  return <span className="mx-1 hidden h-6 w-px bg-border sm:block" aria-hidden />;
+}
+
+function ToolbarButton({
+  icon: Icon,
+  label,
+  onClick,
+}: {
+  icon: typeof Bold;
+  label: string;
+  onClick: () => void;
+}) {
   return (
-    <div className="flex gap-0.5">
-      <MarkButton icon={Bold} label="Bold" command="bold" />
-      <MarkButton icon={Italic} label="Italic" command="italic" />
-      <MarkButton icon={Underline} label="Underline" command="underline" />
-      <button
-        type="button"
-        className="inline-flex size-8 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-ink"
-        aria-label="Link"
-        onClick={() => {
-          const href = window.prompt("Link URL");
-          if (!href) return;
-          document.execCommand("createLink", false, href);
-        }}
-      >
-        <Link2 className="size-3.5" />
-      </button>
-    </div>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button type="button" variant="ghost" size="icon-sm" aria-label={label} onClick={onClick}>
+          <Icon />
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent>{label}</TooltipContent>
+    </Tooltip>
   );
 }
 
@@ -457,33 +562,58 @@ function MarkButton({
   command: string;
 }) {
   return (
-    <button
-      type="button"
-      className="inline-flex size-8 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-ink"
-      aria-label={label}
-      onMouseDown={(event) => {
-        event.preventDefault();
-        document.execCommand(command);
-      }}
-    >
-      <Icon className="size-3.5" />
-    </button>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon-sm"
+          aria-label={label}
+          onMouseDown={(event) => {
+            event.preventDefault();
+            document.execCommand(command);
+          }}
+        >
+          <Icon />
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent>{label}</TooltipContent>
+    </Tooltip>
   );
 }
 
-function ToolbarButton({
-  icon: Icon,
-  label,
-  onClick,
-}: {
-  icon: typeof Bold;
-  label: string;
-  onClick: () => void;
-}) {
+function LinkButton() {
   return (
-    <Button type="button" variant="ghost" size="sm" onClick={onClick}>
-      <Icon className="mr-1.5 size-3.5" />
-      {label}
-    </Button>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon-sm"
+          aria-label="Link"
+          onMouseDown={(event) => {
+            event.preventDefault();
+            const current = selectedLinkHref();
+            const href = window.prompt("Link URL", current || "https://");
+            if (href === null) return;
+            const next = href.trim();
+            if (!next || next === "https://") {
+              document.execCommand("unlink");
+              return;
+            }
+            if (next.startsWith("javascript:")) return;
+            document.execCommand("createLink", false, next);
+          }}
+        >
+          <Link2 />
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent>Link</TooltipContent>
+    </Tooltip>
   );
+}
+
+function selectedLinkHref() {
+  const anchor = window.getSelection()?.anchorNode?.parentElement?.closest("a");
+  return anchor?.getAttribute("href") ?? "";
 }

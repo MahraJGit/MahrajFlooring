@@ -11,9 +11,9 @@ export default function ErrorState({
 }) {
   return (
     <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-6" role="alert">
-      <h2 className="font-heading text-lg font-semibold">Could not load categories</h2>
+      <h2 className="font-heading text-lg font-semibold">Could not load users</h2>
       <p className="mt-2 text-sm text-muted-foreground">
-        {error.message || "Something went wrong while reading the database."}
+        {error.message || "Something went wrong while reading accounts."}
       </p>
       <Button type="button" variant="outline" className="mt-4" onClick={reset}>
         Try again

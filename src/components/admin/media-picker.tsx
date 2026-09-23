@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useTransition } from "react";
-import { ImagePlus, X } from "lucide-react";
+import { ImagePlus, Loader2, X } from "lucide-react";
 
 import { searchMedia, uploadMedia } from "@/actions/media";
 import { Button } from "@/components/ui/button";
@@ -23,6 +23,8 @@ export function MediaPicker({
   previewWidth,
   previewHeight,
   onChange,
+  onDismiss,
+  startOpen = false,
   error,
 }: {
   label: string;
@@ -40,14 +42,29 @@ export function MediaPicker({
     width?: number | null;
     height?: number | null;
   }) => void;
+  onDismiss?: () => void;
+  startOpen?: boolean;
   error?: string;
 }) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(startOpen);
   const [query, setQuery] = useState("");
   const [items, setItems] = useState<MediaListItem[]>([]);
   const [alt, setAlt] = useState("");
   const [message, setMessage] = useState<string | null>(null);
+  const [uploadName, setUploadName] = useState<string | null>(null);
+  const [localPreview, setLocalPreview] = useState<string | null>(null);
   const [pending, start] = useTransition();
+
+  useEffect(() => {
+    return () => {
+      if (localPreview) URL.revokeObjectURL(localPreview);
+    };
+  }, [localPreview]);
+
+  function closePicker() {
+    setOpen(false);
+    onDismiss?.();
+  }
 
   useEffect(() => {
     if (!open) return;
@@ -103,7 +120,7 @@ export function MediaPicker({
           <div className="flex max-h-[85vh] w-full max-w-3xl flex-col rounded-2xl bg-white shadow-xl">
             <div className="flex items-center justify-between border-b border-border px-5 py-4">
               <h2 className="font-heading text-lg font-semibold">Choose image</h2>
-              <Button type="button" variant="ghost" size="sm" onClick={() => setOpen(false)}>
+              <Button type="button" variant="ghost" size="sm" onClick={closePicker}>
                 Close
               </Button>
             </div>
@@ -155,16 +172,33 @@ export function MediaPicker({
                   JPG, PNG, WebP, or GIF. Max 8 MB. If this exact image was uploaded before, the existing file is reused.
                 </p>
                 <form
-                  className="grid gap-3 sm:grid-cols-[1fr_auto] sm:items-end"
+                  className="grid gap-3"
                   onSubmit={(event) => {
                     event.preventDefault();
                     const form = event.currentTarget;
                     const data = new FormData(form);
+                    const file = data.get("file");
+                    if (!(file instanceof File) || file.size === 0) {
+                      setMessage("Please choose an image to upload.");
+                      return;
+                    }
+                    if (file.size > 8 * 1024 * 1024) {
+                      setMessage("Images must be 8 MB or smaller.");
+                      return;
+                    }
+                    if (!alt.trim()) {
+                      setMessage("Please describe the image for accessibility.");
+                      return;
+                    }
+                    if (localPreview) URL.revokeObjectURL(localPreview);
+                    setLocalPreview(URL.createObjectURL(file));
+                    setUploadName(file.name);
                     start(async () => {
                       setMessage(null);
                       const result = await uploadMedia(data);
                       if (result.error || !result.item) {
                         setMessage(result.error ?? "The image could not be uploaded.");
+                        setUploadName(null);
                         return;
                       }
                       onChange({
@@ -178,24 +212,67 @@ export function MediaPicker({
                       setOpen(false);
                       form.reset();
                       setAlt("");
+                      setUploadName(null);
                     });
                   }}
                 >
-                  <div className="space-y-2">
-                    <Input name="file" type="file" accept="image/*" required />
-                    <Input
-                      name="alt"
-                      value={alt}
-                      onChange={(event) => setAlt(event.target.value)}
-                      placeholder="Describe the image"
-                      required
-                    />
+                  <div className="grid gap-3 sm:grid-cols-[1fr_auto] sm:items-end">
+                    <div className="space-y-2">
+                      <Input
+                        name="file"
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp,image/gif"
+                        required
+                        disabled={pending}
+                      />
+                      <Input
+                        name="alt"
+                        value={alt}
+                        onChange={(event) => setAlt(event.target.value)}
+                        placeholder="Describe the image"
+                        required
+                        disabled={pending}
+                      />
+                    </div>
+                    <Button type="submit" disabled={pending}>
+                      {pending ? "Uploading…" : "Upload"}
+                    </Button>
                   </div>
-                  <Button type="submit" disabled={pending}>
-                    {pending ? "Uploading…" : "Upload"}
-                  </Button>
+                  {pending || (message && localPreview) ? (
+                    <div className="flex items-center gap-3 rounded-lg border border-border bg-muted/40 p-3">
+                      {localPreview ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={localPreview}
+                          alt=""
+                          className="size-14 rounded-md object-cover"
+                        />
+                      ) : null}
+                      <div className="min-w-0 flex-1">
+                        <p className="flex items-center gap-2 text-sm font-medium">
+                          {pending ? <Loader2 className="size-3.5 animate-spin" /> : null}
+                          {pending
+                            ? `Uploading ${uploadName || "image"}…`
+                            : "Upload failed. You can try again."}
+                        </p>
+                        {pending ? (
+                          <div
+                            className="mt-2 h-1.5 overflow-hidden rounded-full bg-muted"
+                            role="progressbar"
+                            aria-label="Upload progress"
+                          >
+                            <div className="h-full w-1/2 animate-pulse rounded-full bg-brand" />
+                          </div>
+                        ) : null}
+                      </div>
+                    </div>
+                  ) : null}
                 </form>
-                {message ? <p className="mt-2 text-sm text-destructive">{message}</p> : null}
+                {message ? (
+                  <p className="mt-2 text-sm text-destructive" role="alert">
+                    {message}
+                  </p>
+                ) : null}
               </div>
             </div>
           </div>

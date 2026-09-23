@@ -42,7 +42,7 @@ export function SavedBanner({ value }: { value?: string }) {
       : value === "draft"
         ? "Draft saved."
         : value === "deleted"
-          ? "Deleted."
+          ? "Deleted. The website will update shortly."
           : "Saved.";
   return (
     <div className="mb-4 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-900">

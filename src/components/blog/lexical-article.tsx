@@ -1,6 +1,5 @@
 import { Fragment, type ReactNode } from "react";
 
-import { Media } from "@/components/media";
 import {
   FORMAT_BOLD,
   FORMAT_CODE,
@@ -248,11 +247,14 @@ function renderBlock(
     const caption = captionFromUpload(node, media);
     return (
       <figure>
-        <Media
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
           src={media.url}
           alt={media.alt || caption || ""}
-          className="w-full"
-          sizes="(min-width: 1024px) 48rem, 90vw"
+          width={media.width ?? undefined}
+          height={media.height ?? undefined}
+          loading="lazy"
+          decoding="async"
         />
         {caption ? <figcaption>{caption}</figcaption> : null}
       </figure>
