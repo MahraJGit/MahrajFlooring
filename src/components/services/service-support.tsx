@@ -71,8 +71,8 @@ export function SpaceRequirements({
     <Section>
       <SectionHeading
         align="center"
-        title="Every Space Has Different Flooring Requirements"
-        description="Recommendations are confirmed after site conditions, loads, traffic, compliance, and maintenance expectations are reviewed."
+        title="Compare by use"
+        description="Recommendations can be confirmed after the project requirements are reviewed."
       />
 
       <div className="mt-10 overflow-x-auto rounded-md border border-border">

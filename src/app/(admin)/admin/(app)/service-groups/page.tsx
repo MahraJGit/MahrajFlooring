@@ -3,25 +3,11 @@ import { Plus } from "lucide-react";
 
 import { SavedBanner } from "@/components/admin/field";
 import { AdminPageHeader, EmptyState } from "@/components/admin/page-chrome";
-import { ServiceGroupActions } from "@/components/admin/service-group-actions";
 import { ServiceGroupFilters } from "@/components/admin/service-group-filters";
-import { StatusBadge } from "@/components/admin/status-badge";
-import { Badge } from "@/components/ui/badge";
+import { ServiceGroupTable } from "@/components/admin/service-group-table";
 import { Button } from "@/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { requireUser } from "@/actions/auth";
 import { listServiceGroups } from "@/lib/services/queries";
-import { cn } from "@/lib/utils";
-
-const headClass =
-  "h-11 bg-muted/60 px-4 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground";
 
 export default async function ServiceGroupsPage({
   searchParams,
@@ -38,22 +24,23 @@ export default async function ServiceGroupsPage({
   const statusFilter = status === "draft" || status === "published" ? status : "all";
   const menuFilter = menu === "visible" || menu === "hidden" ? menu : "all";
 
+  const filtered = Boolean(q || status || menu);
+  const query = { q, status: statusFilter, menu: menuFilter };
+
   const result = await listServiceGroups({
     q,
     status: statusFilter,
     menu: menuFilter,
-    page,
-    limit: 50,
+    page: filtered ? page : 1,
+    limit: filtered ? 50 : 200,
   });
-
-  const filtered = Boolean(q || status || menu);
-  const query = { q, status: statusFilter, menu: menuFilter };
+  const canReorder = !filtered && result.pageCount <= 1 && result.items.length > 1;
 
   return (
     <>
       <AdminPageHeader
         title="Service groups"
-        description="Mega-menu columns. Published groups with services appear on the services page."
+        description="Drag the groups into the order they should appear as headings in the website mega menu."
         action={
           <Button asChild>
             <Link href="/admin/service-groups/new">
@@ -99,101 +86,20 @@ export default async function ServiceGroupsPage({
         />
       ) : (
         <>
-          <div className="overflow-hidden rounded-xl border border-border bg-card">
-            <div className="border-b border-border px-4 py-3">
-              <p className="text-sm text-muted-foreground">
-                {result.total === 1 ? "1 group" : `${result.total} groups`}
-              </p>
-            </div>
-            <Table>
-              <TableHeader>
-                <TableRow className="hover:bg-transparent">
-                  <TableHead className={headClass}>Group</TableHead>
-                  <TableHead className={cn(headClass, "hidden sm:table-cell")}>Services</TableHead>
-                  <TableHead className={cn(headClass, "hidden md:table-cell")}>Menu</TableHead>
-                  <TableHead className={headClass}>Status</TableHead>
-                  <TableHead className={cn(headClass, "hidden lg:table-cell")}>Position</TableHead>
-                  <TableHead className={cn(headClass, "hidden lg:table-cell")}>Updated</TableHead>
-                  <TableHead className={cn(headClass, "text-end")}>Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {result.items.map((group) => {
-                  const draft = group.status === "draft";
-                  return (
-                    <TableRow
-                      key={group.id}
-                      className={cn(
-                        draft &&
-                          "bg-amber-50/80 hover:bg-amber-50 dark:bg-amber-950/20 dark:hover:bg-amber-950/30"
-                      )}
-                    >
-                      <TableCell className="px-4 py-3 whitespace-normal">
-                        <div className="min-w-40">
-                          <Link
-                            href={`/admin/service-groups/${group.id}`}
-                            className="line-clamp-2 font-medium text-ink hover:text-brand"
-                          >
-                            {group.title}
-                          </Link>
-                          <p className="truncate text-xs text-muted-foreground">
-                            {group.slug
-                              ? `/services#service-group-${group.slug}`
-                              : "No public URL yet"}
-                          </p>
-                          <p className="text-xs text-muted-foreground sm:hidden">
-                            {group.serviceCount === 1
-                              ? "1 service"
-                              : `${group.serviceCount} services`}
-                            <span className="md:hidden">
-                              {" "}
-                              · {group.showInMegaMenu ? "In menu" : "Hidden"}
-                            </span>
-                          </p>
-                        </div>
-                      </TableCell>
-                      <TableCell className="hidden px-4 py-3 sm:table-cell">
-                        <Badge variant="muted" className="normal-case tracking-normal">
-                          {group.serviceCount === 1 ? "1 service" : `${group.serviceCount} services`}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="hidden px-4 py-3 md:table-cell">
-                        <Badge
-                          variant={group.showInMegaMenu ? "published" : "muted"}
-                          className="normal-case tracking-normal"
-                        >
-                          {group.showInMegaMenu ? "In menu" : "Hidden"}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="px-4 py-3 whitespace-normal">
-                        <div className="flex flex-col items-start gap-1">
-                          <StatusBadge status={group.status} />
-                          <span className="text-xs text-muted-foreground">
-                            {draft ? "Hidden from the website" : "On the website"}
-                          </span>
-                        </div>
-                      </TableCell>
-                      <TableCell className="hidden px-4 py-3 lg:table-cell">
-                        {group.sortOrder}
-                      </TableCell>
-                      <TableCell className="hidden px-4 py-3 lg:table-cell">
-                        {formatDate(group.updatedAt)}
-                      </TableCell>
-                      <TableCell className="px-4 py-3 text-end">
-                        <ServiceGroupActions
-                          id={group.id}
-                          title={group.title}
-                          slug={group.slug}
-                          status={group.status}
-                          serviceCount={group.serviceCount}
-                        />
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
-          </div>
+          <ServiceGroupTable
+            groups={result.items.map((group) => ({
+              id: group.id,
+              title: group.title,
+              slug: group.slug,
+              showInMegaMenu: group.showInMegaMenu,
+              status: group.status,
+              serviceCount: group.serviceCount,
+              updatedLabel: formatDate(group.updatedAt),
+            }))}
+            total={result.total}
+            canReorder={canReorder}
+            filtered={filtered}
+          />
           <GroupPagination
             page={result.page}
             pageCount={result.pageCount}

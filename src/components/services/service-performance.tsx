@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BadgeCheck, Scissors } from "lucide-react";
+import { Scissors } from "lucide-react";
 
 import { Media } from "@/components/media";
 import { Section } from "@/components/layout/section";
@@ -11,9 +11,13 @@ import type { ServiceDetailView } from "@/lib/public/services";
 export function PerformanceMatrix({ service }: { service: ServiceDetailView }) {
   return (
     <Section>
-      <SectionHeading align="center" title="Thickness & Performance Matrix" />
+      <SectionHeading align="center" title="Comparison" />
 
-      <div className="mt-10 grid gap-8 lg:grid-cols-2">
+      <div
+        className={`mt-10 grid gap-8 ${
+          service.brandingTitle || service.brandingDescription ? "lg:grid-cols-2" : ""
+        }`}
+      >
         <div>
           <div className="overflow-x-auto rounded-md border border-border">
             <table className="w-full min-w-[32rem] text-start text-sm">
@@ -23,9 +27,7 @@ export function PerformanceMatrix({ service }: { service: ServiceDetailView }) {
                   <th className="px-5 py-4 text-start font-semibold">
                     Recommended
                   </th>
-                  <th className="px-5 py-4 text-start font-semibold">
-                    Force Reduction
-                  </th>
+                  <th className="px-5 py-4 text-start font-semibold">Detail</th>
                 </tr>
               </thead>
               <tbody>
@@ -46,26 +48,25 @@ export function PerformanceMatrix({ service }: { service: ServiceDetailView }) {
               </tbody>
             </table>
           </div>
-          <div className="mt-4 grid grid-cols-2 gap-4">
-            <div className="rounded-md bg-surface-alt p-5">
-              <p className="text-xs uppercase tracking-[0.12em] text-body">
-                Density
-              </p>
-              <p className="mt-2 text-lg font-semibold text-ink">
-                {service.density}
-              </p>
+          {service.density || service.warranty ? (
+            <div className="mt-4 grid grid-cols-2 gap-4">
+              {service.density ? (
+                <div className="rounded-md bg-surface-alt p-5">
+                  <p className="text-xs uppercase tracking-[0.12em] text-body">Density</p>
+                  <p className="mt-2 text-lg font-semibold text-ink">{service.density}</p>
+                </div>
+              ) : null}
+              {service.warranty ? (
+                <div className="rounded-md bg-surface-alt p-5">
+                  <p className="text-xs uppercase tracking-[0.12em] text-body">Warranty</p>
+                  <p className="mt-2 text-lg font-semibold text-ink">{service.warranty}</p>
+                </div>
+              ) : null}
             </div>
-            <div className="rounded-md bg-surface-alt p-5">
-              <p className="text-xs uppercase tracking-[0.12em] text-body">
-                Warranty
-              </p>
-              <p className="mt-2 text-lg font-semibold text-ink">
-                {service.warranty}
-              </p>
-            </div>
-          </div>
+          ) : null}
         </div>
 
+        {service.brandingTitle || service.brandingDescription ? (
         <div className="rounded-md bg-surface-alt p-7">
           <div className="flex items-start justify-between gap-5">
             <div>
@@ -78,31 +79,8 @@ export function PerformanceMatrix({ service }: { service: ServiceDetailView }) {
             </div>
             <Scissors className="size-12 shrink-0 text-ink" />
           </div>
-
-          <p className="mt-7 text-xs font-semibold uppercase tracking-[0.12em] text-ink">
-            Finish Selector
-          </p>
-          <div className="mt-3 flex flex-wrap gap-3">
-            {["bg-black", "bg-neutral-600", "bg-red-700", "bg-blue-800", "bg-neutral-500"].map(
-              (color) => (
-                <span
-                  key={color}
-                  className={`size-9 rounded-full border-2 border-white ring-1 ring-brand ${color}`}
-                />
-              )
-            )}
-          </div>
-
-          <div className="mt-7 flex items-start gap-3 rounded-md bg-background p-4">
-            <BadgeCheck className="mt-0.5 size-5 shrink-0 text-brand" />
-            <div>
-              <p className="text-sm font-semibold text-ink">Logo Inlay Service</p>
-              <p className="mt-1 text-xs text-body">
-                Available for selected tiles, sheets, tracks, and sports systems.
-              </p>
-            </div>
-          </div>
         </div>
+        ) : null}
       </div>
     </Section>
   );

@@ -218,8 +218,11 @@ export async function saveService(
   }
   revalidatePath("/admin/services");
   if (savedId) revalidatePath(`/admin/services/${savedId}`);
+  const saved = data._status === "published" ? "published" : "draft";
   return {
-    href: `/admin/services/${savedId}?saved=${data._status === "published" ? "published" : "draft"}`,
+    href: id
+      ? `/admin/services/${savedId}?saved=${saved}`
+      : `/admin/services?group=${data.parent}&saved=${saved}`,
   };
 }
 

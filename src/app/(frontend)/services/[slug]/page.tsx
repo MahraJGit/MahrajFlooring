@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 
 import { ComingSoon } from "@/components/layout/coming-soon";
 import { PageHero } from "@/components/layout/page-hero";
-import { IndustryReviews } from "@/components/reviews/industry-reviews";
 import { ServiceHero } from "@/components/services/service-hero";
 import {
   ExploreServices,
@@ -14,13 +13,7 @@ import {
   PerformanceMatrix,
   ServiceCaseStudies,
 } from "@/components/services/service-performance";
-import {
-  OngoingProjects,
-  ServiceAdvisory,
-  ServiceProcess,
-  SpaceRequirements,
-  TechnicalResources,
-} from "@/components/services/service-support";
+import { OngoingProjects, SpaceRequirements } from "@/components/services/service-support";
 import {
   getServiceBySlug,
   getServiceSlugs,
@@ -57,21 +50,23 @@ export default async function ServiceDetailPage({
     return (
       <>
         <ServiceHero service={service} />
-        <ExploreServices service={service} related={service.related} />
-        <ServiceOverview service={service} />
-        <ServiceGuide service={service} />
-        {service.showPerformanceMatrix ? (
+        {service.related.length > 0 ? (
+          <ExploreServices service={service} related={service.related} />
+        ) : null}
+        {service.overviewTitle || service.overviewDescription ? (
+          <ServiceOverview service={service} />
+        ) : null}
+        {service.applications.length > 0 || service.guideTitle || service.guideDescription ? (
+          <ServiceGuide service={service} />
+        ) : null}
+        {service.showPerformanceMatrix && service.performanceRows.length > 0 ? (
           <PerformanceMatrix service={service} />
         ) : null}
-        <ServiceCaseStudies service={service} />
-        <ServiceAdvisory />
-        {service.showSpaceRequirements ? (
+        {service.caseStudiesTitle ? <ServiceCaseStudies service={service} /> : null}
+        {service.showSpaceRequirements && service.spaceRows.length > 0 ? (
           <SpaceRequirements service={service} />
         ) : null}
-        <TechnicalResources />
-        <ServiceProcess />
-        <OngoingProjects service={service} />
-        <IndustryReviews />
+        {service.projectsTitle ? <OngoingProjects service={service} /> : null}
       </>
     );
   }
@@ -83,7 +78,7 @@ export default async function ServiceDetailPage({
         description={service.excerpt}
         breadcrumb={[{ label: "Services", href: "/services" }]}
       />
-      <ComingSoon note="Full specifications, thickness options, certifications, and installation details for this system are being prepared." />
+      <ComingSoon note="More detail for this service is being prepared." />
     </>
   );
 }

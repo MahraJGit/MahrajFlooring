@@ -17,16 +17,7 @@ import type { ServiceOption, ServiceRecord } from "@/lib/services/queries";
 import type { ServiceInput } from "@/lib/validation/service";
 import { cn } from "@/lib/utils";
 
-const TABS = [
-  "Basic",
-  "Availability",
-  "Hero",
-  "Applications",
-  "Performance",
-  "Space",
-  "Related",
-  "SEO",
-] as const;
+const TABS = ["Basics", "Page", "Highlights", "Optional", "Related", "SEO"] as const;
 
 type Tab = (typeof TABS)[number];
 
@@ -48,14 +39,13 @@ function emptyService(): ServiceInput {
     overviewTitle: "",
     overviewDescription: "",
     guideTitle: "",
-    guideDescription:
-      "Every project has unique structural demands. We provide application-specific guidance to protect athletes, users, equipment, and the subfloor.",
+    guideDescription: "",
     applications: [],
     showPerformanceMatrix: false,
     performanceRows: [],
     density: "",
     warranty: "",
-    brandingTitle: "Custom Branding & Color",
+    brandingTitle: "",
     brandingDescription: "",
     showSpaceRequirements: false,
     spaceRows: [],
@@ -87,13 +77,13 @@ function fromRecord(service: ServiceRecord): ServiceInput {
     overviewTitle: service.overviewTitle,
     overviewDescription: service.overviewDescription,
     guideTitle: service.guideTitle,
-    guideDescription: service.guideDescription || defaults.guideDescription,
+    guideDescription: service.guideDescription,
     applications: service.applications,
     showPerformanceMatrix: service.showPerformanceMatrix,
     performanceRows: service.performanceRows,
     density: service.density,
     warranty: service.warranty,
-    brandingTitle: service.brandingTitle || defaults.brandingTitle,
+    brandingTitle: service.brandingTitle,
     brandingDescription: service.brandingDescription,
     showSpaceRequirements: service.showSpaceRequirements,
     spaceRows: service.spaceRows,
@@ -106,9 +96,8 @@ function fromRecord(service: ServiceRecord): ServiceInput {
 }
 
 const TAB_FIELDS: Record<Tab, string[]> = {
-  Basic: ["title", "slug", "parent", "excerpt", "image"],
-  Availability: ["detailReady", "showInMegaMenu", "sortOrder"],
-  Hero: [
+  Basics: ["title", "slug", "parent", "excerpt", "image", "detailReady", "showInMegaMenu"],
+  Page: [
     "detailTitle",
     "heroTitle",
     "heroDescription",
@@ -118,16 +107,17 @@ const TAB_FIELDS: Record<Tab, string[]> = {
     "caseStudiesTitle",
     "projectsTitle",
   ],
-  Applications: ["guideTitle", "guideDescription", "applications"],
-  Performance: [
+  Highlights: ["guideTitle", "guideDescription", "applications"],
+  Optional: [
     "showPerformanceMatrix",
     "performanceRows",
     "density",
     "warranty",
     "brandingTitle",
     "brandingDescription",
+    "showSpaceRequirements",
+    "spaceRows",
   ],
-  Space: ["showSpaceRequirements", "spaceRows"],
   Related: ["relatedServices"],
   SEO: ["seoTitle", "seoDescription"],
 };
@@ -139,7 +129,7 @@ function tabForError(fieldErrors: Record<string, string>): Tab {
       return tab;
     }
   }
-  return "Basic";
+  return "Basics";
 }
 
 export function ServiceForm({
@@ -152,7 +142,7 @@ export function ServiceForm({
   relatedOptions: ServiceOption[];
 }) {
   const router = useRouter();
-  const [tab, setTab] = useState<Tab>("Basic");
+  const [tab, setTab] = useState<Tab>("Basics");
   const [values, setValues] = useState<ServiceInput>(
     service ? fromRecord(service) : emptyService()
   );
@@ -255,7 +245,7 @@ export function ServiceForm({
         ))}
       </div>
 
-      {tab === "Basic" ? (
+      {tab === "Basics" ? (
         <div className="grid max-w-3xl gap-5">
           <Field label="Service name" htmlFor="title" error={errors.title}>
             <Input id="title" value={values.title} onChange={(e) => update("title", e.target.value)} />
@@ -314,11 +304,6 @@ export function ServiceForm({
               });
             }}
           />
-        </div>
-      ) : null}
-
-      {tab === "Availability" ? (
-        <div className="grid max-w-xl gap-4">
           <label className="flex items-start gap-3 rounded-lg border border-border p-3 text-sm">
             <Checkbox
               checked={values.detailReady}
@@ -326,7 +311,7 @@ export function ServiceForm({
             />
             <span>
               <strong className="block">Full detail page</strong>
-              Off = visitors see a Coming Soon page at the same URL.
+              Leave this off to keep a short Coming Soon page. Turn it on only when the Page tab has the content you want visitors to see.
             </span>
           </label>
           <label className="flex items-start gap-3 rounded-lg border border-border p-3 text-sm">
@@ -336,36 +321,47 @@ export function ServiceForm({
             />
             <span>
               <strong className="block">Show in mega menu</strong>
-              Appear as a link under its service group.
+              Adds a link under this service group. Drag services on the Services list to set the order.
             </span>
           </label>
-          <Field label="Menu position" hint="Order under the group. Lower numbers appear first.">
-            <Input
-              type="number"
-              min={0}
-              value={values.sortOrder}
-              onChange={(e) => update("sortOrder", Number(e.target.value) || 0)}
-            />
-          </Field>
         </div>
       ) : null}
 
-      {tab === "Hero" ? (
+      {tab === "Page" ? (
         <div className="grid max-w-3xl gap-5">
-          <Field label="Breadcrumb label" hint="Defaults to the service name.">
+          <p className="text-sm text-muted-foreground">
+            These fields are optional. Empty sections stay off the public page. They are used only when Full detail page is turned on.
+          </p>
+          <Field label="Breadcrumb label" hint="Leave blank to use the service name.">
             <Input value={values.detailTitle ?? ""} onChange={(e) => update("detailTitle", e.target.value)} />
           </Field>
-          <Field label="Page heading">
-            <Input value={values.heroTitle ?? ""} onChange={(e) => update("heroTitle", e.target.value)} />
+          <Field label="Page heading" hint="Leave blank to use the service name.">
+            <Input
+              value={values.heroTitle ?? ""}
+              placeholder="Heading at the top of the page"
+              onChange={(e) => update("heroTitle", e.target.value)}
+            />
           </Field>
-          <Field label="Hero description">
-            <Textarea value={values.heroDescription ?? ""} onChange={(e) => update("heroDescription", e.target.value)} />
+          <Field label="Hero description" hint="Optional introduction under the heading.">
+            <Textarea
+              value={values.heroDescription ?? ""}
+              placeholder="A short introduction for this service"
+              onChange={(e) => update("heroDescription", e.target.value)}
+            />
           </Field>
-          <Field label="Overview title">
-            <Input value={values.overviewTitle ?? ""} onChange={(e) => update("overviewTitle", e.target.value)} />
+          <Field label="Overview title" hint="Leave blank to hide the overview section.">
+            <Input
+              value={values.overviewTitle ?? ""}
+              placeholder="Optional section heading"
+              onChange={(e) => update("overviewTitle", e.target.value)}
+            />
           </Field>
           <Field label="Overview description">
-            <Textarea value={values.overviewDescription ?? ""} onChange={(e) => update("overviewDescription", e.target.value)} />
+            <Textarea
+              value={values.overviewDescription ?? ""}
+              placeholder="Optional longer description"
+              onChange={(e) => update("overviewDescription", e.target.value)}
+            />
           </Field>
           <MediaPicker
             label="Overview image (optional)"
@@ -376,21 +372,38 @@ export function ServiceForm({
               setOverviewPreview({ url: next.url, alt: next.alt });
             }}
           />
-          <Field label="Case studies heading">
-            <Input value={values.caseStudiesTitle ?? ""} onChange={(e) => update("caseStudiesTitle", e.target.value)} />
+          <Field
+            label="Case studies heading"
+            hint="Optional. Leave blank to hide this block. It uses the site’s shared project stories."
+          >
+            <Input
+              value={values.caseStudiesTitle ?? ""}
+              placeholder="Optional heading"
+              onChange={(e) => update("caseStudiesTitle", e.target.value)}
+            />
           </Field>
-          <Field label="Projects heading">
-            <Input value={values.projectsTitle ?? ""} onChange={(e) => update("projectsTitle", e.target.value)} />
+          <Field
+            label="Projects heading"
+            hint="Optional. Leave blank to hide the projects block."
+          >
+            <Input
+              value={values.projectsTitle ?? ""}
+              placeholder="Optional heading"
+              onChange={(e) => update("projectsTitle", e.target.value)}
+            />
           </Field>
         </div>
       ) : null}
 
-      {tab === "Applications" ? (
+      {tab === "Highlights" ? (
         <div className="grid max-w-3xl gap-5">
-          <Field label="Guide title">
+          <p className="text-sm text-muted-foreground">
+            Optional feature cards. Add them only when this service needs a “where it is used” or benefits section. An empty list is not shown on the website.
+          </p>
+          <Field label="Section title" hint="Leave blank if you are not using this section.">
             <Input value={values.guideTitle ?? ""} onChange={(e) => update("guideTitle", e.target.value)} />
           </Field>
-          <Field label="Guide introduction">
+          <Field label="Section introduction" hint="Optional supporting text under the title.">
             <Textarea value={values.guideDescription ?? ""} onChange={(e) => update("guideDescription", e.target.value)} />
           </Field>
           {values.applications.map((application, index) => (
@@ -515,19 +528,26 @@ export function ServiceForm({
               ])
             }
           >
-            <Plus className="size-4" /> Add application
+            <Plus className="size-4" /> Add highlight
           </Button>
         </div>
       ) : null}
 
-      {tab === "Performance" ? (
-        <div className="grid max-w-3xl gap-4">
-          <label className="flex items-center gap-2 text-sm">
+      {tab === "Optional" ? (
+        <div className="grid max-w-4xl gap-8">
+          <p className="text-sm text-muted-foreground">
+            Turn a block on only if this service needs it. Most services can leave both off.
+          </p>
+          <div className="grid gap-4">
+          <label className="flex items-start gap-3 rounded-lg border border-border p-3 text-sm">
             <Checkbox
               checked={values.showPerformanceMatrix}
               onChange={(e) => update("showPerformanceMatrix", e.target.checked)}
             />
-            Show the thickness & performance table
+            <span>
+              <strong className="block">Comparison table</strong>
+              Optional rows for use case, recommendation, and a detail such as a rating or measurement.
+            </span>
           </label>
           {values.showPerformanceMatrix ? (
             <>
@@ -549,7 +569,7 @@ export function ServiceForm({
                 />
               </Field>
               <TableRows
-                columns={["Use case", "Recommended", "Force reduction"]}
+                columns={["Use case", "Recommended", "Detail"]}
                 rows={values.performanceRows.map((row) => [
                   row.useCase,
                   row.recommended,
@@ -568,19 +588,19 @@ export function ServiceForm({
               />
             </>
           ) : (
-            <p className="text-sm text-muted-foreground">Turn this on to edit the performance table.</p>
+            <p className="text-sm text-muted-foreground">Leave this off unless the service needs a comparison table.</p>
           )}
-        </div>
-      ) : null}
-
-      {tab === "Space" ? (
-        <div className="grid max-w-4xl gap-4">
-          <label className="flex items-center gap-2 text-sm">
+          </div>
+          <div className="grid gap-4">
+          <label className="flex items-start gap-3 rounded-lg border border-border p-3 text-sm">
             <Checkbox
               checked={values.showSpaceRequirements}
               onChange={(e) => update("showSpaceRequirements", e.target.checked)}
             />
-            Show the space requirements table
+            <span>
+              <strong className="block">Detailed comparison</strong>
+              Optional. Use this only when you need extra columns such as impact, slip, acoustics, or maintenance.
+            </span>
           </label>
           {values.showSpaceRequirements ? (
             <TableRows
@@ -608,15 +628,16 @@ export function ServiceForm({
               }
             />
           ) : (
-            <p className="text-sm text-muted-foreground">Turn this on to edit the space table.</p>
+            <p className="text-sm text-muted-foreground">Leave this off if those extra columns are not useful for this service.</p>
           )}
+          </div>
         </div>
       ) : null}
 
       {tab === "Related" ? (
         <div className="max-w-xl space-y-3">
           <p className="text-sm text-muted-foreground">
-            Shown in “Explore Our Flooring Services”. Leave empty to auto-pick similar services.
+            Optional. Choose other services to show on this page. Leave them all unchecked to hide that section.
           </p>
           {relatedOptions.map((option) => {
             const checked = values.relatedServices.includes(option.id);

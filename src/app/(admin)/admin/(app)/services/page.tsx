@@ -1,11 +1,11 @@
 import Link from "next/link";
+import { Plus } from "lucide-react";
 
-import { MoveServiceButton } from "@/components/admin/move-buttons";
 import { SavedBanner } from "@/components/admin/field";
-import { AdminPageHeader, AdminPagination, AdminTable, AdminTd, AdminTh, EmptyState } from "@/components/admin/page-chrome";
-import { StatusBadge } from "@/components/admin/status-badge";
+import { AdminPageHeader, EmptyState } from "@/components/admin/page-chrome";
+import { ServiceFilters } from "@/components/admin/service-filters";
+import { ServiceTable } from "@/components/admin/service-table";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { requireUser } from "@/actions/auth";
 import { listGroupOptions, listServices } from "@/lib/services/queries";
 
@@ -20,142 +20,172 @@ export default async function ServicesPage({
   const status = first(params.status);
   const group = first(params.group);
   const ready = first(params.ready);
-  const sort = first(params.sort);
   const page = Number(first(params.page) ?? "1") || 1;
   const saved = first(params.saved);
+  const statusFilter = status === "draft" || status === "published" ? status : "all";
+  const readyFilter = ready === "ready" || ready === "soon" ? ready : "all";
+  const filtered = Boolean(q || status || group || ready);
+  const ordering = Boolean(group) && !q && statusFilter === "all" && readyFilter === "all";
 
   const [result, groups] = await Promise.all([
     listServices({
       q,
-      status: status === "draft" || status === "published" ? status : "all",
+      status: statusFilter,
       group,
-      ready: ready === "ready" || ready === "soon" ? ready : "all",
-      sort: sort === "name" || sort === "updated" ? sort : "position",
-      page,
-      limit: 25,
+      ready: readyFilter,
+      sort: "position",
+      page: ordering ? 1 : page,
+      limit: ordering ? 200 : 25,
     }),
     listGroupOptions(),
   ]);
+
+  const canReorder = ordering && result.pageCount <= 1 && result.items.length > 1;
 
   return (
     <>
       <AdminPageHeader
         title="Services"
-        description="Public pages at /services/[slug]. Coming Soon pages stay at the same URL until the full page is ready."
+        description="Create a service under a group, then drag it into the mega menu order. Empty page sections stay off the website."
         action={
           <Button asChild>
-            <Link href="/admin/services/new">New service</Link>
+            <Link href="/admin/services/new">
+              <Plus />
+              New service
+            </Link>
           </Button>
         }
       />
       <SavedBanner value={saved} />
-      <form className="mb-4 flex flex-wrap gap-2" method="get">
-        <Input name="q" defaultValue={q} placeholder="Search services" className="h-9 w-56" />
-        <select name="group" defaultValue={group ?? ""} className="h-9 rounded-lg border border-input bg-transparent px-2 text-sm">
-          <option value="">All groups</option>
-          {groups.map((item) => (
-            <option key={item.id} value={item.id}>
-              {item.title}
-            </option>
-          ))}
-        </select>
-        <select name="status" defaultValue={status ?? "all"} className="h-9 rounded-lg border border-input bg-transparent px-2 text-sm">
-          <option value="all">All statuses</option>
-          <option value="published">Published</option>
-          <option value="draft">Draft</option>
-        </select>
-        <select name="ready" defaultValue={ready ?? "all"} className="h-9 rounded-lg border border-input bg-transparent px-2 text-sm">
-          <option value="all">All page types</option>
-          <option value="ready">Full page</option>
-          <option value="soon">Coming Soon</option>
-        </select>
-        <select name="sort" defaultValue={sort ?? "position"} className="h-9 rounded-lg border border-input bg-transparent px-2 text-sm">
-          <option value="position">Sort by menu position</option>
-          <option value="name">Sort by name</option>
-          <option value="updated">Sort by updated</option>
-        </select>
-        <Button type="submit" variant="outline">
-          Filter
-        </Button>
-        {q || status || group || ready || (sort && sort !== "position") ? (
-          <Button asChild variant="ghost">
-            <Link href="/admin/services">Clear</Link>
-          </Button>
-        ) : null}
-      </form>
+      <div className="mb-4">
+        <ServiceFilters
+          key={[q, status, group, ready].join("|")}
+          q={q}
+          status={statusFilter}
+          group={group || "all"}
+          ready={readyFilter}
+          groups={groups}
+          filtered={filtered}
+        />
+      </div>
 
       {result.items.length === 0 ? (
         <EmptyState
-          title={q || status || group || ready ? "No services match" : "No services yet"}
+          title={filtered ? "No services match" : "No services yet"}
           body={
-            q || status || group || ready
-              ? "Try another filter or create a service under a group."
+            filtered
+              ? "Try another filter, or clear them to see every service."
               : "Create a service group first, then add services under it."
+          }
+          action={
+            filtered ? (
+              <Button asChild variant="outline">
+                <Link href="/admin/services">Clear filters</Link>
+              </Button>
+            ) : (
+              <Button asChild>
+                <Link href="/admin/services/new">
+                  <Plus />
+                  New service
+                </Link>
+              </Button>
+            )
           }
         />
       ) : (
-        <AdminTable>
-          <thead>
-            <tr>
-              <AdminTh>Name</AdminTh>
-              <AdminTh>Group</AdminTh>
-              <AdminTh>Slug</AdminTh>
-              <AdminTh>Page</AdminTh>
-              <AdminTh>Status</AdminTh>
-              <AdminTh>Updated</AdminTh>
-              <AdminTh>Actions</AdminTh>
-            </tr>
-          </thead>
-          <tbody>
-            {result.items.map((service) => (
-              <tr key={service.id} className="hover:bg-muted/40">
-                <AdminTd>
-                  <Link href={`/admin/services/${service.id}`} className="font-medium hover:text-brand">
-                    {service.title}
-                  </Link>
-                </AdminTd>
-                <AdminTd>{service.parentTitle}</AdminTd>
-                <AdminTd>
-                  <span className="text-xs text-muted-foreground">{service.slug}</span>
-                </AdminTd>
-                <AdminTd>{service.detailReady ? "Full page" : "Coming Soon"}</AdminTd>
-                <AdminTd>
-                  <StatusBadge status={service.status} />
-                </AdminTd>
-                <AdminTd>
-                  {service.updatedAt ? new Date(service.updatedAt).toLocaleDateString() : "—"}
-                </AdminTd>
-                <AdminTd>
-                  <div className="flex flex-wrap gap-1">
-                    <MoveServiceButton id={service.id} direction="earlier" />
-                    <MoveServiceButton id={service.id} direction="later" />
-                    <Button asChild variant="ghost" size="sm">
-                      <Link href={`/admin/services/${service.id}`}>Edit</Link>
-                    </Button>
-                  </div>
-                </AdminTd>
-              </tr>
-            ))}
-          </tbody>
-        </AdminTable>
+        <>
+          <ServiceTable
+            services={result.items.map((service) => ({
+              id: service.id,
+              title: service.title,
+              slug: service.slug,
+              parentTitle: service.parentTitle,
+              detailReady: service.detailReady,
+              showInMegaMenu: service.showInMegaMenu,
+              status: service.status,
+              updatedLabel: formatDate(service.updatedAt),
+            }))}
+            total={result.total}
+            groupId={group}
+            canReorder={canReorder}
+            ordering={ordering}
+            filtered={filtered}
+            startIndex={ordering ? 0 : (result.page - 1) * 25}
+          />
+          <ServicesPagination
+            page={result.page}
+            pageCount={result.pageCount}
+            hrefFor={(next) => listingHref({ q, status, group, ready }, next)}
+          />
+        </>
       )}
-
-      <AdminPagination
-        page={result.page}
-        pageCount={result.pageCount}
-        hrefFor={(next) =>
-          `?${new URLSearchParams({
-            ...(q ? { q } : {}),
-            ...(status ? { status } : {}),
-            ...(group ? { group } : {}),
-            ...(ready ? { ready } : {}),
-            ...(sort ? { sort } : {}),
-            page: String(next),
-          }).toString()}`
-        }
-      />
     </>
   );
+}
+
+function ServicesPagination({
+  page,
+  pageCount,
+  hrefFor,
+}: {
+  page: number;
+  pageCount: number;
+  hrefFor: (page: number) => string;
+}) {
+  if (pageCount <= 1) return null;
+  return (
+    <nav className="mt-4 flex flex-wrap items-center justify-between gap-3" aria-label="Pagination">
+      <p className="text-sm text-muted-foreground">
+        Page {page} of {pageCount}
+      </p>
+      <div className="flex gap-2">
+        {page > 1 ? (
+          <Button asChild variant="outline" size="sm">
+            <Link href={hrefFor(page - 1)}>Previous</Link>
+          </Button>
+        ) : (
+          <Button type="button" variant="outline" size="sm" disabled>
+            Previous
+          </Button>
+        )}
+        {page < pageCount ? (
+          <Button asChild variant="outline" size="sm">
+            <Link href={hrefFor(page + 1)}>Next</Link>
+          </Button>
+        ) : (
+          <Button type="button" variant="outline" size="sm" disabled>
+            Next
+          </Button>
+        )}
+      </div>
+    </nav>
+  );
+}
+
+function listingHref(
+  current: { q?: string; status?: string; group?: string; ready?: string },
+  page: number
+) {
+  const params = new URLSearchParams();
+  if (current.q) params.set("q", current.q);
+  if (current.status === "draft" || current.status === "published") params.set("status", current.status);
+  if (current.group) params.set("group", current.group);
+  if (current.ready === "ready" || current.ready === "soon") params.set("ready", current.ready);
+  if (page > 1) params.set("page", String(page));
+  const qs = params.toString();
+  return qs ? `/admin/services?${qs}` : "/admin/services";
+}
+
+function formatDate(value: string) {
+  if (!value) return "—";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "—";
+  return new Intl.DateTimeFormat("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(date);
 }
 
 function first(value: string | string[] | undefined) {

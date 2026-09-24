@@ -140,10 +140,28 @@ export async function deleteServiceGroup(id: string): Promise<ActionResult> {
 
 export async function reorderServiceGroups(orderedIds: string[]): Promise<ActionResult> {
   await requireServiceEditor();
+  if (!Array.isArray(orderedIds) || orderedIds.length === 0) {
+    return { error: "The menu order could not be saved." };
+  }
+  if (orderedIds.some((id) => !isObjectId(id))) {
+    return { error: "The menu order could not be saved." };
+  }
+  if (new Set(orderedIds).size !== orderedIds.length) {
+    return { error: "The menu order could not be saved." };
+  }
+
   const { MainService } = await getModels();
-  const ids = orderedIds.filter(isObjectId);
+  const existing = await MainService.find().select("_id").lean();
+  const existingIds = new Set(existing.map((doc) => toId(doc._id)));
+  const matches =
+    existingIds.size === orderedIds.length &&
+    orderedIds.every((id) => existingIds.has(id));
+  if (!matches) {
+    return { error: "The group list changed. Refresh the page and try again." };
+  }
+
   await Promise.all(
-    ids.map((id, index) =>
+    orderedIds.map((id, index) =>
       MainService.updateOne(
         { _id: asObjectId(id) },
         { $set: { sortOrder: (index + 1) * 10 } }

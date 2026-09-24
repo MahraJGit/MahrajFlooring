@@ -316,7 +316,7 @@ export async function getServices(limit = 100): Promise<ServiceCard[]> {
 export async function getServiceGroups(): Promise<ServiceGroup[]> {
   const { MainService, Service } = await getModels();
   const [mains, subs] = await Promise.all([
-    MainService.find(published).sort({ sortOrder: 1 }).limit(50).lean(),
+    MainService.find(published).sort({ sortOrder: 1, title: 1 }).limit(50).lean(),
     Service.find(published).sort({ sortOrder: 1 }).limit(200).lean(),
   ]);
 
@@ -361,7 +361,7 @@ export async function getServiceBySlug(
     : [];
   const parentId = toId(service.parent);
 
-  const [relatedDocs, siblingDocs, otherDocs] = await Promise.all([
+  const [relatedDocs, siblingDocs] = await Promise.all([
     relatedIds.length
       ? Service.find({
           ...published,
@@ -378,10 +378,6 @@ export async function getServiceBySlug(
           .limit(12)
           .lean()
       : Promise.resolve([] as LeanDoc[]),
-    Service.find({ ...published, slug: { $ne: slug } })
-      .sort({ sortOrder: 1 })
-      .limit(3)
-      .lean(),
   ]);
 
   const relatedById = new Map(relatedDocs.map((doc) => [toId(doc._id), doc]));
@@ -390,21 +386,14 @@ export async function getServiceBySlug(
     .filter((doc): doc is LeanDoc => Boolean(doc))
     .slice(0, 3);
 
-  const allDocs = [service, ...orderedRelated, ...siblingDocs, ...otherDocs];
+  const allDocs = [service, ...orderedRelated, ...siblingDocs];
   const [media, parents] = await Promise.all([
     loadMediaMap(collectMediaIds(allDocs)),
     loadParents(allDocs.map((doc) => toId(doc.parent))),
   ]);
 
-  let related = orderedRelated.map((doc) => toServiceCard(doc, media, parents));
+  const related = orderedRelated.map((doc) => toServiceCard(doc, media, parents));
   const siblings = siblingDocs.map((doc) => toServiceCard(doc, media, parents));
-
-  if (related.length === 0) {
-    related = siblings.slice(0, 3);
-  }
-  if (related.length === 0) {
-    related = otherDocs.map((doc) => toServiceCard(doc, media, parents));
-  }
 
   return toDetailView(service, media, parents, related, siblings);
 }
@@ -425,7 +414,7 @@ export async function getServiceMegaMenu(): Promise<MegaMenuColumn[]> {
   const { MainService, Service } = await getModels();
   const [mains, subs] = await Promise.all([
     MainService.find({ ...published, showInMegaMenu: true })
-      .sort({ sortOrder: 1 })
+      .sort({ sortOrder: 1, title: 1 })
       .limit(50)
       .select("title")
       .lean(),
