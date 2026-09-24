@@ -1,10 +1,11 @@
 import Link from "next/link";
-import { Activity, ArrowRight, Dumbbell, Users } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 import { Media } from "@/components/media";
 import { Section } from "@/components/layout/section";
 import { SectionHeading } from "@/components/layout/section-heading";
 import { Button } from "@/components/ui/button";
+import { highlightIcon } from "@/lib/services/highlight-icons";
 import type {
   ServiceCard,
   ServiceDetailView,
@@ -88,8 +89,6 @@ export function ServiceOverview({ service }: { service: ServiceDetailView }) {
   );
 }
 
-const applicationIcons = [Dumbbell, Activity, Users];
-
 export function ServiceGuide({ service }: { service: ServiceDetailView }) {
   return (
     <Section>
@@ -101,12 +100,12 @@ export function ServiceGuide({ service }: { service: ServiceDetailView }) {
 
       <ul className="mt-10 grid overflow-hidden rounded-md border border-border md:grid-cols-3">
         {service.applications.map((application, index) => {
-          const Icon = applicationIcons[index % applicationIcons.length];
+          const Icon = highlightIcon(application.icon, index);
 
           return (
             <li
               key={application.title}
-              className="group border-b border-border bg-surface-alt p-7 transition-colors last:border-b-0 hover:bg-charcoal hover:text-white md:border-b-0 md:border-e md:last:border-e-0"
+              className="group border-b border-border bg-surface-alt p-7 transition-colors last:border-b-0 hover:bg-brand hover:text-white md:border-b-0 md:border-e md:last:border-e-0"
             >
               <Icon className="size-6 text-brand transition-colors group-hover:text-white" />
               <h3 className="mt-5 text-lg font-semibold text-ink transition-colors group-hover:text-white">

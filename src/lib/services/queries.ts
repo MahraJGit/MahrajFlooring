@@ -65,6 +65,7 @@ export type ServiceRecord = {
   applications: {
     title: string;
     description: string;
+    icon: string;
     points: { label: string }[];
   }[];
   showPerformanceMatrix: boolean;
@@ -317,6 +318,7 @@ export async function getService(id: string): Promise<ServiceRecord | null> {
     ? doc.applications.map((item) => ({
         title: String(item?.title ?? ""),
         description: String(item?.description ?? ""),
+        icon: String(item?.icon ?? ""),
         points: Array.isArray(item?.points)
           ? item.points.map((point: { label?: string }) => ({
               label: String(point?.label ?? ""),

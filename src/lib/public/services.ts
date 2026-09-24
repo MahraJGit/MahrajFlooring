@@ -29,6 +29,7 @@ export type ServiceGroup = {
 export type ServiceApplication = {
   title: string;
   description: string;
+  icon: string;
   points: string[];
 };
 
@@ -205,6 +206,7 @@ function toDetailView(
         return {
           title: typeof row.title === "string" ? row.title : "",
           description: typeof row.description === "string" ? row.description : "",
+          icon: typeof row.icon === "string" ? row.icon : "",
           points: Array.isArray(row.points)
             ? row.points.map((point) =>
                 isRecord(point) && typeof point.label === "string"

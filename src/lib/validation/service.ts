@@ -13,6 +13,7 @@ const applicationPoint = z.object({
 export const applicationSchema = z.object({
   title: z.string().trim().min(1, "Enter an application title."),
   description: z.string().trim().min(1, "Enter an application description."),
+  icon: z.string().trim().optional().or(z.literal("")),
   points: z.array(applicationPoint).default([]),
 });
 

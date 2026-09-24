@@ -13,6 +13,11 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { slugify } from "@/lib/cms/slug";
+import {
+  HIGHLIGHT_ICONS,
+  HIGHLIGHT_ICON_NAMES,
+  highlightIconName,
+} from "@/lib/services/highlight-icons";
 import type { ServiceOption, ServiceRecord } from "@/lib/services/queries";
 import type { ServiceInput } from "@/lib/validation/service";
 import { cn } from "@/lib/utils";
@@ -454,6 +459,38 @@ export function ServiceForm({
                   </Button>
                 </div>
               </div>
+              <div className="space-y-1.5">
+                <p className="text-sm font-medium">Icon</p>
+                <div className="flex flex-wrap gap-1">
+                  {HIGHLIGHT_ICON_NAMES.map((name) => {
+                    const option = HIGHLIGHT_ICONS[name];
+                    const selected = highlightIconName(application.icon, index) === name;
+                    const OptionIcon = option.icon;
+                    return (
+                      <button
+                        key={name}
+                        type="button"
+                        title={option.label}
+                        aria-label={option.label}
+                        aria-pressed={selected}
+                        onClick={() => {
+                          const next = [...values.applications];
+                          next[index] = { ...application, icon: name };
+                          update("applications", next);
+                        }}
+                        className={cn(
+                          "inline-flex size-9 items-center justify-center rounded-lg border",
+                          selected
+                            ? "border-brand bg-brand text-white"
+                            : "border-border text-muted-foreground hover:border-brand hover:text-brand"
+                        )}
+                      >
+                        <OptionIcon className="size-4" />
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
               <Input
                 placeholder="Title"
                 value={application.title}
@@ -524,7 +561,7 @@ export function ServiceForm({
             onClick={() =>
               update("applications", [
                 ...values.applications,
-                { title: "", description: "", points: [] },
+                { title: "", description: "", icon: "dumbbell", points: [] },
               ])
             }
           >

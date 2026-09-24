@@ -89,6 +89,7 @@ function toDocument(data: ServiceInput) {
       compactApplications(data.applications).map((application) => ({
         title: application.title,
         description: application.description,
+        icon: application.icon || "",
         points: withRowIds(
           application.points.filter((point) => point.label.trim())
         ),
