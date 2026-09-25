@@ -6,9 +6,15 @@ import { revalidatePath } from "next/cache";
 import { requireServiceEditor } from "@/lib/cms/permissions";
 import { revalidateServicePaths } from "@/lib/cms/revalidate";
 import { swapAdjacentSortOrder } from "@/lib/cms/reorder";
+import { slugify } from "@/lib/cms/slug";
 import { asObjectId, isObjectId, toId } from "@/lib/db/ids";
 import { getModels } from "@/lib/db/models";
 import { nextSortOrder } from "@/lib/services/queries";
+import {
+  PERFORMANCE_COLUMN_LABELS,
+  SPACE_COLUMN_LABELS,
+  columnLabels,
+} from "@/lib/services/table-labels";
 import { flattenZod } from "@/lib/validation/flatten";
 import { serviceDraftSchema, type ServiceInput } from "@/lib/validation/service";
 
@@ -78,7 +84,7 @@ function toDocument(data: ServiceInput) {
     sortOrder: data.sortOrder,
     showInMegaMenu: data.showInMegaMenu,
     detailReady: data.detailReady,
-    detailTitle: data.detailTitle || "",
+    detailTitle: data.title,
     heroTitle: data.heroTitle || "",
     heroDescription: data.heroDescription || "",
     overviewTitle: data.overviewTitle || "",
@@ -96,15 +102,29 @@ function toDocument(data: ServiceInput) {
       }))
     ),
     showPerformanceMatrix: data.showPerformanceMatrix,
+    performanceTitle: data.performanceTitle || "",
+    performanceDescription: data.performanceDescription || "",
+    performanceLabels: columnLabels(data.performanceLabels, PERFORMANCE_COLUMN_LABELS),
     performanceRows: withRowIds(compactPerformance(data.performanceRows)),
     density: data.density || "",
     warranty: data.warranty || "",
     brandingTitle: data.brandingTitle || "Custom Branding & Color",
     brandingDescription: data.brandingDescription || "",
     showSpaceRequirements: data.showSpaceRequirements,
+    spaceTitle: data.spaceTitle || "",
+    spaceDescription: data.spaceDescription || "",
+    spaceLabels: columnLabels(data.spaceLabels, SPACE_COLUMN_LABELS),
     spaceRows: withRowIds(compactSpace(data.spaceRows)),
+    showProcess: data.showProcess,
+    processTitle: data.processTitle || "",
+    processDescription: data.processDescription || "",
+    processSteps: data.processSteps
+      .map((step) => ({ label: step.label.trim() }))
+      .filter((step) => step.label),
     caseStudiesTitle: data.caseStudiesTitle || "",
+    caseStudiesDescription: data.caseStudiesDescription || "",
     projectsTitle: data.projectsTitle || "",
+    projectsDescription: data.projectsDescription || "",
     seoTitle: data.seoTitle || "",
     seoDescription: data.seoDescription || "",
     _status: data._status,
@@ -126,6 +146,12 @@ function normalizeServiceInput(raw: unknown) {
   }
   if (Array.isArray(data.spaceRows)) {
     data.spaceRows = compactSpace(data.spaceRows as ServiceInput["spaceRows"]);
+  }
+  if (Array.isArray(data.processSteps)) {
+    data.processSteps = data.processSteps.filter((step) => {
+      if (!step || typeof step !== "object") return false;
+      return String((step as { label?: unknown }).label ?? "").trim();
+    });
   }
   return data;
 }
@@ -225,6 +251,47 @@ export async function saveService(
       ? `/admin/services/${savedId}?saved=${saved}`
       : `/admin/services?group=${data.parent}&saved=${saved}`,
   };
+}
+
+export async function duplicateService(id: string): Promise<ActionResult> {
+  await requireServiceEditor();
+  if (!isObjectId(id)) return { error: "This service could not be found." };
+  const { Service } = await getModels();
+  const doc = await Service.findById(id).lean();
+  if (!doc) return { error: "This service could not be found." };
+
+  const title = `Copy of ${String(doc.title ?? "Untitled")}`.trim();
+  const base = slugify(String(doc.slug || doc.title || "service")) || "service";
+  let slug = `${base}-copy`;
+  for (let attempt = 2; !(await assertUniqueServiceSlug(slug)); attempt += 1) {
+    if (attempt > 50) {
+      return { error: "A copy could not be created. Please try again." };
+    }
+    slug = `${base}-copy-${attempt}`;
+  }
+
+  const parentId = toId(doc.parent);
+  const sortOrder = parentId ? await nextSortOrder("services", parentId) : 10;
+  const copy = { ...doc } as Record<string, unknown>;
+  delete copy._id;
+  delete copy.createdAt;
+  delete copy.updatedAt;
+  delete copy.__v;
+
+  try {
+    const created = await Service.create({
+      ...copy,
+      title,
+      slug,
+      sortOrder,
+      _status: "draft",
+    });
+    const savedId = toId(created._id);
+    revalidatePath("/admin/services");
+    return { href: `/admin/services/${savedId}?saved=duplicated` };
+  } catch {
+    return { error: "The service could not be duplicated. Please try again." };
+  }
 }
 
 export async function deleteService(id: string): Promise<ActionResult> {

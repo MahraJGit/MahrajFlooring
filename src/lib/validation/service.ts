@@ -1,6 +1,13 @@
 import { z } from "zod";
 
 import { slugify } from "@/lib/cms/slug";
+import {
+  DEFAULT_PROCESS_STEPS,
+} from "@/lib/services/process";
+import {
+  PERFORMANCE_COLUMN_LABELS,
+  SPACE_COLUMN_LABELS,
+} from "@/lib/services/table-labels";
 
 const objectId = z
   .string()
@@ -66,7 +73,6 @@ const serviceBase = z.object({
   sortOrder: z.coerce.number().int().min(0).max(9999).default(10),
   showInMegaMenu: z.boolean().default(true),
   detailReady: z.boolean().default(false),
-  detailTitle: z.string().trim().optional().or(z.literal("")),
   heroTitle: z.string().trim().optional().or(z.literal("")),
   heroDescription: z.string().trim().optional().or(z.literal("")),
   overviewTitle: z.string().trim().optional().or(z.literal("")),
@@ -75,15 +81,40 @@ const serviceBase = z.object({
   guideDescription: z.string().trim().optional().or(z.literal("")),
   applications: z.array(applicationSchema).default([]),
   showPerformanceMatrix: z.boolean().default(false),
+  performanceTitle: z.string().trim().optional().or(z.literal("")),
+  performanceDescription: z.string().trim().optional().or(z.literal("")),
+  performanceLabels: z
+    .tuple([z.string().trim().max(60), z.string().trim().max(60), z.string().trim().max(60)])
+    .default([...PERFORMANCE_COLUMN_LABELS]),
   performanceRows: z.array(performanceRowSchema).default([]),
   density: z.string().trim().optional().or(z.literal("")),
   warranty: z.string().trim().optional().or(z.literal("")),
   brandingTitle: z.string().trim().optional().or(z.literal("")),
   brandingDescription: z.string().trim().optional().or(z.literal("")),
   showSpaceRequirements: z.boolean().default(false),
+  spaceTitle: z.string().trim().optional().or(z.literal("")),
+  spaceDescription: z.string().trim().optional().or(z.literal("")),
+  spaceLabels: z
+    .tuple([
+      z.string().trim().max(60),
+      z.string().trim().max(60),
+      z.string().trim().max(60),
+      z.string().trim().max(60),
+      z.string().trim().max(60),
+      z.string().trim().max(60),
+    ])
+    .default([...SPACE_COLUMN_LABELS]),
   spaceRows: z.array(spaceRowSchema).default([]),
+  showProcess: z.boolean().default(true),
+  processTitle: z.string().trim().optional().or(z.literal("")),
+  processDescription: z.string().trim().optional().or(z.literal("")),
+  processSteps: z
+    .array(z.object({ label: z.string().trim().min(1, "Enter a step name.") }))
+    .default(DEFAULT_PROCESS_STEPS.map((label) => ({ label }))),
   caseStudiesTitle: z.string().trim().optional().or(z.literal("")),
+  caseStudiesDescription: z.string().trim().optional().or(z.literal("")),
   projectsTitle: z.string().trim().optional().or(z.literal("")),
+  projectsDescription: z.string().trim().optional().or(z.literal("")),
   seoTitle: z.string().trim().max(120).optional().or(z.literal("")),
   seoDescription: z
     .string()

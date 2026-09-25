@@ -2,6 +2,16 @@ import { asObjectId, isObjectId, toId } from "@/lib/db/ids";
 import { getModels } from "@/lib/db/models";
 import { publishStatus } from "@/lib/cms/status";
 import type { PublishStatus } from "@/lib/cms/types";
+import {
+  DEFAULT_PROCESS_DESCRIPTION,
+  DEFAULT_PROCESS_TITLE,
+  readProcessSteps,
+} from "@/lib/services/process";
+import {
+  PERFORMANCE_COLUMN_LABELS,
+  SPACE_COLUMN_LABELS,
+  columnLabels,
+} from "@/lib/services/table-labels";
 
 export type ServiceGroupListItem = {
   id: string;
@@ -55,7 +65,6 @@ export type ServiceRecord = {
   sortOrder: number;
   showInMegaMenu: boolean;
   detailReady: boolean;
-  detailTitle: string;
   heroTitle: string;
   heroDescription: string;
   overviewTitle: string;
@@ -69,6 +78,9 @@ export type ServiceRecord = {
     points: { label: string }[];
   }[];
   showPerformanceMatrix: boolean;
+  performanceTitle: string;
+  performanceDescription: string;
+  performanceLabels: string[];
   performanceRows: {
     useCase: string;
     recommended: string;
@@ -79,6 +91,9 @@ export type ServiceRecord = {
   brandingTitle: string;
   brandingDescription: string;
   showSpaceRequirements: boolean;
+  spaceTitle: string;
+  spaceDescription: string;
+  spaceLabels: string[];
   spaceRows: {
     useCase: string;
     recommended: string;
@@ -87,8 +102,14 @@ export type ServiceRecord = {
     acoustic: string;
     maintenance: string;
   }[];
+  showProcess: boolean;
+  processTitle: string;
+  processDescription: string;
+  processSteps: { label: string }[];
   caseStudiesTitle: string;
+  caseStudiesDescription: string;
   projectsTitle: string;
+  projectsDescription: string;
   seoTitle: string;
   seoDescription: string;
   status: PublishStatus;
@@ -345,7 +366,6 @@ export async function getService(id: string): Promise<ServiceRecord | null> {
     sortOrder: Number(doc.sortOrder ?? 10),
     showInMegaMenu: doc.showInMegaMenu !== false,
     detailReady: Boolean(doc.detailReady),
-    detailTitle: String(doc.detailTitle ?? ""),
     heroTitle: String(doc.heroTitle ?? ""),
     heroDescription: String(doc.heroDescription ?? ""),
     overviewTitle: String(doc.overviewTitle ?? ""),
@@ -354,6 +374,9 @@ export async function getService(id: string): Promise<ServiceRecord | null> {
     guideDescription: String(doc.guideDescription ?? ""),
     applications,
     showPerformanceMatrix: Boolean(doc.showPerformanceMatrix),
+    performanceTitle: String(doc.performanceTitle ?? ""),
+    performanceDescription: String(doc.performanceDescription ?? ""),
+    performanceLabels: columnLabels(doc.performanceLabels, PERFORMANCE_COLUMN_LABELS),
     performanceRows: Array.isArray(doc.performanceRows)
       ? doc.performanceRows.map((row) => ({
           useCase: String(row?.useCase ?? ""),
@@ -366,6 +389,9 @@ export async function getService(id: string): Promise<ServiceRecord | null> {
     brandingTitle: String(doc.brandingTitle ?? ""),
     brandingDescription: String(doc.brandingDescription ?? ""),
     showSpaceRequirements: Boolean(doc.showSpaceRequirements),
+    spaceTitle: String(doc.spaceTitle ?? ""),
+    spaceDescription: String(doc.spaceDescription ?? ""),
+    spaceLabels: columnLabels(doc.spaceLabels, SPACE_COLUMN_LABELS),
     spaceRows: Array.isArray(doc.spaceRows)
       ? doc.spaceRows.map((row) => ({
           useCase: String(row?.useCase ?? ""),
@@ -376,8 +402,18 @@ export async function getService(id: string): Promise<ServiceRecord | null> {
           maintenance: String(row?.maintenance ?? ""),
         }))
       : [],
+    showProcess: doc.showProcess !== false,
+    processTitle:
+      typeof doc.processTitle === "string" ? doc.processTitle : DEFAULT_PROCESS_TITLE,
+    processDescription:
+      typeof doc.processDescription === "string"
+        ? doc.processDescription
+        : DEFAULT_PROCESS_DESCRIPTION,
+    processSteps: readProcessSteps(doc.processSteps),
     caseStudiesTitle: String(doc.caseStudiesTitle ?? ""),
+    caseStudiesDescription: String(doc.caseStudiesDescription ?? ""),
     projectsTitle: String(doc.projectsTitle ?? ""),
+    projectsDescription: String(doc.projectsDescription ?? ""),
     seoTitle: String(doc.seoTitle ?? ""),
     seoDescription: String(doc.seoDescription ?? ""),
     status: publishStatus(doc._status),

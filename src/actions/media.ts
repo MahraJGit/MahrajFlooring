@@ -6,10 +6,10 @@ import { revalidatePath } from "next/cache";
 import sharp from "sharp";
 
 import { requireServiceEditor } from "@/lib/cms/permissions";
-import { uniqueFilename } from "@/lib/cms/slug";
 import { asObjectId, isObjectId } from "@/lib/db/ids";
 import { getModels } from "@/lib/db/models";
-import { isSafeMediaFilename } from "@/lib/public/media";
+import { originalFilename, storageKey, suffixedFilename, variantStorageKey } from "@/lib/media/names";
+import { isSafeMediaFilename, mediaFileUrl } from "@/lib/public/media";
 import { listMedia, toMediaListItem, type MediaListItem } from "@/lib/media/queries";
 import { deleteObject, putObject, s3Enabled } from "@/lib/media/s3";
 
@@ -21,10 +21,6 @@ const SIZES = {
   card: { width: 768, height: 480 },
   hero: { width: 1600, height: 900 },
 } as const;
-
-function mediaUrl(filename: string) {
-  return `/api/media/file/${filename}`;
-}
 
 function titled(doc: { title?: unknown } | null, kind: string) {
   if (!doc) return null;
@@ -67,6 +63,56 @@ function storageKeys(doc: { filename?: unknown; sizes?: unknown }) {
   return keys;
 }
 
+async function allocateDisplayName(
+  Media: Awaited<ReturnType<typeof getModels>>["Media"],
+  sourceName: string
+) {
+  const base = originalFilename(sourceName);
+  for (let index = 0; index < 1000; index += 1) {
+    const candidate = suffixedFilename(base, index);
+    const taken = await Media.findOne({
+      $or: [{ displayFilename: candidate }, { filename: candidate }],
+    })
+      .select("_id")
+      .lean();
+    if (!taken) {
+      return { originalFilename: base, displayFilename: candidate };
+    }
+  }
+  return {
+    originalFilename: base,
+    displayFilename: suffixedFilename(base, Date.now()),
+  };
+}
+
+async function unsharedStorageKeys(
+  Media: Awaited<ReturnType<typeof getModels>>["Media"],
+  id: string,
+  doc: { filename?: unknown; sizes?: unknown }
+) {
+  const keys = storageKeys(doc);
+  if (keys.length === 0) return [];
+  const others = await Media.find({
+    _id: { $ne: asObjectId(id) },
+    $or: [
+      { filename: { $in: keys } },
+      { "sizes.thumbnail.filename": { $in: keys } },
+      { "sizes.card.filename": { $in: keys } },
+      { "sizes.hero.filename": { $in: keys } },
+    ],
+  })
+    .select("filename sizes")
+    .lean();
+  const shared = new Set<string>();
+  for (const other of others) {
+    if (!other || typeof other !== "object") continue;
+    for (const key of storageKeys(other as { filename?: unknown; sizes?: unknown })) {
+      shared.add(key);
+    }
+  }
+  return keys.filter((key) => !shared.has(key));
+}
+
 export async function searchMedia(query?: string): Promise<MediaListItem[]> {
   await requireServiceEditor();
   return listMedia(query);
@@ -102,7 +148,6 @@ export async function uploadMedia(formData: FormData): Promise<
     return { item: toMediaListItem(existing) };
   }
 
-  const filename = uniqueFilename(file.name || "image.jpg");
   let meta;
   try {
     meta = await sharp(buffer).metadata();
@@ -111,6 +156,8 @@ export async function uploadMedia(formData: FormData): Promise<
   }
 
   const mimeType = file.type;
+  const filename = storageKey(mimeType);
+  const names = await allocateDisplayName(Media, file.name || "image.jpg");
   const sizes: Record<string, {
     url: string;
     width: number;
@@ -119,20 +166,23 @@ export async function uploadMedia(formData: FormData): Promise<
     filesize: number;
     filename: string;
   }> = {};
+  const storedKeys: string[] = [];
 
   try {
     await putObject(filename, buffer, mimeType);
+    storedKeys.push(filename);
 
     for (const [name, size] of Object.entries(SIZES)) {
       const resized = await sharp(buffer)
         .resize(size.width, size.height, { fit: "cover", position: "centre" })
         .toFormat("jpeg", { quality: 80 })
         .toBuffer();
-      const sizedName = `${name}-${filename.replace(/\.[^.]+$/, "")}.jpg`;
+      const sizedName = variantStorageKey();
       await putObject(sizedName, resized, "image/jpeg");
+      storedKeys.push(sizedName);
       const sizedMeta = await sharp(resized).metadata();
       sizes[name] = {
-        url: mediaUrl(sizedName),
+        url: mediaFileUrl(sizedName),
         width: sizedMeta.width ?? size.width,
         height: sizedMeta.height ?? size.height,
         mimeType: "image/jpeg",
@@ -141,26 +191,35 @@ export async function uploadMedia(formData: FormData): Promise<
       };
     }
   } catch {
+    await Promise.all(storedKeys.map((key) => deleteObject(key).catch(() => undefined)));
     return { error: "The image could not be stored. Try again in a moment." };
   }
 
-  const created = await Media.create({
-    alt,
-    caption: "",
-    filename,
-    mimeType,
-    filesize: file.size,
-    width: meta.width ?? null,
-    height: meta.height ?? null,
-    url: mediaUrl(filename),
-    thumbnailURL: sizes.thumbnail?.url,
-    sizes,
-    checksum,
-    focalX: 50,
-    focalY: 50,
-  });
+  try {
+    const created = await Media.create({
+      alt,
+      caption: "",
+      filename,
+      originalFilename: names.originalFilename,
+      displayFilename: names.displayFilename,
+      mimeType,
+      filesize: file.size,
+      width: meta.width ?? null,
+      height: meta.height ?? null,
+      url: mediaFileUrl(filename),
+      thumbnailURL: sizes.thumbnail?.url,
+      sizes,
+      checksum,
+      focalX: 50,
+      focalY: 50,
+    });
 
-  return { item: toMediaListItem(created) };
+    revalidatePath("/admin/media");
+    return { item: toMediaListItem(created) };
+  } catch {
+    await Promise.all(storedKeys.map((key) => deleteObject(key).catch(() => undefined)));
+    return { error: "The image could not be saved. Please try the upload again." };
+  }
 }
 
 export async function deleteMedia(id: string): Promise<{ error?: string; href?: string }> {
@@ -180,7 +239,7 @@ export async function deleteMedia(id: string): Promise<{ error?: string; href?: 
 
   if (s3Enabled()) {
     try {
-      for (const key of storageKeys(doc)) {
+      for (const key of await unsharedStorageKeys(Media, id, doc)) {
         await deleteObject(key);
       }
     } catch {

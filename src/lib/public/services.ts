@@ -5,6 +5,16 @@ import {
   resolveMediaUrl,
   type PublicMedia,
 } from "@/lib/public/media";
+import {
+  DEFAULT_PROCESS_DESCRIPTION,
+  DEFAULT_PROCESS_TITLE,
+  readProcessSteps,
+} from "@/lib/services/process";
+import {
+  PERFORMANCE_COLUMN_LABELS,
+  SPACE_COLUMN_LABELS,
+  columnLabels,
+} from "@/lib/services/table-labels";
 
 export type ServiceCard = {
   id: string;
@@ -50,7 +60,6 @@ export type SpaceRow = {
 
 export type ServiceDetailView = ServiceCard & {
   detailReady: boolean;
-  detailTitle: string;
   heroTitle: string;
   heroDescription: string;
   overviewTitle: string;
@@ -60,15 +69,27 @@ export type ServiceDetailView = ServiceCard & {
   guideDescription: string;
   applications: ServiceApplication[];
   showPerformanceMatrix: boolean;
+  performanceTitle: string;
+  performanceDescription: string;
+  performanceLabels: string[];
   performanceRows: PerformanceRow[];
   density: string;
   warranty: string;
   brandingTitle: string;
   brandingDescription: string;
   showSpaceRequirements: boolean;
+  spaceTitle: string;
+  spaceDescription: string;
+  spaceLabels: string[];
   spaceRows: SpaceRow[];
+  showProcess: boolean;
+  processTitle: string;
+  processDescription: string;
+  processSteps: { label: string }[];
   caseStudiesTitle: string;
+  caseStudiesDescription: string;
   projectsTitle: string;
+  projectsDescription: string;
   related: ServiceCard[];
   siblings: ServiceCard[];
   seoTitle: string;
@@ -221,8 +242,6 @@ function toDetailView(
   return {
     ...card,
     detailReady: Boolean(service.detailReady),
-    detailTitle:
-      (typeof service.detailTitle === "string" && service.detailTitle) || title,
     heroTitle:
       (typeof service.heroTitle === "string" && service.heroTitle) || title,
     heroDescription:
@@ -244,6 +263,13 @@ function toDetailView(
       "Every project has unique structural demands. We provide application-specific guidance to protect athletes, users, equipment, and the subfloor.",
     applications,
     showPerformanceMatrix: Boolean(service.showPerformanceMatrix),
+    performanceTitle:
+      typeof service.performanceTitle === "string" ? service.performanceTitle : "",
+    performanceDescription:
+      typeof service.performanceDescription === "string"
+        ? service.performanceDescription
+        : "",
+    performanceLabels: columnLabels(service.performanceLabels, PERFORMANCE_COLUMN_LABELS),
     performanceRows: Array.isArray(service.performanceRows)
       ? service.performanceRows.map((row) => {
           const item = isRecord(row) ? row : {};
@@ -268,6 +294,10 @@ function toDetailView(
         service.brandingDescription) ||
       "Add custom logos, zone markings, and colourways using precision-cut inserts and application-specific finishes.",
     showSpaceRequirements: Boolean(service.showSpaceRequirements),
+    spaceTitle: typeof service.spaceTitle === "string" ? service.spaceTitle : "",
+    spaceDescription:
+      typeof service.spaceDescription === "string" ? service.spaceDescription : "",
+    spaceLabels: columnLabels(service.spaceLabels, SPACE_COLUMN_LABELS),
     spaceRows: Array.isArray(service.spaceRows)
       ? service.spaceRows.map((row) => {
           const item = isRecord(row) ? row : {};
@@ -283,13 +313,28 @@ function toDetailView(
           };
         })
       : [],
+    showProcess: service.showProcess !== false,
+    processTitle:
+      typeof service.processTitle === "string"
+        ? service.processTitle
+        : DEFAULT_PROCESS_TITLE,
+    processDescription:
+      typeof service.processDescription === "string"
+        ? service.processDescription
+        : DEFAULT_PROCESS_DESCRIPTION,
+    processSteps: readProcessSteps(service.processSteps),
     caseStudiesTitle:
-      (typeof service.caseStudiesTitle === "string" &&
-        service.caseStudiesTitle) ||
-      `${title} Case Studies`,
+      typeof service.caseStudiesTitle === "string" ? service.caseStudiesTitle : "",
+    caseStudiesDescription:
+      typeof service.caseStudiesDescription === "string"
+        ? service.caseStudiesDescription
+        : "",
     projectsTitle:
-      (typeof service.projectsTitle === "string" && service.projectsTitle) ||
-      `${title} Ongoing Projects`,
+      typeof service.projectsTitle === "string" ? service.projectsTitle : "",
+    projectsDescription:
+      typeof service.projectsDescription === "string"
+        ? service.projectsDescription
+        : "",
     related,
     siblings,
     seoTitle:

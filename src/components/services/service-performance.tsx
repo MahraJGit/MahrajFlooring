@@ -9,12 +9,23 @@ import { featuredCaseStudies, projects } from "@/content/home";
 import type { ServiceDetailView } from "@/lib/public/services";
 
 export function PerformanceMatrix({ service }: { service: ServiceDetailView }) {
+  const title = service.performanceTitle.trim();
+  const description = service.performanceDescription.trim();
+
   return (
     <Section>
-      <SectionHeading align="center" title="Comparison" />
+      {title ? (
+        <SectionHeading align="center" title={title} description={description || undefined} />
+      ) : description ? (
+        <p className="mx-auto max-w-3xl text-center text-base leading-relaxed text-body">
+          {description}
+        </p>
+      ) : null}
 
       <div
-        className={`mt-10 grid gap-8 ${
+        className={`grid gap-8 ${
+          title || description ? "mt-10" : ""
+        } ${
           service.brandingTitle || service.brandingDescription ? "lg:grid-cols-2" : ""
         }`}
       >
@@ -23,11 +34,11 @@ export function PerformanceMatrix({ service }: { service: ServiceDetailView }) {
             <table className="w-full min-w-[32rem] text-start text-sm">
               <thead className="bg-surface-alt text-xs uppercase tracking-[0.1em] text-body">
                 <tr>
-                  <th className="px-5 py-4 text-start font-semibold">Use Case</th>
-                  <th className="px-5 py-4 text-start font-semibold">
-                    Recommended
-                  </th>
-                  <th className="px-5 py-4 text-start font-semibold">Detail</th>
+                  {service.performanceLabels.map((label, index) => (
+                    <th key={index} className="px-5 py-4 text-start font-semibold">
+                      {label}
+                    </th>
+                  ))}
                 </tr>
               </thead>
               <tbody>
@@ -91,12 +102,17 @@ export function ServiceCaseStudies({
 }: {
   service: ServiceDetailView;
 }) {
+  const title = service.caseStudiesTitle.trim();
+  const description = service.caseStudiesDescription.trim();
+  if (!title && !description) return null;
+
   return (
     <Section tone="alt">
-      <SectionHeading
-        title={service.caseStudiesTitle}
-        description="Selected project systems and commercial equipment delivered across the GCC."
-      />
+      {title ? (
+        <SectionHeading title={title} description={description || undefined} />
+      ) : (
+        <p className="max-w-2xl text-base leading-relaxed text-body">{description}</p>
+      )}
 
       <ul className="mt-10 grid gap-5 md:grid-cols-3">
         {featuredCaseStudies.map((study, index) => {

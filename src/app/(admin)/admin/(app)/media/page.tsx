@@ -129,8 +129,8 @@ export default async function MediaPage({
                               {dimensions(item.width, item.height) !== "—" ? (
                                 <p className="hidden truncate text-xs text-muted-foreground md:max-lg:block">
                                   {dimensions(item.width, item.height)}
-                                </p>
-                              ) : null}
+                    </p>
+                  ) : null}
                             </div>
                           </div>
                         </TableCell>

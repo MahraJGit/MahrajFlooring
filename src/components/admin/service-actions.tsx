@@ -3,9 +3,9 @@
 import { useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ChevronDown, ExternalLink, EyeOff, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { ChevronDown, Copy, ExternalLink, EyeOff, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 
-import { deleteService } from "@/actions/services";
+import { deleteService, duplicateService } from "@/actions/services";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -40,6 +40,7 @@ export function ServiceActions({
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [copyError, setCopyError] = useState<string | null>(null);
   const [pending, start] = useTransition();
   const published = status === "published";
   const canView = published && Boolean(slug);
@@ -48,6 +49,18 @@ export function ServiceActions({
     if (pending) return;
     setOpen(next);
     if (!next) setError(null);
+  }
+
+  function copy() {
+    start(async () => {
+      setCopyError(null);
+      const result = await duplicateService(id);
+      if (result.error || !result.href) {
+        setCopyError(result.error ?? "The service could not be duplicated. Please try again.");
+        return;
+      }
+      router.push(result.href);
+    });
   }
 
   function remove() {
@@ -104,6 +117,10 @@ export function ServiceActions({
               Edit
             </Link>
           </DropdownMenuItem>
+          <DropdownMenuItem disabled={pending} onSelect={copy}>
+            <Copy />
+            Duplicate
+          </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem variant="destructive" onSelect={() => onOpenChange(true)}>
             <Trash2 />
@@ -111,6 +128,11 @@ export function ServiceActions({
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+      {copyError ? (
+        <p className="mt-1 max-w-40 text-xs text-destructive" role="alert">
+          {copyError}
+        </p>
+      ) : null}
 
       <AlertDialog open={open} onOpenChange={onOpenChange}>
         <AlertDialogContent className="overflow-hidden [&>*]:min-w-0">

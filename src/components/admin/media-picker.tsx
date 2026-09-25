@@ -169,7 +169,7 @@ export function MediaPicker({
               <div className="border-t border-border pt-4">
                 <p className="mb-2 text-sm font-medium">Upload new</p>
                 <p className="mb-3 text-xs text-muted-foreground">
-                  JPG, PNG, WebP, or GIF. Max 8 MB. If this exact image was uploaded before, the existing file is reused.
+                  JPG, PNG, WebP, or GIF. Max 8 MB. A file can use the same name as an image already in the library. Replacing a picture keeps the previous file for anything still using it.
                 </p>
                 <form
                   className="grid gap-3"

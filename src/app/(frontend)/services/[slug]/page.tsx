@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 
 import { ComingSoon } from "@/components/layout/coming-soon";
 import { PageHero } from "@/components/layout/page-hero";
+import { TechnicalFaqForm } from "@/components/home/technical-faq-form";
 import { ServiceHero } from "@/components/services/service-hero";
 import {
   ExploreServices,
@@ -13,7 +14,7 @@ import {
   PerformanceMatrix,
   ServiceCaseStudies,
 } from "@/components/services/service-performance";
-import { OngoingProjects, SpaceRequirements } from "@/components/services/service-support";
+import { OngoingProjects, ServiceProcess, SpaceRequirements } from "@/components/services/service-support";
 import {
   getServiceBySlug,
   getServiceSlugs,
@@ -62,11 +63,20 @@ export default async function ServiceDetailPage({
         {service.showPerformanceMatrix && service.performanceRows.length > 0 ? (
           <PerformanceMatrix service={service} />
         ) : null}
-        {service.caseStudiesTitle ? <ServiceCaseStudies service={service} /> : null}
+        {service.caseStudiesTitle || service.caseStudiesDescription ? (
+          <ServiceCaseStudies service={service} />
+        ) : null}
         {service.showSpaceRequirements && service.spaceRows.length > 0 ? (
           <SpaceRequirements service={service} />
         ) : null}
-        {service.projectsTitle ? <OngoingProjects service={service} /> : null}
+        {service.projectsTitle || service.projectsDescription ? (
+          <OngoingProjects service={service} />
+        ) : null}
+        {service.showProcess &&
+        (service.processTitle || service.processDescription || service.processSteps.length > 0) ? (
+          <ServiceProcess service={service} />
+        ) : null}
+        <TechnicalFaqForm formIdPrefix={`service-${service.slug}`} />
       </>
     );
   }

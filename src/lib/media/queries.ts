@@ -15,7 +15,7 @@ export type MediaListItem = {
 };
 
 const LIST_FIELDS =
-  "alt filename mimeType filesize width height url thumbnailURL sizes createdAt";
+  "alt filename originalFilename displayFilename mimeType filesize width height url thumbnailURL sizes createdAt";
 
 const PAGE_SIZE = 25;
 
@@ -23,6 +23,8 @@ type MediaDoc = {
   _id?: unknown;
   alt?: unknown;
   filename?: unknown;
+  originalFilename?: unknown;
+  displayFilename?: unknown;
   mimeType?: unknown;
   filesize?: unknown;
   width?: unknown;
@@ -46,6 +48,8 @@ function mediaFilter(query?: string) {
     $or: [
       { alt: { $regex: pattern, $options: "i" } },
       { filename: { $regex: pattern, $options: "i" } },
+      { originalFilename: { $regex: pattern, $options: "i" } },
+      { displayFilename: { $regex: pattern, $options: "i" } },
     ],
   };
 }
@@ -68,7 +72,9 @@ export function toMediaListItem(doc: MediaDoc): MediaListItem {
   return {
     id: toId(doc._id),
     alt: String(doc.alt ?? ""),
-    filename: String(doc.filename ?? ""),
+    filename: String(
+      doc.displayFilename || doc.originalFilename || doc.filename || ""
+    ),
     mimeType: String(doc.mimeType ?? ""),
     filesize: Number(doc.filesize ?? 0),
     width: typeof doc.width === "number" ? doc.width : null,

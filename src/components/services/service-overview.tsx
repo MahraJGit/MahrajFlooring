@@ -69,7 +69,7 @@ export function ServiceOverview({ service }: { service: ServiceDetailView }) {
       <div className="grid items-center gap-10 lg:grid-cols-[20rem_minmax(0,1fr)]">
         <Media
           src={service.overviewImage}
-          alt={`${service.detailTitle} installation`}
+          alt={`${service.title} installation`}
           className="aspect-4/3 rounded-md"
           sizes="20rem"
         />

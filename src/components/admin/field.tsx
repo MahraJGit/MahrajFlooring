@@ -41,6 +41,8 @@ export function SavedBanner({ value }: { value?: string }) {
       ? "Published. The website will update shortly."
       : value === "draft"
         ? "Draft saved."
+        : value === "duplicated"
+          ? "Copy created as a draft. It stays off the website until you publish it."
         : value === "deleted"
           ? "Deleted. The website will update shortly."
           : "Saved.";

@@ -4,6 +4,10 @@ import {
   Building2,
   CheckCircle2,
   ChevronRight,
+  FileCheck2,
+  Handshake,
+  Ruler,
+  Truck,
   UserRound,
 } from "lucide-react";
 
@@ -20,8 +24,6 @@ const advisors = [
   { name: "Darrell Steward", role: "Business Developer" },
   { name: "Robert Fox", role: "Technical Developer" },
 ];
-
-const processSteps = ["Understand", "Assess", "Recommend", "Coordinate", "Delivery"];
 
 export function ServiceAdvisory() {
   return (
@@ -67,27 +69,25 @@ export function SpaceRequirements({
 }: {
   service: ServiceDetailView;
 }) {
+  const title = service.spaceTitle.trim();
+  const description = service.spaceDescription.trim();
+
   return (
     <Section>
-      <SectionHeading
-        align="center"
-        title="Compare by use"
-        description="Recommendations can be confirmed after the project requirements are reviewed."
-      />
+      {title ? (
+        <SectionHeading align="center" title={title} description={description || undefined} />
+      ) : description ? (
+        <p className="mx-auto max-w-3xl text-center text-base leading-relaxed text-body">
+          {description}
+        </p>
+      ) : null}
 
-      <div className="mt-10 overflow-x-auto rounded-md border border-border">
+      <div className={`overflow-x-auto rounded-md border border-border ${title || description ? "mt-10" : ""}`}>
         <table className="w-full min-w-[48rem] text-sm">
           <thead className="bg-surface-alt text-xs uppercase tracking-[0.1em] text-body">
             <tr>
-              {[
-                "Use Case",
-                "Recommended",
-                "Impact",
-                "Slip",
-                "Acoustic",
-                "Maintenance",
-              ].map((heading) => (
-                <th key={heading} className="px-5 py-4 text-start font-semibold">
+              {service.spaceLabels.map((heading, index) => (
+                <th key={index} className="px-5 py-4 text-start font-semibold">
                   {heading}
                 </th>
               ))}
@@ -200,38 +200,76 @@ export function TechnicalResources() {
   );
 }
 
-export function ServiceProcess() {
+const processIcons = [Building2, Ruler, FileCheck2, Handshake, Truck];
+
+export function ServiceProcess({ service }: { service: ServiceDetailView }) {
+  const title = service.processTitle.trim();
+  const description = service.processDescription.trim();
+  const steps = service.processSteps.map((step) => step.label.trim()).filter(Boolean);
+  if (!title && !description && steps.length === 0) return null;
+
+  const columns =
+    steps.length >= 5
+      ? "sm:grid-cols-2 lg:grid-cols-5"
+      : steps.length === 4
+        ? "sm:grid-cols-2 lg:grid-cols-4"
+        : steps.length === 3
+          ? "sm:grid-cols-3"
+          : "sm:grid-cols-2";
+
   return (
     <Section>
-      <SectionHeading
-        align="center"
-        title="5 steps commercial project process"
-        description="Excellence delivered for the region’s top-tier commercial and fitness destinations."
-      />
-      <ol className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-5">
-        {processSteps.map((label, index) => (
-          <li key={label} className="relative flex flex-col items-center text-center">
-            <div className="flex size-20 items-center justify-center rounded-full bg-brand/10 text-brand">
-              <Building2 className="size-7" />
-              <span className="ms-2 flex size-6 items-center justify-center rounded-full bg-brand text-[0.625rem] font-semibold text-white">
-                {String(index + 1).padStart(2, "0")}
-              </span>
-            </div>
-            <p className="mt-4 text-sm font-semibold text-ink">{label}</p>
-            {index < processSteps.length - 1 ? (
-              <ChevronRight className="absolute -end-5 top-8 hidden size-5 text-brand/50 lg:block" />
-            ) : null}
-          </li>
-        ))}
-      </ol>
+      {title ? (
+        <SectionHeading align="center" title={title} description={description || undefined} />
+      ) : description ? (
+        <p className="mx-auto max-w-3xl text-center text-base leading-relaxed text-body">
+          {description}
+        </p>
+      ) : null}
+
+      {steps.length > 0 ? (
+        <ol className={`grid gap-8 ${title || description ? "mt-12" : ""} ${columns}`}>
+          {steps.map((label, index) => {
+            const Icon = processIcons[index % processIcons.length];
+            return (
+              <li key={`${label}-${index}`} className="relative flex flex-col items-center text-center">
+                <div className="flex size-20 items-center justify-center rounded-full bg-brand/10 text-brand">
+                  <Icon className="size-7" />
+                  <span className="ms-2 flex size-6 items-center justify-center rounded-full bg-brand text-[0.625rem] font-semibold text-white">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                </div>
+                <p className="mt-4 text-sm font-semibold text-ink">{label}</p>
+                {index < steps.length - 1 ? (
+                  <ChevronRight className="absolute -end-5 top-8 hidden size-5 text-brand/50 lg:block" />
+                ) : null}
+              </li>
+            );
+          })}
+        </ol>
+      ) : null}
     </Section>
   );
 }
 
 export function OngoingProjects({ service }: { service: ServiceDetailView }) {
+  const title = service.projectsTitle.trim();
+  const description = service.projectsDescription.trim();
+  if (!title && !description) return null;
+
   return (
     <Section tone="alt">
-      <SectionHeading align="center" title={service.projectsTitle} />
+      {title ? (
+        <SectionHeading
+          align="center"
+          title={title}
+          description={description || undefined}
+        />
+      ) : (
+        <p className="mx-auto max-w-3xl text-center text-base leading-relaxed text-body">
+          {description}
+        </p>
+      )}
       <ul className="mt-10 grid gap-5 md:grid-cols-3">
         {projects.map((project) => (
           <li

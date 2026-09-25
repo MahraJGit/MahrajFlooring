@@ -55,7 +55,7 @@ export function ServiceHero({ service }: { service: ServiceDetailView }) {
             ) : null}
             <li className="flex items-center gap-1.5">
               <ChevronRight className="size-3.5" />
-              <span className="text-white">{service.detailTitle}</span>
+              <span className="text-white">{service.title}</span>
             </li>
           </ol>
         </nav>

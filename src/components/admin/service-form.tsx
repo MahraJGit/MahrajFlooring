@@ -18,7 +18,16 @@ import {
   HIGHLIGHT_ICON_NAMES,
   highlightIconName,
 } from "@/lib/services/highlight-icons";
+import {
+  DEFAULT_PROCESS_DESCRIPTION,
+  DEFAULT_PROCESS_STEPS,
+  DEFAULT_PROCESS_TITLE,
+} from "@/lib/services/process";
 import type { ServiceOption, ServiceRecord } from "@/lib/services/queries";
+import {
+  PERFORMANCE_COLUMN_LABELS,
+  SPACE_COLUMN_LABELS,
+} from "@/lib/services/table-labels";
 import type { ServiceInput } from "@/lib/validation/service";
 import { cn } from "@/lib/utils";
 
@@ -38,7 +47,6 @@ function emptyService(): ServiceInput {
     sortOrder: 10,
     showInMegaMenu: true,
     detailReady: false,
-    detailTitle: "",
     heroTitle: "",
     heroDescription: "",
     overviewTitle: "",
@@ -47,15 +55,27 @@ function emptyService(): ServiceInput {
     guideDescription: "",
     applications: [],
     showPerformanceMatrix: false,
+    performanceTitle: "",
+    performanceDescription: "",
+    performanceLabels: [...PERFORMANCE_COLUMN_LABELS],
     performanceRows: [],
     density: "",
     warranty: "",
     brandingTitle: "",
     brandingDescription: "",
     showSpaceRequirements: false,
+    spaceTitle: "",
+    spaceDescription: "",
+    spaceLabels: [...SPACE_COLUMN_LABELS],
     spaceRows: [],
+    showProcess: true,
+    processTitle: DEFAULT_PROCESS_TITLE,
+    processDescription: DEFAULT_PROCESS_DESCRIPTION,
+    processSteps: DEFAULT_PROCESS_STEPS.map((label) => ({ label })),
     caseStudiesTitle: "",
+    caseStudiesDescription: "",
     projectsTitle: "",
+    projectsDescription: "",
     seoTitle: "",
     seoDescription: "",
     _status: "draft",
@@ -76,7 +96,6 @@ function fromRecord(service: ServiceRecord): ServiceInput {
     sortOrder: service.sortOrder,
     showInMegaMenu: service.showInMegaMenu,
     detailReady: service.detailReady,
-    detailTitle: service.detailTitle,
     heroTitle: service.heroTitle,
     heroDescription: service.heroDescription,
     overviewTitle: service.overviewTitle,
@@ -85,15 +104,27 @@ function fromRecord(service: ServiceRecord): ServiceInput {
     guideDescription: service.guideDescription,
     applications: service.applications,
     showPerformanceMatrix: service.showPerformanceMatrix,
+    performanceTitle: service.performanceTitle,
+    performanceDescription: service.performanceDescription,
+    performanceLabels: service.performanceLabels as ServiceInput["performanceLabels"],
     performanceRows: service.performanceRows,
     density: service.density,
     warranty: service.warranty,
     brandingTitle: service.brandingTitle,
     brandingDescription: service.brandingDescription,
     showSpaceRequirements: service.showSpaceRequirements,
+    spaceTitle: service.spaceTitle,
+    spaceDescription: service.spaceDescription,
+    spaceLabels: service.spaceLabels as ServiceInput["spaceLabels"],
     spaceRows: service.spaceRows,
+    showProcess: service.showProcess,
+    processTitle: service.processTitle,
+    processDescription: service.processDescription,
+    processSteps: service.processSteps,
     caseStudiesTitle: service.caseStudiesTitle,
+    caseStudiesDescription: service.caseStudiesDescription,
     projectsTitle: service.projectsTitle,
+    projectsDescription: service.projectsDescription,
     seoTitle: service.seoTitle,
     seoDescription: service.seoDescription,
     _status: service.status,
@@ -103,25 +134,36 @@ function fromRecord(service: ServiceRecord): ServiceInput {
 const TAB_FIELDS: Record<Tab, string[]> = {
   Basics: ["title", "slug", "parent", "excerpt", "image", "detailReady", "showInMegaMenu"],
   Page: [
-    "detailTitle",
     "heroTitle",
     "heroDescription",
     "overviewTitle",
     "overviewDescription",
     "overviewImage",
     "caseStudiesTitle",
+    "caseStudiesDescription",
     "projectsTitle",
+    "projectsDescription",
   ],
   Highlights: ["guideTitle", "guideDescription", "applications"],
   Optional: [
     "showPerformanceMatrix",
+    "performanceTitle",
+    "performanceDescription",
+    "performanceLabels",
     "performanceRows",
     "density",
     "warranty",
     "brandingTitle",
     "brandingDescription",
     "showSpaceRequirements",
+    "spaceTitle",
+    "spaceDescription",
+    "spaceLabels",
     "spaceRows",
+    "showProcess",
+    "processTitle",
+    "processDescription",
+    "processSteps",
   ],
   Related: ["relatedServices"],
   SEO: ["seoTitle", "seoDescription"],
@@ -337,10 +379,7 @@ export function ServiceForm({
           <p className="text-sm text-muted-foreground">
             These fields are optional. Empty sections stay off the public page. They are used only when Full detail page is turned on.
           </p>
-          <Field label="Breadcrumb label" hint="Leave blank to use the service name.">
-            <Input value={values.detailTitle ?? ""} onChange={(e) => update("detailTitle", e.target.value)} />
-          </Field>
-          <Field label="Page heading" hint="Leave blank to use the service name.">
+          <Field label="Page heading" hint="Leave blank to use the service name. The breadcrumb uses the service name automatically.">
             <Input
               value={values.heroTitle ?? ""}
               placeholder="Heading at the top of the page"
@@ -379,7 +418,7 @@ export function ServiceForm({
           />
           <Field
             label="Case studies heading"
-            hint="Optional. Leave blank to hide this block. It uses the site’s shared project stories."
+            hint="Optional. Leave the heading and description blank to hide this block. It uses the site’s shared project stories."
           >
             <Input
               value={values.caseStudiesTitle ?? ""}
@@ -387,14 +426,28 @@ export function ServiceForm({
               onChange={(e) => update("caseStudiesTitle", e.target.value)}
             />
           </Field>
+          <Field label="Case studies description" hint="Optional text under the heading. Leave blank to omit it.">
+            <Textarea
+              value={values.caseStudiesDescription ?? ""}
+              placeholder="Optional description"
+              onChange={(e) => update("caseStudiesDescription", e.target.value)}
+            />
+          </Field>
           <Field
             label="Projects heading"
-            hint="Optional. Leave blank to hide the projects block."
+            hint="Optional. Leave the heading and description blank to hide the projects block."
           >
             <Input
               value={values.projectsTitle ?? ""}
               placeholder="Optional heading"
               onChange={(e) => update("projectsTitle", e.target.value)}
+            />
+          </Field>
+          <Field label="Projects description" hint="Optional text under the heading. Leave blank to omit it.">
+            <Textarea
+              value={values.projectsDescription ?? ""}
+              placeholder="Optional description"
+              onChange={(e) => update("projectsDescription", e.target.value)}
             />
           </Field>
         </div>
@@ -588,6 +641,20 @@ export function ServiceForm({
           </label>
           {values.showPerformanceMatrix ? (
             <>
+              <Field label="Heading" hint="Shown above the table. Leave blank to hide the heading.">
+                <Input
+                  value={values.performanceTitle ?? ""}
+                  placeholder="Comparison"
+                  onChange={(e) => update("performanceTitle", e.target.value)}
+                />
+              </Field>
+              <Field label="Paragraph" hint="Optional text under the heading. Leave blank to hide it.">
+                <Textarea
+                  value={values.performanceDescription ?? ""}
+                  placeholder="Optional paragraph"
+                  onChange={(e) => update("performanceDescription", e.target.value)}
+                />
+              </Field>
               <div className="grid gap-3 sm:grid-cols-2">
                 <Field label="Density">
                   <Input value={values.density ?? ""} onChange={(e) => update("density", e.target.value)} />
@@ -605,8 +672,25 @@ export function ServiceForm({
                   onChange={(e) => update("brandingDescription", e.target.value)}
                 />
               </Field>
+              <div className="grid gap-3 sm:grid-cols-3">
+                {PERFORMANCE_COLUMN_LABELS.map((fallback, index) => (
+                  <Field key={fallback} label={`Column ${index + 1} label`} hint="Shown in the table header.">
+                    <Input
+                      value={values.performanceLabels[index] ?? ""}
+                      placeholder={fallback}
+                      onChange={(event) => {
+                        const next = [...values.performanceLabels] as ServiceInput["performanceLabels"];
+                        next[index] = event.target.value;
+                        update("performanceLabels", next);
+                      }}
+                    />
+                  </Field>
+                ))}
+              </div>
               <TableRows
-                columns={["Use case", "Recommended", "Detail"]}
+                columns={values.performanceLabels.map(
+                  (label, index) => label.trim() || PERFORMANCE_COLUMN_LABELS[index]
+                )}
                 rows={values.performanceRows.map((row) => [
                   row.useCase,
                   row.recommended,
@@ -640,8 +724,40 @@ export function ServiceForm({
             </span>
           </label>
           {values.showSpaceRequirements ? (
-            <TableRows
-              columns={["Use case", "Recommended", "Impact", "Slip", "Acoustic", "Maintenance"]}
+            <>
+              <Field label="Heading" hint="Shown above the table. Leave blank to hide the heading.">
+                <Input
+                  value={values.spaceTitle ?? ""}
+                  placeholder="Compare by use"
+                  onChange={(e) => update("spaceTitle", e.target.value)}
+                />
+              </Field>
+              <Field label="Paragraph" hint="Optional text under the heading. Leave blank to hide it.">
+                <Textarea
+                  value={values.spaceDescription ?? ""}
+                  placeholder="Optional paragraph"
+                  onChange={(e) => update("spaceDescription", e.target.value)}
+                />
+              </Field>
+              <div className="grid gap-3 sm:grid-cols-3">
+                {SPACE_COLUMN_LABELS.map((fallback, index) => (
+                  <Field key={fallback} label={`Column ${index + 1} label`} hint="Shown in the table header.">
+                    <Input
+                      value={values.spaceLabels[index] ?? ""}
+                      placeholder={fallback}
+                      onChange={(event) => {
+                        const next = [...values.spaceLabels] as ServiceInput["spaceLabels"];
+                        next[index] = event.target.value;
+                        update("spaceLabels", next);
+                      }}
+                    />
+                  </Field>
+                ))}
+              </div>
+              <TableRows
+              columns={values.spaceLabels.map(
+                (label, index) => label.trim() || SPACE_COLUMN_LABELS[index]
+              )}
               rows={values.spaceRows.map((row) => [
                 row.useCase,
                 row.recommended,
@@ -664,8 +780,81 @@ export function ServiceForm({
                 )
               }
             />
+            </>
           ) : (
             <p className="text-sm text-muted-foreground">Leave this off if those extra columns are not useful for this service.</p>
+          )}
+          </div>
+          <div className="grid gap-4">
+          <label className="flex items-start gap-3 rounded-lg border border-border p-3 text-sm">
+            <Checkbox
+              checked={values.showProcess}
+              onChange={(e) => update("showProcess", e.target.checked)}
+            />
+            <span>
+              <strong className="block">Project process</strong>
+              The numbered steps under the service content. Turn this off to hide the whole block.
+            </span>
+          </label>
+          {values.showProcess ? (
+            <>
+              <Field label="Heading" hint="Leave blank to hide the heading.">
+                <Input
+                  value={values.processTitle ?? ""}
+                  placeholder={DEFAULT_PROCESS_TITLE}
+                  onChange={(e) => update("processTitle", e.target.value)}
+                />
+              </Field>
+              <Field label="Paragraph" hint="Leave blank to hide the paragraph.">
+                <Textarea
+                  value={values.processDescription ?? ""}
+                  placeholder={DEFAULT_PROCESS_DESCRIPTION}
+                  onChange={(e) => update("processDescription", e.target.value)}
+                />
+              </Field>
+              <div className="grid gap-3">
+                {values.processSteps.map((step, index) => (
+                  <div key={index} className="flex items-end gap-2">
+                    <Field label={`Step ${index + 1}`} className="min-w-0 flex-1">
+                      <Input
+                        value={step.label}
+                        placeholder="Step name"
+                        onChange={(event) => {
+                          const next = values.processSteps.map((item) => ({ ...item }));
+                          next[index] = { label: event.target.value };
+                          update("processSteps", next);
+                        }}
+                      />
+                    </Field>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="icon"
+                      aria-label={`Remove step ${index + 1}`}
+                      onClick={() =>
+                        update(
+                          "processSteps",
+                          values.processSteps.filter((_, stepIndex) => stepIndex !== index)
+                        )
+                      }
+                    >
+                      <Trash2 />
+                    </Button>
+                  </div>
+                ))}
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() =>
+                    update("processSteps", [...values.processSteps, { label: "" }])
+                  }
+                >
+                  <Plus className="size-4" /> Add step
+                </Button>
+              </div>
+            </>
+          ) : (
+            <p className="text-sm text-muted-foreground">Leave this off to hide the project process on the service page.</p>
           )}
           </div>
         </div>
@@ -830,8 +1019,8 @@ function TableRows({
         <table className="w-full min-w-[640px] text-sm">
           <thead>
             <tr>
-              {columns.map((column) => (
-                <th key={column} className="bg-muted/60 px-2 py-2 text-left text-xs">
+              {columns.map((column, index) => (
+                <th key={index} className="bg-muted/60 px-2 py-2 text-left text-xs">
                   {column}
                 </th>
               ))}
