@@ -16,9 +16,9 @@ export function FeaturedCaseStudies() {
     <Section tone="alt">
       <SectionHeading
         align="center"
-        eyebrow="Featured Case Studies"
-        title="Featured Case Studies"
-        description="Filterable masonry grid style cards for completed installations."
+        eyebrow="Case Studies"
+        title="From Concept to Completion"
+        description="See how we've transformed spaces with flooring built for performance and durability."
       />
 
       <ul className="mt-10 grid gap-5 md:grid-cols-3">

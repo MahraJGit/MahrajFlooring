@@ -87,9 +87,8 @@ export function SiteFooter() {
                 Mahraj <span className="text-brand">Flooring</span>
               </p>
               <p className="mt-4 max-w-xs text-sm leading-relaxed">
-                The leading authority in performance surfaces across the Middle
-                East. Providing architect-grade solutions for fitness,
-                commercial, and industrial spaces.
+                Trusted flooring partner across the GCC, offering durable solutions for homes, 
+                gyms, hospitals, offices, hotels, schools, and more.
               </p>
               <div className="mt-6 flex gap-3">
                 {site.social.map((item) => {

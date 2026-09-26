@@ -12,8 +12,8 @@ export function TechnicalInsights() {
     <Section tone="alt">
       <SectionHeading
         align="center"
-        title="Technical Insights & Blog"
-        description="Recent, engaging technical articles."
+        title="Expert Flooring Insights"
+        description="Practical guides and comparisons to help you make the right flooring decisions."
       />
 
       <HomeCarousel

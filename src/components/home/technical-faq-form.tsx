@@ -16,7 +16,7 @@ type FaqItem = {
 export function TechnicalFaqForm({
   formIdPrefix = "home",
   faqs = defaultFaqs,
-  faqIntro = "Most stock items are available within 3-5 working days. Custom orders or specialised sports turf typically require 4-6 weeks from manufacture to port delivery.",
+  faqIntro = "Have questions about our flooring services? We've answered the most common ones below. If you need more details, our team is just a message away.",
   formTitle = "Technical Expertise",
 }: {
   formIdPrefix?: string;
@@ -33,7 +33,7 @@ export function TechnicalFaqForm({
     >
       <div className="grid items-start gap-6 py-12 lg:grid-cols-2">
         <div>
-          <h2 className="text-2xl font-semibold sm:text-3xl">FAQ</h2>
+          <h2 className="text-2xl font-semibold sm:text-3xl">Frequently Asked Questions</h2>
           <p className="mt-4 text-sm leading-relaxed text-body">{faqIntro}</p>
 
           <Accordion

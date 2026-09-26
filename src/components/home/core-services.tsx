@@ -10,8 +10,8 @@ export function CoreServices() {
     <Section tone="alt">
       <SectionHeading
         align="center"
-        eyebrow="Our Core Services"
-        title="Our Core Services"
+        eyebrow="Our Working Process"
+        title="Everything Your Flooring Project Needs"
       />
 
       <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

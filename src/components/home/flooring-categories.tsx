@@ -13,9 +13,9 @@ export async function FlooringCategories() {
   return (
     <Section tone="alt">
       <SectionHeading
-        eyebrow="Our Flooring Solutions"
-        title="Technical Flooring Categories"
-        description="Explore specialist flooring systems selected for performance, safety, durability, and demanding commercial environments across the UAE and GCC."
+        eyebrow="Our Core Services"
+        title="Flooring for Every Technical Requirement"
+        description="Every space has different demands. Browse our specialist flooring categories, purpose built for safety, performance, and heavy duty commercial use across the region."
       />
 
       <ul className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
