@@ -19,7 +19,7 @@ export default function TermsPage() {
       <LegalHero doc={termsDocument} />
       <LegalKeyPoints doc={termsDocument} />
       <LegalBody doc={termsDocument} />
-      <LegalCta />
+      <LegalCta doc={termsDocument}/>
     </>
   );
 }

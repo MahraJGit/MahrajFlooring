@@ -359,15 +359,16 @@ export function KnowledgeHubBand() {
   );
 }
 
-export function LessonsAndCta({ caseStudy }: { caseStudy?: BlogCard }) {
-  const image = caseStudy?.image ?? blogPage.caseStudy.image;
-  const title = caseStudy?.title ?? blogPage.caseStudy.title;
-  const description = caseStudy?.excerpt ?? blogPage.caseStudy.description;
-  const href = caseStudy?.href ?? "/blog";
+export function LessonsAndCta() {
+  //{ caseStudy }: { caseStudy?: BlogCard }
+  // const image = caseStudy?.image ?? blogPage.caseStudy.image;
+  // const title = caseStudy?.title ?? blogPage.caseStudy.title;
+  // const description = caseStudy?.excerpt ?? blogPage.caseStudy.description;
+  // const href = caseStudy?.href ?? "/blog";
 
   return (
     <section>
-      <div className="grid md:grid-cols-2">
+      {/* <div className="grid md:grid-cols-2">
         <Media
           src={image}
           alt={caseStudy?.imageAlt ?? "Case study preview"}
@@ -391,7 +392,7 @@ export function LessonsAndCta({ caseStudy }: { caseStudy?: BlogCard }) {
             </Link>
           </Button>
         </div>
-      </div>
+      </div> */}
 
       <div className="grid md:grid-cols-2">
         <div className="bg-brand px-8 py-10 text-white lg:px-12 lg:py-12">
@@ -405,7 +406,7 @@ export function LessonsAndCta({ caseStudy }: { caseStudy?: BlogCard }) {
             {blogPage.ctaPanels.help.description}
           </p>
           <Button asChild variant="inverse" size="xl" className="mt-6">
-            <Link href="/contact#quote-form">Read More</Link>
+            <Link href="/contact#quote-form">Talk to Our Team</Link>
           </Button>
         </div>
 

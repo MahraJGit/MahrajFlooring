@@ -8,7 +8,7 @@ export function TrustMetrics() {
     <Section tone="alt">
       <SectionHeading
         align="center"
-        title="Real feedback. Real projects. Long-term trust"
+        title="Numbers That Speak for Themselves"
       />
 
       <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

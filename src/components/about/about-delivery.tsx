@@ -11,7 +11,11 @@ import {
 export function AboutObjectives() {
   return (
     <Section spacing="none">
-      <ul className="grid sm:grid-cols-2 lg:grid-cols-4">
+      <SectionHeading
+        align="center"
+        title="Why Clients Choose Mahraj Flooring"
+      />
+      <ul className="mt-10 grid sm:grid-cols-2 lg:grid-cols-4">
         {aboutObjectives.map(({ title, description, icon: Icon }, index) => (
           <li
             key={title}
@@ -40,8 +44,8 @@ export function CommercialProcess() {
     <Section>
       <SectionHeading
         align="center"
-        title="Steps commercial project process"
-        description="Excellence delivered for the region’s top-tier business destinations."
+        title="How We Make Complex Projects Simple"
+        description="We take the pressure out of flooring projects by keeping decisions clear, communication open, and every detail moving in the right direction."
       />
 
       <ol className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-5">
@@ -69,7 +73,8 @@ export function AboutCompliance() {
     <Section tone="alt">
       <SectionHeading
         align="center"
-        title="Regional Compliance & Accreditations"
+        title="Quality Standards You Can Trust"
+        description="Every product we install is backed by real, verifiable standards, not just promises. From fire safety to hygiene, we make sure your flooring performs where it matters most."
       />
 
       <ul className="mt-10 grid gap-5 md:grid-cols-3">

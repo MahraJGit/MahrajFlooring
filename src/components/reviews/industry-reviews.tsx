@@ -24,8 +24,8 @@ export function IndustryReviews() {
     <Section id="industry-reviews" tone="alt">
       <SectionHeading
         align="center"
-        title="Reviews from Different Industries"
-        description="Only industries with real reviews"
+        title="What Our Clients Say"
+        description="Real flooring experiences from different spaces across the GCC, from everyday durability to smooth installation and professional support."
       />
 
       <IndustryReviewsCarousel

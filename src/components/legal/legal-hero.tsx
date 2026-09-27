@@ -11,10 +11,8 @@ function hasPublicAsset(src: string) {
   return existsSync(path.join(process.cwd(), "public", src.replace(/^\//, "")));
 }
 
-const heroImage = "/images/contact/contact-hero.jpg";
-
 export function LegalHero({ doc }: { doc: LegalDocument }) {
-  const showImage = hasPublicAsset(heroImage);
+  const showImage = hasPublicAsset(doc.heroImage);
 
   return (
     <section className="relative isolate overflow-hidden bg-ink">
@@ -24,7 +22,7 @@ export function LegalHero({ doc }: { doc: LegalDocument }) {
       />
       {showImage ? (
         <Image
-          src={heroImage}
+          src={doc.heroImage}
           alt=""
           fill
           priority

@@ -19,7 +19,7 @@ export default function PrivacyPolicyPage() {
       <LegalHero doc={privacyDocument} />
       <LegalKeyPoints doc={privacyDocument} />
       <LegalBody doc={privacyDocument} />
-      <LegalCta />
+      <LegalCta doc={privacyDocument}/>
     </>
   );
 }

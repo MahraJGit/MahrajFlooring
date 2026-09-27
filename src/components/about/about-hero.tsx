@@ -68,7 +68,7 @@ export function AboutHero() {
               size="xl"
               className="border-white/15 bg-white/10 text-white backdrop-blur-sm hover:bg-white/20"
             >
-              <a href={site.phoneHref}>Get a Consultation</a>
+              <a href={site.phoneHref}>Explore Our Services</a>
             </Button>
           </div>
         </div>

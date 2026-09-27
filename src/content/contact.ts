@@ -16,19 +16,19 @@ export const contactHero = {
   image: "/images/contact/contact-hero.jpg",
   deviceImage: "/images/contact/moisture-meter.png",
   title:
-    "Contact Our Flooring Engineering Experts: From Specification to Handover.",
+    "Let's Talk About the Flooring Your Project Needs",
 };
 
 export const contactIntro = {
-  title: "Get in Touch",
+  title: "Start the Conversation",
   description:
-    "Explore specialist flooring systems selected for performance, safety, durability, and demanding commercial environments across the UAE and GCC.",
+    "Whether it's a quick question or a full project brief, our team is ready to help you find the right flooring solution.",
 };
 
 export const contactChannels: ContactChannel[] = [
   {
     title: "WhatsApp",
-    description: "Instant messaging for quick queries.",
+    description: "Quick questions? Message us and get a reply in minutes.",
     action: "Start Chat",
     href: site.whatsapp,
     icon: MessageCircle,
@@ -36,22 +36,22 @@ export const contactChannels: ContactChannel[] = [
   },
   {
     title: "Direct Line",
-    description: "Speak to a technical advisor.",
+    description: "Speak directly with a technical advisor about your project.",
     action: site.phone,
     href: site.phoneHref,
     icon: Phone,
   },
   {
     title: "Email",
-    description: "Detailed inquiries and project specs.",
+    description: "Send us your project details, and we'll get back with a plan.",
     action: site.email,
     href: `mailto:${site.email}`,
     icon: Mail,
   },
   {
-    title: "Showroom",
-    description: "Detailed inquiries and project specs.",
-    action: "Get Direction",
+    title: "Visit Us",
+    description: "Come see and feel our materials before you decide.",
+    action: "Get Directions",
     href: site.address.mapsHref,
     icon: MapPin,
     external: true,
@@ -66,9 +66,9 @@ export const currentLocation = {
 };
 
 export const regionalOfficesIntro = {
-  title: "Our Regional Engineering Offices",
+  title: "Find Us Across the Region",
   description:
-    "Interactive GCC map: Locate our regional offices and contact details.",
+    "Our regional teams work close to your project, ready to support you onsite whenever needed.",
 };
 
 export type RegionalOffice = {
@@ -110,17 +110,32 @@ export const regionalOffices: RegionalOffice[] = [
 ];
 
 export const contactFaqIntro =
-  "Most stock items are available within 3-5 working days. Custom orders or specialised sports turf typically require 4-6 weeks from manufacture to port delivery.";
+  "Got a question before reaching out? Here are quick answers on pricing, timelines, and how we work.";
 
 export const contactFaqs = [
   {
-    question: "Do you provide sub-floor preparation?",
+    question: "How fast can I get a quote?",
     answer:
-      "Yes. Our crews handle moisture testing, levelling, and screed correction before installation so the finished surface meets manufacturer tolerances.",
+      "We usually respond within 24 hours of your inquiry. For urgent projects, mention your timeline, and we'll prioritize accordingly.",
   },
   {
-    question: "Are your materials fire-rated?",
+    question: "Do I need to visit your office to get started?",
     answer:
-      "Our commercial ranges carry EN 13501-1 classification, and we supply full test certificates with every project submittal for civil defence approval.",
+      "No! You can start the process online or by phone. A site visit is only needed once we move into detailed planning.",
   },
+  {
+    question: "How long does delivery take?",
+    answer: 
+      "Most stock items arrive within 3–5 working days. Custom orders or specialized flooring can take 4–6 weeks from manufacture to delivery."
+  },
+  {
+    question: "Can you handle urgent or fast turnaround projects?",
+    answer: 
+      "In many cases, yes. Let us know your deadline early so we can confirm what's realistically possible."
+  },
+  {
+    question: "How do you calculate project cost?",
+    answer:
+      "Cost depends on material, area size, and site conditions. We provide a detailed quote after understanding your project."
+  }
 ];

@@ -1,10 +1,10 @@
 export const blogPage = {
   hero: {
-    image: "/images/contact/contact-hero.jpg",
-    title: "Commercial Knowledge Hub",
+    image: "/images/blog/blog-hero.png",
+    title: "Your Complete Guide to Smarter Flooring Choices",
     description:
-      "Building GCC technical flooring infrastructure with transparency, quality-verified documentation, and expert installation support for high-stakes environments.",
-    searchPlaceholder: "Search Flooring blogs here...? For ex: LVT blogs etc.",
+      "Simple, practical guides on flooring types, installation, and care, trusted by homeowners, designers, and businesses across the GCC.",
+    searchPlaceholder: 'Search topics like "sports flooring" or "moisture testing"',
   },
   featured: {
     title: "Featured Blogs",
@@ -80,8 +80,8 @@ export const blogPage = {
     ],
   },
   latestInsights: {
-    title: "Latest Insights",
-    description: "Filter practical flooring insights tailored to your industrial scope",
+    title: "Explore Our Latest Flooring Insights",
+    description: "Get practical flooring tips, material guides, installation advice, and maintenance ideas for your next project.",
   },
   knowledgeHub: {
     title: "Flooring knowledge Hub",
@@ -100,14 +100,14 @@ export const blogPage = {
   },
   ctaPanels: {
     help: {
-      title: "Need Help Choosing The Right Flooring?",
+      title: "Still Not Sure Which Floor Fits Your Space?",
       description:
-        "Share your project requirements and our technical team will recommend suitable systems.",
+        "Tell us about your project, and our flooring experts will guide you to the right material, finish, and installation plan.",
     },
     subscribe: {
-      title: "Get Practical Flooring Insights",
+      title: "Never Miss a Flooring Tip",
       description:
-        "Receive updates on product standards, maintenance, and commercial fit-out guidance.",
+        "Get simple, useful updates on materials, installation trends, and care tips, straight to your inbox, no spam.",
       placeholder: "Enter your email address here...",
     },
   },

@@ -28,7 +28,7 @@ export function ReviewsHero() {
           fill
           priority
           sizes="100vw"
-          className="-z-10 object-cover object-center"
+          className="-z-10 object-cover object-top"
         />
       ) : null}
       <div
@@ -93,13 +93,13 @@ export function ReviewsHero() {
             <Button asChild variant="brand" size="xl">
               <Link href="/contact#quote-form">Request a Quote</Link>
             </Button>
-            <Button
+            {/* <Button
               asChild
               size="xl"
               className="border-white/15 bg-white/10 text-white backdrop-blur-sm hover:bg-white/20"
             >
               <a href="#solution-feedback">View Our Projects</a>
-            </Button>
+            </Button> */}
           </div>
         </div>
       </Container>

@@ -40,7 +40,7 @@ export function WhyClientsChoose() {
           ))}
         </ul>
 
-        <ul className="mx-auto grid max-w-3xl gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {bottomRow.map((item, index) => (
             <li key={`${item.subtitle}-${index + 4}`}>
               <WhyCard title={item.title} subtitle={item.subtitle} />

@@ -24,9 +24,9 @@ export default function ReviewsPage() {
       <TrustMetrics />
       <WhyClientsChoose />
       <IndustryReviews />
-      <SolutionFeedback />
+      {/* <SolutionFeedback /> */}
       <ReviewForm />
-      <TrustedLogos />
+      {/* <TrustedLogos /> */}
       <ProjectExperience />
       <ReviewsFaq />
       <ReviewsCta />
