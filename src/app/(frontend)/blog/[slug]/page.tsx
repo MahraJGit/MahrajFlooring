@@ -14,9 +14,7 @@ import {
 import { BlogArticleBody } from "@/components/blog/blog-article";
 import { BlogPostCard } from "@/components/blog/blog-sections";
 import { BlogShare } from "@/components/blog/blog-share";
-import { ReadingProgress } from "@/components/blog/reading-progress";
 import { ArticleToc, BackToTop } from "@/components/layout/article-toc";
-import { Container } from "@/components/layout/container";
 import { Section } from "@/components/layout/section";
 import { SectionHeading } from "@/components/layout/section-heading";
 import { Media } from "@/components/media";
@@ -72,8 +70,7 @@ export default async function BlogPostPage({
 
   return (
     <>
-      <ReadingProgress />
-
+      {/* Hero banner removed at client request.
       <section className="relative isolate overflow-hidden">
         <div aria-hidden className="absolute inset-0 z-0">
           <Media
@@ -161,6 +158,7 @@ export default async function BlogPostPage({
           </div>
         </Container>
       </section>
+      */}
 
       <Section tone="alt">
         <div className="grid gap-8 lg:grid-cols-[17rem_minmax(0,1fr)] lg:items-start lg:gap-12">
@@ -188,7 +186,73 @@ export default async function BlogPostPage({
           </aside>
 
           <article className="rounded-md border border-border bg-background p-6 sm:p-8 lg:p-10">
-            <p className="border-s-2 border-brand ps-5 text-base leading-relaxed text-ink">
+            <nav aria-label="Breadcrumb">
+              <ol className="flex flex-wrap items-center gap-1.5 text-xs text-body">
+                <li>
+                  <Link href="/" className="transition-colors hover:text-ink">
+                    Home
+                  </Link>
+                </li>
+                <li className="flex items-center gap-1.5">
+                  <ChevronRight className="size-3.5" />
+                  <Link href="/blog" className="transition-colors hover:text-ink">
+                    Blogs
+                  </Link>
+                </li>
+                <li className="flex items-center gap-1.5">
+                  <ChevronRight className="size-3.5" />
+                  <span className="line-clamp-1 text-ink">{post.title}</span>
+                </li>
+              </ol>
+            </nav>
+
+            <div className="mt-6">
+              {post.category ? (
+                <Link
+                  href={`/blog?category=${post.category.slug}`}
+                  className="inline-flex items-center gap-1.5 rounded bg-brand px-3 py-1 text-xs font-semibold text-white transition-opacity hover:opacity-90"
+                >
+                  <Tag className="size-3.5" />
+                  {post.category.title}
+                </Link>
+              ) : null}
+
+              <h1 className="mt-4 font-heading text-3xl font-semibold leading-[1.12] tracking-tight text-ink sm:text-4xl">
+                {post.title}
+              </h1>
+
+              <ul className="mt-5 flex flex-wrap items-center gap-2.5 text-xs text-body">
+                {card.author ? (
+                  <li className="flex items-center gap-1.5 rounded-full border border-border bg-surface-alt px-3 py-1.5">
+                    {card.authorImage ? (
+                      <Media
+                        src={card.authorImage}
+                        alt={card.authorImageAlt}
+                        className="size-5 rounded-full"
+                        sizes="1.25rem"
+                      />
+                    ) : (
+                      <UserRound className="size-3.5" />
+                    )}
+                    {card.author}
+                  </li>
+                ) : null}
+                {card.date ? (
+                  <li className="flex items-center gap-1.5 rounded-full border border-border bg-surface-alt px-3 py-1.5">
+                    <CalendarDays className="size-3.5" />
+                    {card.date}
+                  </li>
+                ) : null}
+                {card.readTime ? (
+                  <li className="flex items-center gap-1.5 rounded-full border border-border bg-surface-alt px-3 py-1.5">
+                    <Clock className="size-3.5" />
+                    {card.readTime}
+                  </li>
+                ) : null}
+              </ul>
+            </div>
+
+            <p className="mt-8 border-s-2 border-brand ps-5 text-base leading-relaxed text-ink">
               {post.excerpt}
             </p>
 

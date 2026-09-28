@@ -7,6 +7,13 @@ const s3Host =
 
 const nextConfig: NextConfig = {
   reactCompiler: true,
+  experimental: {
+    // Image uploads go through a Server Action. The default 1 MB limit
+    // throws before the action runs and crashes the admin page.
+    serverActions: {
+      bodySizeLimit: "10mb",
+    },
+  },
   images: {
     remotePatterns: s3Host
       ? [{ protocol: "https", hostname: s3Host }]

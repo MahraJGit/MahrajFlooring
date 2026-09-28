@@ -21,6 +21,13 @@ import { cn } from "@/lib/utils";
 const TABS = ["Basic", "Content", "SEO"] as const;
 type Tab = (typeof TABS)[number];
 
+function todayDateInput() {
+  const now = new Date();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${now.getFullYear()}-${month}-${day}`;
+}
+
 function emptyPost(): PostInput {
   return {
     title: "",
@@ -94,6 +101,7 @@ export function PostForm({
   const published = post?.status === "published";
   const generated = useMemo(() => slugify(values.title), [values.title]);
   const slugChanged = Boolean(post?.slug && values.slug && values.slug !== post.slug);
+  const today = useMemo(() => todayDateInput(), []);
 
   useEffect(() => {
     const onLeave = (event: BeforeUnloadEvent) => {
@@ -109,7 +117,7 @@ export function PostForm({
     setDirty(true);
   }
 
-  function submit(status: "draft" | "published") {
+  function submit(status: "draft" | "published", leave = false) {
     const payload: PostInput = {
       ...values,
       slug: slugLocked ? values.slug : generated,
@@ -131,6 +139,10 @@ export function PostForm({
         return;
       }
       setDirty(false);
+      if (leave) {
+        router.push("/admin/blog?saved=published");
+        return;
+      }
       if (result.href) router.push(result.href);
     });
   }
@@ -311,14 +323,19 @@ export function PostForm({
           <Field
             label="Published date"
             htmlFor="publishedAt"
-            hint="Set on first publish if left empty. Later edits keep this date unless you change it."
+            hint="Today or a future date. Past dates are unavailable. Left empty, the date is set on first publish."
             error={errors.publishedAt}
           >
             <Input
               id="publishedAt"
               type="date"
+              min={today}
               value={values.publishedAt ?? ""}
-              onChange={(event) => update("publishedAt", event.target.value)}
+              onChange={(event) => {
+                const next = event.target.value;
+                if (next && next < today) return;
+                update("publishedAt", next);
+              }}
             />
           </Field>
           <label className="flex items-center gap-2 text-sm">
@@ -398,7 +415,7 @@ export function PostForm({
             {pending ? "Saving…" : "Save draft"}
           </Button>
         )}
-        <Button type="button" disabled={pending} onClick={() => submit("published")}>
+        <Button type="button" disabled={pending} onClick={() => submit("published", true)}>
           {pending ? "Saving…" : published ? "Update published" : "Publish"}
         </Button>
         {published ? (

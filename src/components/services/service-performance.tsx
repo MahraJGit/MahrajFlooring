@@ -1,10 +1,8 @@
-import Link from "next/link";
 import { Scissors } from "lucide-react";
 
 import { Media } from "@/components/media";
 import { Section } from "@/components/layout/section";
 import { SectionHeading } from "@/components/layout/section-heading";
-import { Button } from "@/components/ui/button";
 import { featuredCaseStudies, projects } from "@/content/home";
 import type { ServiceDetailView } from "@/lib/public/services";
 
@@ -137,11 +135,13 @@ export function ServiceCaseStudies({
                   </p>
                   <p className="text-xs text-body">{study.meta}</p>
                 </div>
+                {/* View detail CTA removed at client request.
                 <Button asChild variant="brand" size="lg" className="mt-5 w-full">
                   <Link href={`/projects/${project.slug}`}>
                     View Project Details
                   </Link>
                 </Button>
+                */}
               </div>
             </li>
           );
