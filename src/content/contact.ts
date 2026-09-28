@@ -13,8 +13,8 @@ export type ContactChannel = {
 };
 
 export const contactHero = {
-  image: "/images/contact/contact-hero.jpg",
-  deviceImage: "/images/contact/moisture-meter.png",
+  image: "/images/contact/contact-hero.png",
+  deviceImage: null,
   title:
     "Let's Talk About the Flooring Your Project Needs",
 };

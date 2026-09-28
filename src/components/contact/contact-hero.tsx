@@ -13,7 +13,7 @@ function hasPublicAsset(src: string) {
 
 export function ContactHero() {
   const showHeroImage = hasPublicAsset(contactHero.image);
-  const showDevice = hasPublicAsset(contactHero.deviceImage);
+  // const showDevice = hasPublicAsset(contactHero.deviceImage);
 
   return (
     <section className="relative bg-ink">
@@ -31,14 +31,11 @@ export function ContactHero() {
             fill
             priority
             sizes="100vw"
-            className="object-cover object-center"
+            className="object-cover object-bottom"
           />
         ) : null}
 
-        <div
-          aria-hidden
-          className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-black/15"
-        />
+        
       </div>
 
       <Container className="relative z-10 flex min-h-[26rem] flex-col pb-40 pt-20 lg:min-h-[30rem] lg:pb-44 lg:pt-24">
@@ -60,7 +57,7 @@ export function ContactHero() {
           {contactHero.title}
         </h1>
 
-        {showDevice ? (
+        {/* {showDevice ? (
           <div className="pointer-events-none absolute -bottom-[100px] start-0 z-20 h-[150px] w-[310px] sm:h-[175px] sm:w-[360px] lg:h-[205px] lg:w-[424px]">
             <Image
               src={contactHero.deviceImage}
@@ -71,7 +68,7 @@ export function ContactHero() {
               className="h-full w-full object-contain object-left mix-blend-screen"
             />
           </div>
-        ) : null}
+        ) : null} */}
       </Container>
     </section>
   );
