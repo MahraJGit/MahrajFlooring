@@ -1,6 +1,5 @@
 import Link from "next/link";
 import {
-  ArrowRight,
   Building2,
   CheckCircle2,
   ChevronRight,
@@ -286,6 +285,7 @@ export function OngoingProjects({ service }: { service: ServiceDetailView }) {
               <h3 className="text-base font-semibold text-ink">
                 Project: {project.title}
               </h3>
+              {/* View detail CTA removed at client request.
               <Link
                 href={`/projects/${project.slug}`}
                 className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-brand transition-colors hover:text-brand-dark"
@@ -293,6 +293,7 @@ export function OngoingProjects({ service }: { service: ServiceDetailView }) {
                 View Detail
                 <ArrowRight className="size-4" />
               </Link>
+              */}
             </div>
           </li>
         ))}

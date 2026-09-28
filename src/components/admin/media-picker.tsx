@@ -68,9 +68,21 @@ export function MediaPicker({
 
   useEffect(() => {
     if (!open) return;
+    let cancelled = false;
     start(async () => {
-      setItems(await searchMedia(query));
+      try {
+        const next = await searchMedia(query);
+        if (!cancelled) setItems(next);
+      } catch {
+        if (!cancelled) {
+          setItems([]);
+          setMessage("Images could not be loaded. Please try again.");
+        }
+      }
     });
+    return () => {
+      cancelled = true;
+    };
   }, [open, query]);
 
   return (
@@ -195,7 +207,14 @@ export function MediaPicker({
                     setUploadName(file.name);
                     start(async () => {
                       setMessage(null);
-                      const result = await uploadMedia(data);
+                      let result: Awaited<ReturnType<typeof uploadMedia>>;
+                      try {
+                        result = await uploadMedia(data);
+                      } catch {
+                        setMessage("The image could not be uploaded. Please try again.");
+                        setUploadName(null);
+                        return;
+                      }
                       if (result.error || !result.item) {
                         setMessage(result.error ?? "The image could not be uploaded.");
                         setUploadName(null);
