@@ -1,5 +1,6 @@
 import { asObjectId, isObjectId, toId } from "@/lib/db/ids";
 import { getModels } from "@/lib/db/models";
+import { readBrandColors } from "@/lib/services/colors";
 import { publishStatus } from "@/lib/cms/status";
 import type { PublishStatus } from "@/lib/cms/types";
 import {
@@ -90,6 +91,8 @@ export type ServiceRecord = {
   warranty: string;
   brandingTitle: string;
   brandingDescription: string;
+  brandColorLabel: string;
+  brandColors: { hex: string; selected: boolean }[];
   showSpaceRequirements: boolean;
   spaceTitle: string;
   spaceDescription: string;
@@ -388,6 +391,8 @@ export async function getService(id: string): Promise<ServiceRecord | null> {
     warranty: String(doc.warranty ?? ""),
     brandingTitle: String(doc.brandingTitle ?? ""),
     brandingDescription: String(doc.brandingDescription ?? ""),
+    brandColorLabel: String(doc.brandColorLabel ?? ""),
+    brandColors: readBrandColors(doc.brandColors),
     showSpaceRequirements: Boolean(doc.showSpaceRequirements),
     spaceTitle: String(doc.spaceTitle ?? ""),
     spaceDescription: String(doc.spaceDescription ?? ""),

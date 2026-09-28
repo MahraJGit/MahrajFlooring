@@ -13,42 +13,9 @@ export const cataloguePage = {
     title: "Flooring Collections &\nProduct Catalogues",
     description:
       "Building GCC technical flooring infrastructure with transparency, quality-verified documentation, and expert installation support for high-stakes environments.",
-    searchPlaceholder: "Search Flooring blogs here...? For ex: LVT blogs etc.",
+    searchPlaceholder: "Search collections, for example LVT or sports flooring",
     breadcrumb: "Catalogues",
   },
-
-  filterDropdowns: [
-    { label: "Flooring Types", placeholder: "All Types" },
-    { label: "Industry", placeholder: "All Industries" },
-    { label: "Applications", placeholder: "All Applications" },
-  ],
-
-  topics: [
-    {
-      title: "All Collections",
-      image: "/images/projects/global-tech-hq.jpg",
-    },
-    {
-      title: "Commercial",
-      image: "/images/services/vinyl-flooring.jpg",
-    },
-    {
-      title: "Vinyl & LVT",
-      image: "/images/services/homogeneous-flooring.jpg",
-    },
-    {
-      title: "Healthcare",
-      image: "/images/services/homogeneous-flooring.jpg",
-    },
-    {
-      title: "Subfloor Prep",
-      image: "/images/advantage-installation.jpg",
-    },
-    {
-      title: "Material Guides",
-      image: "/images/services/rubber-gym-flooring.jpg",
-    },
-  ],
 
   featured: {
     badge: "Featured Collection",

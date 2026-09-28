@@ -6,8 +6,27 @@ import { Section } from "@/components/layout/section";
 import { SectionHeading } from "@/components/layout/section-heading";
 import { Button } from "@/components/ui/button";
 import { blogHighlights } from "@/content/home";
+import { getPosts } from "@/lib/public/blog";
 
-export function TechnicalInsights() {
+export async function TechnicalInsights() {
+  const { docs } = await getPosts({ limit: 6 });
+  const posts =
+    docs.length > 0
+      ? docs.map((post) => ({
+          key: post.id,
+          title: post.title,
+          image: post.image,
+          imageAlt: post.imageAlt || post.title,
+          href: post.href,
+        }))
+      : blogHighlights.map((post) => ({
+          key: post.slug,
+          title: post.title,
+          image: post.image,
+          imageAlt: post.title,
+          href: `/blog/${post.slug}`,
+        }));
+
   return (
     <Section tone="alt">
       <SectionHeading
@@ -22,17 +41,23 @@ export function TechnicalInsights() {
         prevLabel="Previous insights"
         nextLabel="Next insights"
       >
-        {blogHighlights.map((post) => (
-          <article key={post.slug}>
-            <Media
-              src={post.image}
-              alt={post.title}
-              className="aspect-[16/10] rounded-md"
-              sizes="(min-width: 768px) 30vw, 90vw"
-            />
-            <h3 className="mt-4 text-lg font-semibold text-ink">{post.title}</h3>
+        {posts.map((post) => (
+          <article key={post.key}>
+            <Link href={post.href} className="block">
+              <Media
+                src={post.image}
+                alt={post.imageAlt}
+                className="aspect-[16/10] rounded-md"
+                sizes="(min-width: 768px) 30vw, 90vw"
+              />
+            </Link>
+            <h3 className="mt-4 text-lg font-semibold text-ink">
+              <Link href={post.href} className="transition-colors hover:text-brand">
+                {post.title}
+              </Link>
+            </h3>
             <Button asChild variant="brandDark" className="mt-4">
-              <Link href="/blog">Read Full Guide</Link>
+              <Link href={post.href}>Read Full Guide</Link>
             </Button>
           </article>
         ))}

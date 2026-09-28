@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
 import { PageHero } from "@/components/layout/page-hero";
 import { Section } from "@/components/layout/section";
@@ -22,13 +21,10 @@ export default function IndustriesPage() {
         <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
           {industries.map(({ slug, label, icon: Icon }) => (
             <li key={slug}>
-              <Link
-                href={`/industries/${slug}`}
-                className="flex h-full flex-col items-center justify-center gap-3 rounded-md border border-border bg-background px-4 py-7 text-center transition-all hover:border-brand/40 hover:shadow-sm"
-              >
+              <div className="flex h-full flex-col items-center justify-center gap-3 rounded-md border border-border bg-background px-4 py-7 text-center">
                 <Icon className="size-6 text-brand" />
                 <span className="text-sm font-medium text-ink">{label}</span>
-              </Link>
+              </div>
             </li>
           ))}
         </ul>

@@ -2,8 +2,9 @@ import { existsSync } from "node:fs";
 import path from "node:path";
 import Image from "next/image";
 import Link from "next/link";
-import { ChevronDown, ChevronRight, Search } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 
+import { CatalogueSearchForm } from "@/components/catalogues/catalogue-search-form";
 import { Container } from "@/components/layout/container";
 import { Button } from "@/components/ui/button";
 import { cataloguePage } from "@/content/catalogues";
@@ -12,7 +13,7 @@ function hasPublicAsset(src: string) {
   return existsSync(path.join(process.cwd(), "public", src.replace(/^\//, "")));
 }
 
-export function CatalogueHero() {
+export function CatalogueHero({ query }: { query?: string }) {
   const showImage = hasPublicAsset(cataloguePage.hero.image);
 
   return (
@@ -74,43 +75,9 @@ export function CatalogueHero() {
         </div>
       </Container>
 
-      {/* Search + filter bar pinned at bottom */}
       <div className="border-t border-white/10 bg-black/60 backdrop-blur-sm">
-        <Container className="flex flex-col gap-4 py-4 lg:flex-row lg:items-center lg:gap-6">
-          <form
-            role="search"
-            className="flex flex-1 items-center gap-3 rounded-full border border-white/20 bg-black/45 p-2"
-          >
-            <input
-              type="search"
-              name="q"
-              placeholder={cataloguePage.hero.searchPlaceholder}
-              aria-label="Search catalogues"
-              className="min-w-0 flex-1 bg-transparent px-4 text-sm text-white outline-none placeholder:text-white/60 sm:text-base"
-            />
-            <button
-              type="submit"
-              className="inline-flex size-10 shrink-0 items-center justify-center rounded-full bg-brand text-white transition-colors hover:bg-brand-dark"
-              aria-label="Search"
-            >
-              <Search className="size-5" />
-            </button>
-          </form>
-
-          <div className="flex flex-wrap gap-4 lg:gap-6">
-            {cataloguePage.filterDropdowns.map((filter) => (
-              <div key={filter.label} className="flex flex-col gap-1">
-                <span className="text-xs font-semibold text-white/60">{filter.label}</span>
-                <button
-                  type="button"
-                  className="inline-flex items-center gap-1.5 text-sm text-white"
-                >
-                  {filter.placeholder}
-                  <ChevronDown className="size-3.5 text-white/60" />
-                </button>
-              </div>
-            ))}
-          </div>
+        <Container className="py-4">
+          <CatalogueSearchForm query={query} />
         </Container>
       </div>
     </section>

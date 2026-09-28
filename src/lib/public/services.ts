@@ -1,5 +1,6 @@
 import { asObjectId, isObjectId, toId } from "@/lib/db/ids";
 import { getModels } from "@/lib/db/models";
+import { readBrandColors, type BrandColor } from "@/lib/services/colors";
 import {
   loadMediaMap,
   resolveMediaUrl,
@@ -77,6 +78,8 @@ export type ServiceDetailView = ServiceCard & {
   warranty: string;
   brandingTitle: string;
   brandingDescription: string;
+  brandColorLabel: string;
+  brandColors: BrandColor[];
   showSpaceRequirements: boolean;
   spaceTitle: string;
   spaceDescription: string;
@@ -293,6 +296,9 @@ function toDetailView(
       (typeof service.brandingDescription === "string" &&
         service.brandingDescription) ||
       "Add custom logos, zone markings, and colourways using precision-cut inserts and application-specific finishes.",
+    brandColorLabel:
+      typeof service.brandColorLabel === "string" ? service.brandColorLabel : "",
+    brandColors: readBrandColors(service.brandColors),
     showSpaceRequirements: Boolean(service.showSpaceRequirements),
     spaceTitle: typeof service.spaceTitle === "string" ? service.spaceTitle : "",
     spaceDescription:

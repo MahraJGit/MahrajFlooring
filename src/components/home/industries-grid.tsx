@@ -14,13 +14,10 @@ export function IndustriesGrid() {
       <ul className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-4">
         {homeIndustriesCompact.map(({ slug, label, icon: Icon }) => (
           <li key={slug}>
-            <Link
-              href={`/industries/${slug}`}
-              className="flex h-full flex-col items-center justify-center gap-2 rounded-md border border-border bg-background px-4 py-6 text-center transition-all hover:border-brand/40 hover:shadow-sm"
-            >
+            <div className="flex h-full flex-col items-center justify-center gap-2 rounded-md border border-border bg-background px-4 py-6 text-center">
               <Icon className="size-5 text-brand" />
               <span className="text-xs font-medium text-ink">{label}</span>
-            </Link>
+            </div>
           </li>
         ))}
       </ul>

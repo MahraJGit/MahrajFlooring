@@ -151,3 +151,11 @@
     @apply font-heading text-ink tracking-tight;
   }
 }
+
+/* Same-colored sections were stacking full padding and leaving a large empty band. */
+section[data-section].bg-surface-alt + section[data-section].bg-surface-alt,
+section[data-section].bg-background + section[data-section].bg-background,
+section[data-section].bg-charcoal + section[data-section].bg-charcoal,
+section[data-section].bg-brand-dark + section[data-section].bg-brand-dark {
+  padding-top: 0;
+}

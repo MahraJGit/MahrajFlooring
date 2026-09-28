@@ -9,6 +9,7 @@ import { swapAdjacentSortOrder } from "@/lib/cms/reorder";
 import { slugify } from "@/lib/cms/slug";
 import { asObjectId, isObjectId, toId } from "@/lib/db/ids";
 import { getModels } from "@/lib/db/models";
+import { readBrandColors } from "@/lib/services/colors";
 import { nextSortOrder } from "@/lib/services/queries";
 import {
   PERFORMANCE_COLUMN_LABELS,
@@ -110,6 +111,8 @@ function toDocument(data: ServiceInput) {
     warranty: data.warranty || "",
     brandingTitle: data.brandingTitle || "Custom Branding & Color",
     brandingDescription: data.brandingDescription || "",
+    brandColorLabel: data.brandColorLabel || "",
+    brandColors: readBrandColors(data.brandColors),
     showSpaceRequirements: data.showSpaceRequirements,
     spaceTitle: data.spaceTitle || "",
     spaceDescription: data.spaceDescription || "",
