@@ -1,5 +1,5 @@
 import {
-  Crosshair,
+  BadgeCheck,
   Droplets,
   Ear,
   Paintbrush,
@@ -10,12 +10,73 @@ import {
 export const cataloguePage = {
   hero: {
     image: "/images/contact/contact-hero.jpg",
-    title: "Flooring Collections &\nProduct Catalogues",
+    title: "Complete Flooring Solutions, Designed for the Gulf",
     description:
-      "Building GCC technical flooring infrastructure with transparency, quality-verified documentation, and expert installation support for high-stakes environments.",
-    searchPlaceholder: "Search collections, for example LVT or sports flooring",
+      "Browse our complete range of industrial and commercial flooring systems, with verified specifications, performance data, and installation guidance to help you specify with confidence.",
+    searchPlaceholder: "Find a catalogue by product or system name…",
     breadcrumb: "Catalogues",
   },
+
+  filterDropdowns: [
+    { label: "Flooring Types", placeholder: "All Types" },
+    { label: "Industry", placeholder: "All Industries" },
+    { label: "Applications", placeholder: "All Applications" },
+  ],
+
+  topics: [
+    // {
+    //   title: "All Collections",
+    //   image: "/images/projects/global-tech-hq.jpg",
+    // },
+    {
+      title: "Gyms",
+      image: "/images/services/rubber-gym-flooring.jpg",
+    },
+    {
+      title: "Schools",
+      image: "/images/services/school-education-industry.png",
+    },
+    {
+      title: "Hospitals",
+      image: "/images/projects/al-noor-specialist-hospital.jpg",
+    },
+    {
+      title: "Offices",
+      image: "/images/services/office-carpet-flooring.jpg",
+    },
+    {
+      title: "Hotels",
+      image: "/images/services/exhibition-event-flooring.jpg",
+    },
+    {
+      title: "Events",
+      image: "/images/services/events-exhibition-industry.png",
+    },
+    {
+      title: "Sports",
+      image: "/images/services/sports-flooring.jpg",
+    },
+    {
+      title: "Landscapes",
+      image: "/images/services/landscaping-outdoor-industry.png",
+    },
+    {
+      title: "Homes",
+      image: "/images/services/carpet&carpet-tiles.png",
+    },
+    {
+      title: "Fairs",
+      image: "/images/advantage-installation.jpg",
+    },
+    {
+      title: "Stables",
+      image: "/images/services/stable-farm-flooring.jpg",
+    },
+    {
+      title: "Retail Stores",
+      image: "/images/services/vinyl-flooring.jpg",
+    },
+  ],
 
   featured: {
     badge: "Featured Collection",
@@ -62,38 +123,37 @@ export const cataloguePage = {
   },
 
   matters: {
-    title: "Choose Flooring by What Matters to Your Project",
+    title: "Find the Right Floor for Your Priorities",
     cards: [
       {
         icon: Shield,
-        title: "Durability",
-        description: "For high-traffic environments",
+        title: "Strength",
+        description: "Tough floors that handle heavy machines and daily traffic.",
       },
       {
-        icon: Sparkles,
-        title: "Hygiene",
-        description:
-          "For attachments, where cleaning and hygiene's are prioritized",
-      },
-      {
-        icon: Ear,
-        title: "Accoustic Comfort",
-        description: "For offices and spaces where sound management matters.",
-      },
-      {
-        icon: Droplets,
-        title: "Moisture Resistance",
-        description: "For offices and spaces where sound management matters.",
+        icon: BadgeCheck,
+        title: "Safety",
+        description: "Anti slip surfaces that keep people safe, even when wet.",
       },
       {
         icon: Paintbrush,
-        title: "Design Flexibility",
-        description: "For offices and spaces where sound management matters.",
+        title: "Easy Cleaning",
+        description: "Smooth floors that are quick to clean and stay fresh.",
       },
       {
-        icon: Crosshair,
-        title: "Accoustic Comfort",
-        description: "For offices and spaces where sound management matters.",
+        icon: Droplets,
+        title: "Water Protection",
+        description: "Floors that block water and stop damage below.",
+      },
+      {
+        icon: Sparkles,
+        title: "Great Looks",
+        description: "Many colours and finishes to match your style.",
+      },
+      {
+        icon: Ear,
+        title: "Long Life",
+        description: "Floors that last for years and save on repair costs.",
       },
     ],
   },
@@ -208,15 +268,15 @@ export const cataloguePage = {
 
   testimonial: {
     image: "/images/contact/contact-hero.jpg",
-    title: "Chosen by Project Teams Across the GCC",
+    title: "Everything You Need, All in One Place",
     review:
-      "Mahraj Flooring Services did an excellent job from start to finish. The flooring quality was impressive, installation was professional, and the team was punctual and helpful. Everything was completed neatly and on time. Highly recommended for anyone looking for reliable and quality flooring services.",
+      "Skip the long search. Our catalogues give you the product details, colour choices, and technical facts you need to pick the right floor and start your project with ease.",
     author: "Alex Catonni, Project Manager",
     metrics: [
-      { label: "Projects completed", value: "120+" },
-      { label: "Industries served", value: "120+" },
-      { label: "Technical support", value: "Expert" },
-      { label: "Projects completed", value: "120+" },
+      { label: "Product Ranges", value: "50+" },
+      { label: "Colours & finishes", value: "100+" },
+      { label: "Technical data sheets", value: "30+" },
+      { label: "Industry sectors covered", value: "6+" },
     ],
   },
 
@@ -247,35 +307,45 @@ export const cataloguePage = {
 
   ctaPanels: {
     help: {
-      title: "Need Help Choosing The Right Flooring?",
+      title: "Not Sure Which Floor to Pick?",
       description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam vel lacus finibus, vestibulum tortor a",
+        "Tell us about your space and your budget. Our team will suggest the best flooring system and help you get started.",
     },
     subscribe: {
-      title: "Get Practical Flooring Insights",
+      title: "Stay Ahead with Flooring News",
       description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam vel lacus finibus, vestibulum tortor a",
-      placeholder: "Enter your email address here...",
+        "Be the first to see new product ranges, project ideas, and helpful how-to guides, sent straight to your email.",
+      placeholder: "Your email address",
     },
   },
 
   faqIntro:
-    "Most stock items are available within 3-5 working days. Custom orders or specialized sports turf typically require 4-6 weeks from manufacture to port delivery.",
+    "Find quick answers about our catalogues, downloads, products, and support. If you cannot find what you need, our team is happy to help.",
   faqs: [
     {
-      question: "Do you provide sub-floor preparation?",
+      question: "Are the catalogues free?",
       answer:
-        "Yes, we provide comprehensive sub-floor preparation including moisture testing, leveling, and priming to ensure optimal flooring installation results.",
+        "Yes! All our catalogues and technical data sheets are free to view and download.",
     },
     {
-      question: "Are your materials fire-rated?",
+      question: "Can I get printed catalogues or physical samples?",
       answer:
-        "All our commercial flooring materials meet international fire safety standards and come with relevant certifications.",
+        "Yes, samples are available on request. Send us your project details, and our team will arrange them for you.",
     },
     {
-      question: "Are your materials fire-rated?",
+      question: "Are your catalogues updated regularly?",
       answer:
-        "All our commercial flooring materials meet international fire safety standards and come with relevant certifications.",
+        "Yes! We update our catalogues when new products, colours, or technical details are added. Always check the date on the file to make sure you have the latest version.",
+    },
+    {
+      question: "Do you provide technical data sheets and certifications?",
+      answer:
+        "Yes! You can find data sheets and quality documents in the catalogues section. If you need a specific document for a tender or approval, contact us, and we will send it."
+    },
+    {
+      question: "How do I get a price for my project?",
+      answer:
+        'Click "Get a Consultation" and tell us your space size and requirements. We will reply with a clear price and timeline.'
     },
   ],
 };

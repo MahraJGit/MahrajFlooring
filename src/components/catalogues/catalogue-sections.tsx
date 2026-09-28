@@ -54,14 +54,6 @@ export function hasCatalogueResults(query?: string) {
   }
 
   if (
-    cataloguePage.industry.cards.some((item) =>
-      matchesQuery(term, [item.title, item.description])
-    )
-  ) {
-    return true;
-  }
-
-  if (
     cataloguePage.resources.cards.some((item) =>
       matchesQuery(term, [item.title, item.description, item.fileInfo])
     )
@@ -92,6 +84,32 @@ export function CatalogueSearchResults({ query }: { query?: string }) {
           </Button>
         </div>
       )}
+    </Section>
+  );
+}
+
+/* ─── Topic filter row ─── */
+export function TopicFilters() {
+  return (
+    <Section spacing="compact">
+      <ul className="flex gap-5 overflow-x-auto pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+        {cataloguePage.topics.map((topic) => (
+          <li key={topic.title} className="shrink-0 first:ml-auto last:mr-auto">
+            <button
+              type="button"
+              className="group flex w-32 flex-col overflow-hidden rounded-lg sm:w-36"
+            >
+              <Media
+                src={topic.image}
+                alt={topic.title}
+                className="aspect-[3/4] w-full rounded-lg transition-transform duration-500 group-hover:scale-105"
+                sizes="(min-width: 640px) 144px, 128px"
+              />
+              <span className="mt-2.5 text-start text-sm font-semibold">{topic.title}</span>
+            </button>
+          </li>
+        ))}
+      </ul>
     </Section>
   );
 }
@@ -546,7 +564,7 @@ export function CatalogueCta() {
           </p>
           <Button asChild variant="inverse" size="xl" className="mt-6">
             <Link href="/contact#quote-form">
-              Read More
+              Talk to an Expert
               <ArrowRight className="size-4" />
             </Link>
           </Button>
@@ -578,7 +596,7 @@ export function CatalogueFaq() {
   return (
     <Section tone="alt">
       <div className="mx-auto max-w-3xl text-center">
-        <h2 className="text-3xl font-semibold sm:text-4xl">FAQ</h2>
+        <h2 className="text-3xl font-semibold sm:text-4xl">Quick Answers Before You Start</h2>
         <p className="mt-4 text-sm leading-relaxed text-body sm:text-base">
           {cataloguePage.faqIntro}
         </p>

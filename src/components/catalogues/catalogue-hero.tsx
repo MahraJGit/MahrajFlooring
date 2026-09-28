@@ -63,14 +63,14 @@ export function CatalogueHero({ query }: { query?: string }) {
 
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
           <Button asChild variant="brand" size="xl">
-            <Link href="/contact#quote-form">Request a Quote</Link>
+            <Link href="/contact#quote-form">View Catalogues</Link>
           </Button>
           <Button
             asChild
             size="xl"
             className="border-white/15 bg-white/10 text-white backdrop-blur-sm hover:bg-white/20"
           >
-            <Link href="/contact#get-in-touch">Talk to Our Team</Link>
+            <Link href="/contact#get-in-touch">Get a Consultation</Link>
           </Button>
         </div>
       </Container>

@@ -3,10 +3,10 @@ import type { Metadata } from "next";
 import { CatalogueHero } from "@/components/catalogues/catalogue-hero";
 import {
   CatalogueSearchResults,
+  TopicFilters,
   FeaturedCollection,
   ExploreCollections,
   ChooseByMatters,
-  FindByIndustry,
   ResourceCenter,
   RealProjects,
   TestimonialBand,
@@ -37,10 +37,10 @@ export default async function CataloguesPage({
     <>
       <CatalogueHero query={query} />
       <CatalogueSearchResults query={query} />
+      <TopicFilters />
       <FeaturedCollection query={query} />
       <ExploreCollections query={query} />
       <ChooseByMatters />
-      <FindByIndustry query={query} />
       <ResourceCenter query={query} />
       <RealProjects query={query} />
       <TestimonialBand />
