@@ -29,7 +29,7 @@ export default function CataloguesPage() {
       <FeaturedCollection />
       <ExploreCollections />
       <ChooseByMatters />
-      <FindByIndustry />
+      {/* <FindByIndustry /> */}
       <ResourceCenter />
       <RealProjects />
       <TestimonialBand />

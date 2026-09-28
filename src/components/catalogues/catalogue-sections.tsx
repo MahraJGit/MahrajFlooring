@@ -30,13 +30,12 @@ function hasPublicAsset(src: string) {
 }
 
 /* ─── Topic filter row ─── */
-
 export function TopicFilters() {
   return (
     <Section spacing="compact">
-      <ul className="flex justify-center gap-5 overflow-x-auto pb-2">
+      <ul className="flex gap-5 overflow-x-auto pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
         {cataloguePage.topics.map((topic) => (
-          <li key={topic.title} className="shrink-0">
+          <li key={topic.title} className="shrink-0 first:ml-auto last:mr-auto">
             <button
               type="button"
               className="group flex w-32 flex-col overflow-hidden rounded-lg sm:w-36"
@@ -480,7 +479,7 @@ export function CatalogueCta() {
           </p>
           <Button asChild variant="inverse" size="xl" className="mt-6">
             <Link href="/contact#quote-form">
-              Read More
+              Talk to an Expert
               <ArrowRight className="size-4" />
             </Link>
           </Button>
@@ -512,7 +511,7 @@ export function CatalogueFaq() {
   return (
     <Section tone="alt">
       <div className="mx-auto max-w-3xl text-center">
-        <h2 className="text-3xl font-semibold sm:text-4xl">FAQ</h2>
+        <h2 className="text-3xl font-semibold sm:text-4xl">Quick Answers Before You Start</h2>
         <p className="mt-4 text-sm leading-relaxed text-body sm:text-base">
           {cataloguePage.faqIntro}
         </p>
