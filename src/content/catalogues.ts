@@ -9,7 +9,7 @@ import {
 
 export const cataloguePage = {
   hero: {
-    image: "/images/contact/contact-hero.jpg",
+    image: "/images/catalogue/catalogue-hero.png",
     title: "Complete Flooring Solutions, Designed for the Gulf",
     description:
       "Browse our complete range of industrial and commercial flooring systems, with verified specifications, performance data, and installation guidance to help you specify with confidence.",
