@@ -66,7 +66,7 @@ export const cataloguePage = {
     },
     {
       title: "Fairs",
-      image: "/images/cataloguee-installation.jpg",
+      image: "/images/catalogue/Fairs.png",
     },
     {
       title: "Stables",
