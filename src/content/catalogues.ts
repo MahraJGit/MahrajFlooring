@@ -30,51 +30,51 @@ export const cataloguePage = {
     // },
     {
       title: "Gyms",
-      image: "/images/services/rubber-gym-flooring.jpg",
+      image: "/images/catalogue/Gyms.png",
     },
     {
       title: "Schools",
-      image: "/images/services/school-education-industry.png",
+      image: "/images/catalogue/Schools.png",
     },
     {
       title: "Hospitals",
-      image: "/images/projects/al-noor-specialist-hospital.jpg",
+      image: "/images/catalogue/Hospitals.png",
     },
     {
       title: "Offices",
-      image: "/images/services/office-carpet-flooring.jpg",
+      image: "/images/catalogue/Offices.png",
     },
     {
       title: "Hotels",
-      image: "/images/services/exhibition-event-flooring.jpg",
+      image: "/images/catalogue/Hotels.png",
     },
     {
       title: "Events",
-      image: "/images/services/events-exhibition-industry.png",
+      image: "/images/catalogue/Events.png",
     },
     {
       title: "Sports",
-      image: "/images/services/sports-flooring.jpg",
+      image: "/images/catalogue/Sports.png",
     },
     {
       title: "Landscapes",
-      image: "/images/services/landscaping-outdoor-industry.png",
+      image: "/images/catalogue/Landscapes.png",
     },
     {
       title: "Homes",
-      image: "/images/services/carpet&carpet-tiles.png",
+      image: "/images/catalogue/Homes.png",
     },
     {
       title: "Fairs",
-      image: "/images/advantage-installation.jpg",
+      image: "/images/cataloguee-installation.jpg",
     },
     {
       title: "Stables",
-      image: "/images/services/stable-farm-flooring.jpg",
+      image: "/images/catalogue/Stables.png",
     },
     {
       title: "Retail Stores",
-      image: "/images/services/vinyl-flooring.jpg",
+      image: "/images/catalogue/Retail Stores.png",
     },
   ],
 
@@ -116,7 +116,7 @@ export const cataloguePage = {
         title: "Healthcare Flooring",
         description:
           "Versatile vinyl and LVT solutions for high-traffic far right-traffic commercial environments.",
-        image: "/images/services/homogeneous-flooring.jpg",
+        image: "/images/catalogue/Hospitals.png",
         tags: ["Office", "Hospitals", "Education", "Rental"],
       },
     ],
@@ -246,7 +246,7 @@ export const cataloguePage = {
       {
         title: "Sports Flooring",
         description: "Solutions for productivity, focused workspaces.",
-        image: "/images/projects/global-tech-hq.jpg",
+        image: "/images/catalogue/Sports.png",
       },
       {
         title: "Cooperate Offices",
@@ -261,13 +261,13 @@ export const cataloguePage = {
       {
         title: "Sports Flooring",
         description: "Solutions for productivity, focused workspaces.",
-        image: "/images/projects/global-tech-hq.jpg",
+        image: "/images/catalogue/Sports.png",
       },
     ],
   },
 
   testimonial: {
-    image: "/images/contact/contact-hero.jpg",
+    image: "/images/catalogue/Everything You Need, All in One Place.png",
     title: "Everything You Need, All in One Place",
     review:
       "Skip the long search. Our catalogues give you the product details, colour choices, and technical facts you need to pick the right floor and start your project with ease.",
