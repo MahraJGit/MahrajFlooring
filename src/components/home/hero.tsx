@@ -59,26 +59,19 @@ export function Hero() {
       <Container className="flex min-h-[34rem] flex-col justify-center py-20 lg:min-h-[38rem] lg:py-24">
         <div className="max-w-2xl">
           <h1 className="font-heading text-4xl font-semibold leading-[1.12] text-white sm:text-5xl lg:text-[3.5rem]">
-            Complete Flooring and Fitness Solutions Across the GCC
+            Professional Flooring Solutions for Homes, Workplaces, Gyms, and Commercial Spaces
           </h1>
           <p className="mt-6 max-w-xl text-base leading-relaxed text-white/90">
-            Delivering high-performance surfaces for commercial gyms, elite
-            sports venues, and industrial spaces with precision-engineered
-            quality.
+            We design and install commercial flooring for homes, offices, commercial spaces, 
+            and high performance facilities that are built to last and tailored to how each space is used. 
+            As a trusted flooring company in the GCC, we combine quality materials with certified installation across every project.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Button asChild variant="brand" size="xl">
               <Link href="/contact#get-in-touch">
-                Request project
+                Book a Consultation
                 <ArrowRight />
               </Link>
-            </Button>
-            <Button
-              asChild
-              size="xl"
-              className="border-white/15 bg-white/10 text-white backdrop-blur-sm hover:bg-white/20"
-            >
-              <Link href="/contact#quote-form">Get a Quote</Link>
             </Button>
           </div>
         </div>

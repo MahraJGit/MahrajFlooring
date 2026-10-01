@@ -4,7 +4,6 @@ import path from "node:path";
 import Image from "next/image";
 import {
   ArrowRight,
-  ChevronDown,
   Download,
   FileText,
   Mail,
@@ -24,14 +23,73 @@ function hasPublicAsset(src: string) {
   return existsSync(path.join(process.cwd(), "public", src.replace(/^\//, "")));
 }
 
-/* ─── Topic filter row ─── */
+function matchesQuery(query: string | undefined, fields: Array<string | undefined>) {
+  const term = query?.trim().toLowerCase();
+  if (!term) return true;
+  return fields.some((field) => field?.toLowerCase().includes(term));
+}
 
+export function hasCatalogueResults(query?: string) {
+  const term = query?.trim();
+  if (!term) return true;
+
+  const featured = cataloguePage.featured;
+  if (
+    matchesQuery(term, [featured.title, featured.excerpt, featured.badge, featured.author])
+  ) {
+    return true;
+  }
+
+  if (
+    cataloguePage.explore.collections.some((item) =>
+      matchesQuery(term, [item.title, item.description, ...item.tags])
+    )
+  ) {
+    return true;
+  }
+
+  if (
+    cataloguePage.resources.cards.some((item) =>
+      matchesQuery(term, [item.title, item.description, item.fileInfo])
+    )
+  ) {
+    return true;
+  }
+
+  return cataloguePage.realProjects.cards.some((item) =>
+    matchesQuery(term, [item.title, item.description])
+  );
+}
+
+export function CatalogueSearchResults({ query }: { query?: string }) {
+  const term = query?.trim();
+  if (!term) return null;
+
+  return (
+    <Section id="catalogue-results" spacing="compact">
+      {hasCatalogueResults(term) ? (
+        <p className="text-sm text-body">
+          Results for <span className="font-semibold text-ink">“{term}”</span>
+        </p>
+      ) : (
+        <div className="text-center">
+          <p className="text-base text-ink">No catalogues match “{term}”.</p>
+          <Button asChild variant="brandOutline" size="lg" className="mt-4">
+            <Link href="/catalogues">Clear search</Link>
+          </Button>
+        </div>
+      )}
+    </Section>
+  );
+}
+
+/* ─── Topic filter row ─── */
 export function TopicFilters() {
   return (
     <Section spacing="compact">
       <TopicScroller>
         {cataloguePage.topics.map((topic) => (
-          <li key={topic.title} className="shrink-0">
+          <li key={topic.title} className="shrink-0 first:ml-auto last:mr-auto">
             <button
               type="button"
               className="group flex w-32 flex-col overflow-hidden rounded-lg sm:w-36"
@@ -53,41 +111,46 @@ export function TopicFilters() {
 
 /* ─── Featured collection ─── */
 
-export function FeaturedCollection() {
+export function FeaturedCollection({ query }: { query?: string }) {
+  const featured = cataloguePage.featured;
+  if (!matchesQuery(query, [featured.title, featured.excerpt, featured.badge, featured.author])) {
+    return null;
+  }
+
   return (
     <Section>
       <div className="grid items-center gap-8 md:grid-cols-2">
         <div className="relative overflow-hidden rounded-md">
           <Media
-            src={cataloguePage.featured.image}
-            alt={cataloguePage.featured.title}
+            src={featured.image}
+            alt={featured.title}
             className="aspect-[4/3]"
             sizes="(min-width: 768px) 50vw, 100vw"
           />
           <span className="absolute start-4 top-4 rounded bg-brand px-3 py-1 text-xs font-semibold text-white">
-            {cataloguePage.featured.badge}
+            {featured.badge}
           </span>
         </div>
 
         <div>
           <h2 className="text-3xl font-semibold sm:text-4xl">
-            {cataloguePage.featured.title}
+            {featured.title}
           </h2>
           <p className="mt-4 text-base leading-relaxed text-body">
-            {cataloguePage.featured.excerpt}
+            {featured.excerpt}
           </p>
 
           <div className="mt-6 flex items-center gap-3">
             <div className="size-10 overflow-hidden rounded-full bg-surface-alt">
               <Media
-                src={cataloguePage.featured.authorAvatar}
+                src={featured.authorAvatar}
                 alt="Author"
                 className="size-full"
                 sizes="40px"
               />
             </div>
             <span className="text-sm font-medium text-ink">
-              {cataloguePage.featured.author}
+              {featured.author}
             </span>
           </div>
 
@@ -110,12 +173,17 @@ export function FeaturedCollection() {
 
 /* ─── Explore collections ─── */
 
-export function ExploreCollections() {
+export function ExploreCollections({ query }: { query?: string }) {
+  const collections = cataloguePage.explore.collections.filter((item) =>
+    matchesQuery(query, [item.title, item.description, ...item.tags])
+  );
+  if (collections.length === 0) return null;
+
   return (
     <Section id="collections" tone="alt" className="scroll-mt-28">
       <SectionHeading align="center" title={cataloguePage.explore.title} />
       <ul className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-        {cataloguePage.explore.collections.map((col) => (
+        {collections.map((col) => (
           <li
             key={col.title}
             className="overflow-hidden rounded-md border border-border bg-background"
@@ -273,21 +341,31 @@ function IndustryGrid({
   );
 }
 
-export function FindByIndustry() {
+export function FindByIndustry({ query }: { query?: string }) {
+  const cards = cataloguePage.industry.cards.filter((item) =>
+    matchesQuery(query, [item.title, item.description])
+  );
+  if (cards.length === 0) return null;
+
   return (
     <IndustryGrid
       title={cataloguePage.industry.title}
-      cards={cataloguePage.industry.cards}
+      cards={cards}
       ctaLabel="View all Floorings"
     />
   );
 }
 
-export function RealProjects() {
+export function RealProjects({ query }: { query?: string }) {
+  const cards = cataloguePage.realProjects.cards.filter((item) =>
+    matchesQuery(query, [item.title, item.description])
+  );
+  if (cards.length === 0) return null;
+
   return (
     <IndustryGrid
       title={cataloguePage.realProjects.title}
-      cards={cataloguePage.realProjects.cards}
+      cards={cards}
       ctaLabel="View all Floorings"
     />
   );
@@ -418,7 +496,7 @@ export function CatalogueCta() {
           </p>
           <Button asChild variant="inverse" size="xl" className="mt-6">
             <Link href="/contact#quote-form">
-              Read More
+              Talk to an Expert
               <ArrowRight className="size-4" />
             </Link>
           </Button>
@@ -443,4 +521,3 @@ export function CatalogueCta() {
     </section>
   );
 }
-

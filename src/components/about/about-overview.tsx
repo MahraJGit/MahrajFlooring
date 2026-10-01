@@ -52,7 +52,7 @@ export function AboutOverview() {
           <div className="mt-8 rounded-md border border-border border-s-4 border-s-brand bg-background p-5">
             <p className="flex items-center gap-2 text-sm font-semibold text-brand">
               <Target className="size-4" />
-              Our Objective
+              Our Promise
             </p>
             <p className="mt-3 text-sm leading-relaxed text-body">
               {aboutOverview.objective}

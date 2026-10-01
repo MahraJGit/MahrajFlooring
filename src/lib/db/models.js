@@ -116,6 +116,8 @@ const ServiceSchema = new Schema(
     warranty: String,
     brandingTitle: String,
     brandingDescription: String,
+    brandColorLabel: String,
+    brandColors: [{ hex: String, selected: Boolean }],
     showSpaceRequirements: Boolean,
     spaceTitle: String,
     spaceDescription: String,

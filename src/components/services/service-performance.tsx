@@ -1,10 +1,8 @@
-import Link from "next/link";
 import { Scissors } from "lucide-react";
 
 import { Media } from "@/components/media";
 import { Section } from "@/components/layout/section";
 import { SectionHeading } from "@/components/layout/section-heading";
-import { Button } from "@/components/ui/button";
 import { featuredCaseStudies, projects } from "@/content/home";
 import type { ServiceDetailView } from "@/lib/public/services";
 
@@ -87,6 +85,32 @@ export function PerformanceMatrix({ service }: { service: ServiceDetailView }) {
               <p className="mt-4 text-sm leading-relaxed text-body">
                 {service.brandingDescription}
               </p>
+              {service.brandColors.length ? (
+                <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-3">
+                  {service.brandColorLabel.trim() ? (
+                    <p className="text-sm font-semibold text-ink">
+                      {service.brandColorLabel}
+                    </p>
+                  ) : null}
+                  <ul
+                    className="flex flex-wrap items-center gap-3"
+                    aria-label={service.brandColorLabel.trim() || "Available colours"}
+                  >
+                    {service.brandColors.map((color, index) => (
+                      <li key={`${color.hex}-${index}`}>
+                        <span
+                          className={`block size-9 rounded-full ${
+                            color.selected
+                              ? "ring-2 ring-brand ring-offset-2 ring-offset-surface-alt"
+                              : "border border-black/10"
+                          }`}
+                          style={{ backgroundColor: color.hex }}
+                        />
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
             </div>
             <Scissors className="size-12 shrink-0 text-ink" />
           </div>
@@ -137,11 +161,13 @@ export function ServiceCaseStudies({
                   </p>
                   <p className="text-xs text-body">{study.meta}</p>
                 </div>
+                {/* View detail CTA removed at client request.
                 <Button asChild variant="brand" size="lg" className="mt-5 w-full">
                   <Link href={`/projects/${project.slug}`}>
                     View Project Details
                   </Link>
                 </Button>
+                */}
               </div>
             </li>
           );

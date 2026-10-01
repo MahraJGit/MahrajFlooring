@@ -7,7 +7,6 @@ import { ChevronRight } from "lucide-react";
 import { Container } from "@/components/layout/container";
 import { Button } from "@/components/ui/button";
 import { aboutHero } from "@/content/about";
-import { site } from "@/content/site";
 
 function hasPublicAsset(src: string) {
   return existsSync(path.join(process.cwd(), "public", src.replace(/^\//, "")));
@@ -68,7 +67,7 @@ export function AboutHero() {
               size="xl"
               className="border-white/15 bg-white/10 text-white backdrop-blur-sm hover:bg-white/20"
             >
-              <a href={site.phoneHref}>Get a Consultation</a>
+              <Link href="/services">Explore Our Services</Link>
             </Button>
           </div>
         </div>

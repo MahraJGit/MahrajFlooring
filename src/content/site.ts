@@ -17,10 +17,10 @@ export const site = {
       "https://www.google.com/maps/search/?api=1&query=Industrial+Area+4+Al+Qusais+Dubai",
   },
   social: [
-    { label: "LinkedIn", href: "https://linkedin.com" },
-    { label: "Instagram", href: "https://instagram.com" },
-    { label: "Twitter", href: "https://twitter.com" },
-    { label: "YouTube", href: "https://youtube.com" },
+    { label: "Instagram", href: "https://www.instagram.com/mahrajflooring/" },
+    { label: "YouTube", href: "https://www.youtube.com/@MahrajFlooring" },
+    { label: "Facebook", href: "https://www.facebook.com/mahrajflooring/" },
+    { label: "X", href: "https://x.com/mahrajflooring" },
   ],
 } as const;
 

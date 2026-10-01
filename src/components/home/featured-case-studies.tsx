@@ -16,9 +16,9 @@ export function FeaturedCaseStudies() {
     <Section tone="alt">
       <SectionHeading
         align="center"
-        eyebrow="Featured Case Studies"
-        title="Featured Case Studies"
-        description="Filterable masonry grid style cards for completed installations."
+        eyebrow="Case Studies"
+        title="From Concept to Completion"
+        description="See how we've transformed spaces with flooring built for performance and durability."
       />
 
       <ul className="mt-10 grid gap-5 md:grid-cols-3">
@@ -27,7 +27,7 @@ export function FeaturedCaseStudies() {
             key={item.slug}
             className="overflow-hidden rounded-md border border-border bg-background"
           >
-            <div className="relative">
+            <Link href={`/projects/${item.slug}`} className="relative block">
               <Media
                 src={item.project.image}
                 alt={item.title}
@@ -37,7 +37,7 @@ export function FeaturedCaseStudies() {
               <span className="absolute start-3 top-3 rounded-sm bg-brand-dark px-2 py-1 text-[0.625rem] font-semibold uppercase tracking-[0.14em] text-white">
                 {item.badge}
               </span>
-            </div>
+            </Link>
             <div className="p-5">
               <h3 className="text-3xl/none font-semibold tracking-tight text-ink">
                 <span className="block text-xl">{item.title}</span>

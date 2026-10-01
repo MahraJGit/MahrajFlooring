@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import { CatalogueHero } from "@/components/catalogues/catalogue-hero";
 import {
+  CatalogueSearchResults,
   TopicFilters,
   FeaturedCollection,
   ExploreCollections,
@@ -21,16 +22,28 @@ export const metadata: Metadata = {
     "Download Mahraj Flooring product catalogues, technical data sheets, and finish references.",
 };
 
-export default function CataloguesPage() {
+function firstValue(value: string | string[] | undefined) {
+  const raw = Array.isArray(value) ? value[0] : value;
+  const trimmed = raw?.trim();
+  return trimmed || undefined;
+}
+
+export default async function CataloguesPage({
+  searchParams,
+}: PageProps<"/catalogues">) {
+  const params = await searchParams;
+  const query = firstValue(params.q);
+
   return (
     <>
-      <CatalogueHero />
+      <CatalogueHero query={query} />
+      <CatalogueSearchResults query={query} />
       <TopicFilters />
-      <FeaturedCollection />
-      <ExploreCollections />
+      <FeaturedCollection query={query} />
+      <ExploreCollections query={query} />
       <ChooseByMatters />
-      <FindByIndustry />
-      <RealProjects />
+      <FindByIndustry query={query} />
+      <RealProjects query={query} />
       <TestimonialBand />
       <SizingGuide />
       <CatalogueCta />

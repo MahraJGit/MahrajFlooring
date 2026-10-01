@@ -42,7 +42,7 @@ export default async function BlogPage({
       <BlogHero query={query} category={categorySlug} />
       <FeaturedBlogs posts={featured} />
       <ExploreByTopic categories={categories} />
-      <WorkingOnSection />
+      {/* <WorkingOnSection /> */}
       <LatestInsights
         posts={latest.docs}
         categories={categories}
@@ -51,8 +51,8 @@ export default async function BlogPage({
         page={latest.page}
         totalPages={latest.totalPages}
       />
-      <KnowledgeHubBand />
-      <LessonsAndCta caseStudy={featured[0]} />
+      {/* <KnowledgeHubBand /> */}
+      <LessonsAndCta />
     </>
   );
 }

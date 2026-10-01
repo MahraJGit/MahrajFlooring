@@ -55,7 +55,7 @@ export function SubscribeForm({
           )}
         />
         <Button type="submit" variant="brand" size="xl">
-          Subscribe
+          Join Now
         </Button>
       </div>
       {error ? (

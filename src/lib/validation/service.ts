@@ -5,6 +5,7 @@ import { DEFAULT_FAQS } from "@/lib/services/faqs";
 import {
   DEFAULT_PROCESS_STEPS,
 } from "@/lib/services/process";
+import { normalizeHex } from "@/lib/services/colors";
 import {
   PERFORMANCE_COLUMN_LABELS,
   SPACE_COLUMN_LABELS,
@@ -92,6 +93,19 @@ const serviceBase = z.object({
   warranty: z.string().trim().optional().or(z.literal("")),
   brandingTitle: z.string().trim().optional().or(z.literal("")),
   brandingDescription: z.string().trim().optional().or(z.literal("")),
+  brandColorLabel: z.string().trim().max(80).optional().or(z.literal("")),
+  brandColors: z
+    .array(
+      z.object({
+        hex: z
+          .string()
+          .trim()
+          .refine((value) => Boolean(normalizeHex(value)), "Use a colour such as #111111."),
+        selected: z.boolean().default(false),
+      })
+    )
+    .max(8, "Add up to 8 colours.")
+    .default([]),
   showSpaceRequirements: z.boolean().default(false),
   spaceTitle: z.string().trim().optional().or(z.literal("")),
   spaceDescription: z.string().trim().optional().or(z.literal("")),

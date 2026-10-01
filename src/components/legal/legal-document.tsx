@@ -136,28 +136,26 @@ export function LegalBody({ doc }: { doc: LegalDocument }) {
   );
 }
 
-export function LegalCta() {
+export function LegalCta({ doc }: { doc: LegalDocument }) {
   return (
     <section className="bg-background py-16 md:py-20 lg:py-24">
       <Container>
         <div className="grid overflow-hidden rounded-md md:grid-cols-2">
           <div className="bg-brand px-8 py-10 text-white lg:px-12 lg:py-12">
             <h2 className="text-3xl font-semibold leading-tight text-white">
-              Need a project-specific agreement?
+              {doc.cta.title}
             </h2>
             <p className="mt-4 max-w-xl text-sm leading-relaxed text-white/80 sm:text-base">
-              Quotations, warranties, and installation scopes are issued in
-              writing for each job. Our team can walk you through documentation
-              before work starts.
+              {doc.cta.description}
             </p>
             <Button asChild variant="inverse" size="xl" className="mt-6">
               <Link href="/contact#get-in-touch">
-                Talk to Our Team
+                Contact Us
                 <ArrowRight className="size-4" />
               </Link>
             </Button>
           </div>
-          <div className="bg-charcoal px-8 py-10 text-white lg:px-12 lg:py-12">
+          {/* <div className="bg-charcoal px-8 py-10 text-white lg:px-12 lg:py-12">
             <h2 className="text-3xl font-semibold leading-tight text-white">
               Looking for catalogues instead?
             </h2>
@@ -171,7 +169,7 @@ export function LegalCta() {
                 <ArrowRight className="size-4" />
               </Link>
             </Button>
-          </div>
+          </div> */}
         </div>
       </Container>
     </section>

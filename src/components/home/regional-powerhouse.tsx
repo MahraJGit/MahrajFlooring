@@ -20,10 +20,10 @@ export function RegionalPowerhouse() {
           heading={
             <div className="text-center">
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand">
-                Personal Presence
+                Our Regional Presence
               </p>
               <h2 className="mt-2 text-3xl font-semibold sm:text-4xl">
-                Our GCC Presence & Trust Partners
+                Trusted Across the GCC
               </h2>
             </div>
           }
@@ -31,7 +31,7 @@ export function RegionalPowerhouse() {
             <div className="mb-10 grid items-center gap-10 lg:grid-cols-2">
               <div>
                 <h3 className="text-xs font-semibold uppercase tracking-[0.14em] text-body">
-                  Project Location
+                  Where We Operate:
                 </h3>
                 <ul className="mt-4 space-y-3">
                   {regions.map((region) => (

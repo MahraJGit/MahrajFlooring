@@ -70,7 +70,7 @@ export function RegionalOffices() {
                 officeToneClass[office.tone]
               )}
             >
-              <h3 className="text-lg font-semibold uppercase tracking-[0.04em]">
+              <h3 className="text-lg font-semibold uppercase tracking-[0.04em] text-white">
                 {office.title}
               </h3>
 

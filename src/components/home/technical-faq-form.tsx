@@ -6,12 +6,12 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { DEFAULT_FAQ_INTRO, DEFAULT_FAQS, type FaqItem } from "@/lib/services/faqs";
+import { DEFAULT_FAQS, type FaqItem } from "@/lib/services/faqs";
 
 export function TechnicalFaqForm({
   formIdPrefix = "home",
   faqs = DEFAULT_FAQS,
-  faqIntro = DEFAULT_FAQ_INTRO,
+  faqIntro = "Have questions about our flooring services? We've answered the most common ones below. If you need more details, our team is just a message away.",
   formTitle = "Technical Expertise",
 }: {
   formIdPrefix?: string;
@@ -37,7 +37,7 @@ export function TechnicalFaqForm({
       >
         {showFaqs ? (
           <div>
-            <h2 className="text-2xl font-semibold sm:text-3xl">FAQ</h2>
+            <h2 className="text-2xl font-semibold sm:text-3xl">Frequently Asked Questions</h2>
             {faqIntro ? (
               <p className="mt-4 text-sm leading-relaxed text-body">{faqIntro}</p>
             ) : null}

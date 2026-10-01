@@ -6,10 +6,7 @@ import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { WhatsAppButton } from "@/components/layout/whatsapp-button";
 import { site } from "@/content/site";
-import {
-  getServiceMegaMenu,
-  getServiceSearchIndex,
-} from "@/lib/public/services";
+import { getServiceMegaMenu } from "@/lib/public/services";
 import "../globals.css";
 
 const inter = Inter({
@@ -41,10 +38,7 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {
-  const [megaMenu, searchIndex] = await Promise.all([
-    getServiceMegaMenu(),
-    getServiceSearchIndex(),
-  ]);
+  const megaMenu = await getServiceMegaMenu();
 
   return (
     <html
@@ -57,7 +51,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         suppressHydrationWarning
       >
         <HashScroll />
-        <SiteHeader megaMenu={megaMenu} searchIndex={searchIndex} />
+        <SiteHeader megaMenu={megaMenu} />
         <main className="flex-1">{children}</main>
         <SiteFooter />
         <WhatsAppButton />

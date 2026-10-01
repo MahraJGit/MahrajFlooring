@@ -13,6 +13,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { slugify } from "@/lib/cms/slug";
+import { normalizeHex } from "@/lib/services/colors";
 import { DEFAULT_FAQ_INTRO, DEFAULT_FAQS } from "@/lib/services/faqs";
 import {
   HIGHLIGHT_ICONS,
@@ -64,6 +65,8 @@ function emptyService(): ServiceInput {
     warranty: "",
     brandingTitle: "",
     brandingDescription: "",
+    brandColorLabel: "",
+    brandColors: [],
     showSpaceRequirements: false,
     spaceTitle: "",
     spaceDescription: "",
@@ -115,6 +118,8 @@ function fromRecord(service: ServiceRecord): ServiceInput {
     warranty: service.warranty,
     brandingTitle: service.brandingTitle,
     brandingDescription: service.brandingDescription,
+    brandColorLabel: service.brandColorLabel,
+    brandColors: service.brandColors,
     showSpaceRequirements: service.showSpaceRequirements,
     spaceTitle: service.spaceTitle,
     spaceDescription: service.spaceDescription,
@@ -160,6 +165,8 @@ const TAB_FIELDS: Record<Tab, string[]> = {
     "warranty",
     "brandingTitle",
     "brandingDescription",
+    "brandColorLabel",
+    "brandColors",
     "showSpaceRequirements",
     "spaceTitle",
     "spaceDescription",
@@ -679,6 +686,116 @@ export function ServiceForm({
                   onChange={(e) => update("brandingDescription", e.target.value)}
                 />
               </Field>
+              <Field
+                label="Colour selector label"
+                hint="Shown above the swatches, for example EPDM Fleck Selector."
+              >
+                <Input
+                  value={values.brandColorLabel ?? ""}
+                  placeholder="EPDM Fleck Selector"
+                  onChange={(e) => update("brandColorLabel", e.target.value)}
+                />
+              </Field>
+              <div className="grid gap-3">
+                <div className="flex items-center justify-between gap-3">
+                  <p className="text-sm font-medium">Colours</p>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    disabled={values.brandColors.length >= 8}
+                    onClick={() =>
+                      update("brandColors", [
+                        ...values.brandColors,
+                        {
+                          hex: "#111111",
+                          selected: values.brandColors.length === 0,
+                        },
+                      ])
+                    }
+                  >
+                    <Plus className="size-4" /> Add colour
+                  </Button>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  These appear as circular swatches on the service page. Mark one colour as the highlighted swatch.
+                </p>
+                {values.brandColors.length ? (
+                  <ul className="grid gap-2">
+                    {values.brandColors.map((color, index) => {
+                      const pickerValue = normalizeHex(color.hex) || "#111111";
+                      return (
+                        <li key={index} className="flex flex-wrap items-center gap-2">
+                          <input
+                            type="color"
+                            aria-label={`Choose colour ${index + 1}`}
+                            value={pickerValue}
+                            className="size-10 cursor-pointer rounded-full border border-border bg-transparent p-0"
+                            onChange={(event) => {
+                              const next = values.brandColors.map((item, itemIndex) =>
+                                itemIndex === index ? { ...item, hex: event.target.value } : item
+                              );
+                              update("brandColors", next);
+                            }}
+                          />
+                          <Input
+                            value={color.hex}
+                            aria-label={`Hex colour ${index + 1}`}
+                            className="w-32 font-mono"
+                            onChange={(event) => {
+                              const next = values.brandColors.map((item, itemIndex) =>
+                                itemIndex === index ? { ...item, hex: event.target.value } : item
+                              );
+                              update("brandColors", next);
+                            }}
+                            onBlur={() => {
+                              const hex = normalizeHex(color.hex);
+                              if (!hex || hex === color.hex) return;
+                              const next = values.brandColors.map((item, itemIndex) =>
+                                itemIndex === index ? { ...item, hex } : item
+                              );
+                              update("brandColors", next);
+                            }}
+                          />
+                          <Button
+                            type="button"
+                            variant={color.selected ? "default" : "outline"}
+                            size="sm"
+                            onClick={() =>
+                              update(
+                                "brandColors",
+                                values.brandColors.map((item, itemIndex) => ({
+                                  ...item,
+                                  selected: itemIndex === index,
+                                }))
+                              )
+                            }
+                          >
+                            {color.selected ? "Highlighted" : "Highlight"}
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            aria-label={`Remove colour ${index + 1}`}
+                            onClick={() => {
+                              const next = values.brandColors.filter((_, itemIndex) => itemIndex !== index);
+                              if (next.length && !next.some((item) => item.selected)) {
+                                next[0] = { ...next[0], selected: true };
+                              }
+                              update("brandColors", next);
+                            }}
+                          >
+                            <Trash2 className="size-4" />
+                          </Button>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                ) : (
+                  <p className="text-sm text-muted-foreground">No colours yet. Add the colours this service should show.</p>
+                )}
+              </div>
               <div className="grid gap-3 sm:grid-cols-3">
                 {PERFORMANCE_COLUMN_LABELS.map((fallback, index) => (
                   <Field key={fallback} label={`Column ${index + 1} label`} hint="Shown in the table header.">

@@ -48,10 +48,10 @@ export function MobileNav({ megaMenu }: { megaMenu: MegaMenuColumn[] }) {
             item.hasMegaMenu ? (
               <Accordion key={item.href} type="single" collapsible>
                 <AccordionItem value="services" className="border-b-0">
-                  <AccordionTrigger className="py-3 text-base font-medium text-ink">
+                  <AccordionTrigger className="py-3 text-base font-medium text-ink hover:no-underline!">
                     {item.label}
                   </AccordionTrigger>
-                  <AccordionContent className="pb-3">
+                  <AccordionContent className="pb-3 [&_a]:no-underline!">
                     <div className="space-y-5">
                       {megaMenu.map((column) => (
                         <div key={column.title}>

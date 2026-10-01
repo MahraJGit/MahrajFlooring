@@ -44,11 +44,11 @@ export function ReviewsCta() {
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Button asChild variant="inverse" size="xl">
-              <Link href="/contact#quote-form">Request a Quote</Link>
+              <Link href="/contact#quote-form">Contact Us</Link>
             </Button>
-            <Button asChild variant="inverseOutline" size="xl">
+            {/* <Button asChild variant="inverseOutline" size="xl">
               <Link href="/contact#get-in-touch">Contact us</Link>
-            </Button>
+            </Button> */}
           </div>
         </div>
       </div>

@@ -8,7 +8,6 @@ import { Container } from "@/components/layout/container";
 import { Logo } from "@/components/layout/logo";
 import { MegaMenuPanel } from "@/components/layout/mega-menu";
 import { MobileNav } from "@/components/layout/mobile-nav";
-import { SiteSearch } from "@/components/layout/site-search";
 import { Button } from "@/components/ui/button";
 import {
   NavigationMenu,
@@ -19,7 +18,7 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
 import { mainNav, site } from "@/content/site";
-import type { MegaMenuColumn, SearchEntry } from "@/lib/public/services";
+import type { MegaMenuColumn } from "@/lib/public/services";
 import { cn } from "@/lib/utils";
 
 function TopBar() {
@@ -47,10 +46,8 @@ function TopBar() {
 
 export function SiteHeader({
   megaMenu,
-  searchIndex,
 }: {
   megaMenu: MegaMenuColumn[];
-  searchIndex: SearchEntry[];
 }) {
   const pathname = usePathname();
 
@@ -105,7 +102,6 @@ export function SiteHeader({
           </NavigationMenu>
 
           <div className="flex items-center gap-1">
-            <SiteSearch searchIndex={searchIndex} />
             <Button asChild variant="brand" className="hidden h-10 px-4 sm:inline-flex">
               <Link href="/contact#quote-form">Request a Quote</Link>
             </Button>

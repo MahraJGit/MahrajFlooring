@@ -21,7 +21,7 @@ export function AboutFaq() {
   return (
     <Section>
       <div className="mx-auto max-w-3xl text-center">
-        <h2 className="text-3xl font-semibold sm:text-4xl">FAQ</h2>
+        <h2 className="text-3xl font-semibold sm:text-4xl">FAQs</h2>
         <p className="mt-4 text-sm leading-relaxed text-body sm:text-base">
           {aboutFaqIntro}
         </p>
