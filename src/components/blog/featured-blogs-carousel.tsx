@@ -53,13 +53,17 @@ export function FeaturedBlogsCarousel({
   return (
     <>
       <article className="mt-10 grid items-center gap-7 rounded-md border border-border bg-background p-5 lg:grid-cols-[1.1fr_minmax(0,1fr)]">
-        <div className="relative overflow-hidden rounded-md">
+        <Link
+          href={current.href}
+          className="relative block overflow-hidden rounded-md"
+          aria-label={current.title}
+        >
           {isManagedAsset(current.image) ? (
             // Plain img for S3 — avoids Next Image optimizer issues.
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={current.image}
-              alt={current.title}
+              alt=""
               className="aspect-[16/10] h-auto w-full object-cover"
               loading="eager"
               decoding="async"
@@ -67,7 +71,7 @@ export function FeaturedBlogsCarousel({
           ) : (
             <Image
               src={current.image}
-              alt={current.title}
+              alt=""
               width={1280}
               height={800}
               className="h-auto w-full object-cover"
@@ -91,10 +95,12 @@ export function FeaturedBlogsCarousel({
               </span>
             ) : null}
           </div>
-        </div>
+        </Link>
 
         <div>
-          <h3 className="text-3xl font-semibold leading-tight">{current.title}</h3>
+          <Link href={current.href} className="block transition-colors hover:text-brand">
+            <h3 className="text-3xl font-semibold leading-tight">{current.title}</h3>
+          </Link>
           <p className="mt-4 text-base leading-relaxed text-body">{current.excerpt}</p>
           {current.author ? (
             <div className="mt-5 flex items-center gap-3">

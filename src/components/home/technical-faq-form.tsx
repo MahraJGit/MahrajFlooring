@@ -6,17 +6,12 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { faqs as defaultFaqs } from "@/content/home";
-
-type FaqItem = {
-  question: string;
-  answer: string;
-};
+import { DEFAULT_FAQ_INTRO, DEFAULT_FAQS, type FaqItem } from "@/lib/services/faqs";
 
 export function TechnicalFaqForm({
   formIdPrefix = "home",
-  faqs = defaultFaqs,
-  faqIntro = "Most stock items are available within 3-5 working days. Custom orders or specialised sports turf typically require 4-6 weeks from manufacture to port delivery.",
+  faqs = DEFAULT_FAQS,
+  faqIntro = DEFAULT_FAQ_INTRO,
   formTitle = "Technical Expertise",
 }: {
   formIdPrefix?: string;
@@ -24,6 +19,8 @@ export function TechnicalFaqForm({
   faqIntro?: string;
   formTitle?: string;
 }) {
+  const showFaqs = faqs.length > 0;
+
   return (
     <Section
       id="quote-form"
@@ -31,31 +28,41 @@ export function TechnicalFaqForm({
       spacing="none"
       className="scroll-mt-28"
     >
-      <div className="grid items-start gap-6 py-12 lg:grid-cols-2">
-        <div>
-          <h2 className="text-2xl font-semibold sm:text-3xl">FAQ</h2>
-          <p className="mt-4 text-sm leading-relaxed text-body">{faqIntro}</p>
+      <div
+        className={
+          showFaqs
+            ? "grid items-start gap-6 py-12 lg:grid-cols-2"
+            : "grid items-start gap-6 py-12"
+        }
+      >
+        {showFaqs ? (
+          <div>
+            <h2 className="text-2xl font-semibold sm:text-3xl">FAQ</h2>
+            {faqIntro ? (
+              <p className="mt-4 text-sm leading-relaxed text-body">{faqIntro}</p>
+            ) : null}
 
-          <Accordion
-            type="single"
-            collapsible
-            defaultValue={faqs[0]?.question}
-            className="mt-7"
-          >
-            {faqs.map((faq) => (
-              <AccordionItem key={faq.question} value={faq.question}>
-                <AccordionTrigger className="py-4 text-start text-base font-medium text-ink hover:no-underline data-[state=open]:text-brand">
-                  {faq.question}
-                </AccordionTrigger>
-                <AccordionContent className="pb-4 text-sm leading-relaxed text-body">
-                  {faq.answer}
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
-        </div>
+            <Accordion
+              type="single"
+              collapsible
+              defaultValue={faqs[0]?.question}
+              className="mt-7"
+            >
+              {faqs.map((faq, index) => (
+                <AccordionItem key={`${faq.question}-${index}`} value={faq.question}>
+                  <AccordionTrigger className="py-4 text-start text-base font-medium text-ink hover:no-underline data-[state=open]:text-brand">
+                    {faq.question}
+                  </AccordionTrigger>
+                  <AccordionContent className="pb-4 text-sm leading-relaxed text-body">
+                    {faq.answer}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </div>
+        ) : null}
 
-        <div className="rounded-md bg-background p-8 shadow-sm ring-1 ring-border">
+        <div className={showFaqs ? "rounded-md bg-background p-8 shadow-sm ring-1 ring-border" : "max-w-xl rounded-md bg-background p-8 shadow-sm ring-1 ring-border"}>
           <h3 className="text-xl font-semibold uppercase tracking-[0.04em] sm:text-2xl">
             {formTitle}
           </h3>

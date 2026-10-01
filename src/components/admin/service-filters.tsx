@@ -43,10 +43,13 @@ export function ServiceFilters({
     const data = new FormData(event.currentTarget);
     const params = new URLSearchParams();
     const query = String(data.get("q") ?? "").trim();
+    const nextStatus = String(data.get("status") ?? "");
+    const nextGroup = String(data.get("group") ?? "");
+    const nextReady = String(data.get("ready") ?? "");
     if (query) params.set("q", query);
-    if (statusValue === "draft" || statusValue === "published") params.set("status", statusValue);
-    if (groupValue !== "all") params.set("group", groupValue);
-    if (readyValue === "ready" || readyValue === "soon") params.set("ready", readyValue);
+    if (nextStatus === "draft" || nextStatus === "published") params.set("status", nextStatus);
+    if (nextGroup && nextGroup !== "all") params.set("group", nextGroup);
+    if (nextReady === "ready" || nextReady === "soon") params.set("ready", nextReady);
     const qs = params.toString();
     router.push(qs ? `/admin/services?${qs}` : "/admin/services");
   }
@@ -63,6 +66,9 @@ export function ServiceFilters({
         aria-label="Search services"
         className="w-full sm:w-56"
       />
+      <input type="hidden" name="group" value={groupValue} />
+      <input type="hidden" name="status" value={statusValue} />
+      <input type="hidden" name="ready" value={readyValue} />
       <Select value={groupValue} onValueChange={setGroupValue}>
         <SelectTrigger className="w-full sm:w-48" aria-label="Service group">
           <SelectValue placeholder="All groups" />

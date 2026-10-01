@@ -2,6 +2,7 @@ import { asObjectId, isObjectId, toId } from "@/lib/db/ids";
 import { getModels } from "@/lib/db/models";
 import { publishStatus } from "@/lib/cms/status";
 import type { PublishStatus } from "@/lib/cms/types";
+import { readFaqIntro, readFaqs } from "@/lib/services/faqs";
 import {
   DEFAULT_PROCESS_DESCRIPTION,
   DEFAULT_PROCESS_TITLE,
@@ -106,6 +107,8 @@ export type ServiceRecord = {
   processTitle: string;
   processDescription: string;
   processSteps: { label: string }[];
+  faqIntro: string;
+  faqs: { question: string; answer: string }[];
   caseStudiesTitle: string;
   caseStudiesDescription: string;
   projectsTitle: string;
@@ -410,6 +413,8 @@ export async function getService(id: string): Promise<ServiceRecord | null> {
         ? doc.processDescription
         : DEFAULT_PROCESS_DESCRIPTION,
     processSteps: readProcessSteps(doc.processSteps),
+    faqIntro: readFaqIntro(doc.faqIntro),
+    faqs: readFaqs(doc.faqs),
     caseStudiesTitle: String(doc.caseStudiesTitle ?? ""),
     caseStudiesDescription: String(doc.caseStudiesDescription ?? ""),
     projectsTitle: String(doc.projectsTitle ?? ""),

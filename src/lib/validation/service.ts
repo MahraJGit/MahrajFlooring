@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { slugify } from "@/lib/cms/slug";
+import { DEFAULT_FAQS } from "@/lib/services/faqs";
 import {
   DEFAULT_PROCESS_STEPS,
 } from "@/lib/services/process";
@@ -111,6 +112,15 @@ const serviceBase = z.object({
   processSteps: z
     .array(z.object({ label: z.string().trim().min(1, "Enter a step name.") }))
     .default(DEFAULT_PROCESS_STEPS.map((label) => ({ label }))),
+  faqIntro: z.string().trim().optional().or(z.literal("")),
+  faqs: z
+    .array(
+      z.object({
+        question: z.string().trim().min(1, "Enter a question."),
+        answer: z.string().trim().min(1, "Enter an answer."),
+      })
+    )
+    .default(DEFAULT_FAQS.map((faq) => ({ ...faq }))),
   caseStudiesTitle: z.string().trim().optional().or(z.literal("")),
   caseStudiesDescription: z.string().trim().optional().or(z.literal("")),
   projectsTitle: z.string().trim().optional().or(z.literal("")),

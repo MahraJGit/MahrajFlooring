@@ -11,8 +11,6 @@ import {
   PartyPopper,
   SearchCheck,
   Stethoscope,
-  Tent,
-  Trees,
   Trophy,
   Wrench,
   Warehouse,
@@ -42,9 +40,7 @@ export const industries: Industry[] = [
   { slug: "hotels", label: "Hotels", icon: Hotel },
   { slug: "events", label: "Events", icon: PartyPopper },
   { slug: "sports", label: "Sports", icon: Trophy },
-  { slug: "landscapes", label: "Landscapes", icon: Trees },
   { slug: "homes", label: "Homes", icon: House },
-  { slug: "fairs", label: "Fairs", icon: Tent },
   { slug: "stables", label: "Stables", icon: Warehouse },
 ];
 

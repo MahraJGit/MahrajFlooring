@@ -7,13 +7,13 @@ import {
   ExploreCollections,
   ChooseByMatters,
   FindByIndustry,
-  ResourceCenter,
   RealProjects,
   TestimonialBand,
   SizingGuide,
   CatalogueCta,
-  CatalogueFaq,
 } from "@/components/catalogues/catalogue-sections";
+import { TechnicalFaqForm } from "@/components/home/technical-faq-form";
+import { cataloguePage } from "@/content/catalogues";
 
 export const metadata: Metadata = {
   title: "Catalogues",
@@ -30,12 +30,15 @@ export default function CataloguesPage() {
       <ExploreCollections />
       <ChooseByMatters />
       <FindByIndustry />
-      <ResourceCenter />
       <RealProjects />
       <TestimonialBand />
       <SizingGuide />
       <CatalogueCta />
-      <CatalogueFaq />
+      <TechnicalFaqForm
+        formIdPrefix="catalogue"
+        faqs={cataloguePage.faqs}
+        faqIntro={cataloguePage.faqIntro}
+      />
     </>
   );
 }

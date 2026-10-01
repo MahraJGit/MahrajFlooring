@@ -133,7 +133,7 @@ export function EnquiryForm({
             id={`${idPrefix}-company`}
             name="company"
             autoComplete="organization"
-            placeholder="Design Studio"
+            placeholder="Mahraj Flooring"
             value={values.company}
             onChange={(e) => update("company", e.target.value)}
             aria-invalid={Boolean(errors.company)}

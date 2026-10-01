@@ -45,11 +45,17 @@ export function BlogFilters({
     const data = new FormData(event.currentTarget);
     const params = new URLSearchParams();
     const query = String(data.get("q") ?? "").trim();
+    const nextStatus = String(data.get("status") ?? "");
+    const nextCategory = String(data.get("category") ?? "");
+    const nextFeatured = String(data.get("featured") ?? "");
+    const nextSort = String(data.get("sort") ?? "");
     if (query) params.set("q", query);
-    if (status === "draft" || status === "published") params.set("status", status);
-    if (categoryValue !== "all") params.set("category", categoryValue);
-    if (featuredValue !== "all") params.set("featured", featuredValue);
-    if (sortValue !== "published") params.set("sort", sortValue);
+    if (nextStatus === "draft" || nextStatus === "published") params.set("status", nextStatus);
+    if (nextCategory && nextCategory !== "all") params.set("category", nextCategory);
+    if (nextFeatured === "featured" || nextFeatured === "standard") {
+      params.set("featured", nextFeatured);
+    }
+    if (nextSort === "title" || nextSort === "updated") params.set("sort", nextSort);
     const qs = params.toString();
     router.push(qs ? `/admin/blog?${qs}` : "/admin/blog");
   }
@@ -66,6 +72,10 @@ export function BlogFilters({
         aria-label="Search posts"
         className="w-full sm:w-64"
       />
+      <input type="hidden" name="status" value={status} />
+      <input type="hidden" name="category" value={categoryValue} />
+      <input type="hidden" name="featured" value={featuredValue} />
+      <input type="hidden" name="sort" value={sortValue} />
       <Select value={categoryValue} onValueChange={setCategoryValue}>
         <SelectTrigger className="w-full sm:w-44" aria-label="Category">
           <SelectValue placeholder="All categories" />

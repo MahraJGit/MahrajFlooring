@@ -17,12 +17,7 @@ import { SubscribeForm } from "@/components/forms/subscribe-form";
 import { Section } from "@/components/layout/section";
 import { SectionHeading } from "@/components/layout/section-heading";
 import { Button } from "@/components/ui/button";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+import { TopicScroller } from "@/components/catalogues/topic-scroller";
 import { cataloguePage } from "@/content/catalogues";
 
 function hasPublicAsset(src: string) {
@@ -34,7 +29,7 @@ function hasPublicAsset(src: string) {
 export function TopicFilters() {
   return (
     <Section spacing="compact">
-      <ul className="flex justify-center gap-5 overflow-x-auto pb-2">
+      <TopicScroller>
         {cataloguePage.topics.map((topic) => (
           <li key={topic.title} className="shrink-0">
             <button
@@ -51,7 +46,7 @@ export function TopicFilters() {
             </button>
           </li>
         ))}
-      </ul>
+      </TopicScroller>
     </Section>
   );
 }
@@ -117,7 +112,7 @@ export function FeaturedCollection() {
 
 export function ExploreCollections() {
   return (
-    <Section tone="alt">
+    <Section id="collections" tone="alt" className="scroll-mt-28">
       <SectionHeading align="center" title={cataloguePage.explore.title} />
       <ul className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {cataloguePage.explore.collections.map((col) => (
@@ -298,63 +293,6 @@ export function RealProjects() {
   );
 }
 
-/* ─── Catalogue resource center ─── */
-
-export function ResourceCenter() {
-  const cards = cataloguePage.resources.cards;
-  return (
-    <Section>
-      <SectionHeading title={cataloguePage.resources.title} />
-      <div className="mt-10 space-y-4">
-        <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {cards.slice(0, 4).map((card, i) => (
-            <li
-              key={`${card.title}-${i}`}
-              className="rounded-md border border-border bg-background p-5"
-            >
-              <span className="flex size-12 items-center justify-center rounded-md bg-brand text-white">
-                <FileText className="size-6" />
-              </span>
-              <h3 className="mt-4 text-base font-semibold">{card.title}</h3>
-              <p className="mt-1 text-sm text-body">{card.description}</p>
-              <div className="mt-3 flex items-center gap-1.5 text-xs text-body">
-                <FileText className="size-3.5" />
-                {card.fileInfo}
-              </div>
-              <div className="mt-3 flex items-center justify-between">
-                <span className="text-sm font-semibold text-brand">Download</span>
-                <Download className="size-4 text-brand" />
-              </div>
-            </li>
-          ))}
-        </ul>
-        <ul className="mx-auto grid max-w-2xl gap-4 sm:grid-cols-2">
-          {cards.slice(4).map((card, i) => (
-            <li
-              key={`${card.title}-extra-${i}`}
-              className="rounded-md border border-border bg-background p-5"
-            >
-              <span className="flex size-12 items-center justify-center rounded-md bg-brand text-white">
-                <FileText className="size-6" />
-              </span>
-              <h3 className="mt-4 text-base font-semibold">{card.title}</h3>
-              <p className="mt-1 text-sm text-body">{card.description}</p>
-              <div className="mt-3 flex items-center gap-1.5 text-xs text-body">
-                <FileText className="size-3.5" />
-                {card.fileInfo}
-              </div>
-              <div className="mt-3 flex items-center justify-between">
-                <span className="text-sm font-semibold text-brand">Download</span>
-                <Download className="size-4 text-brand" />
-              </div>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </Section>
-  );
-}
-
 /* ─── Testimonial band ─── */
 
 export function TestimonialBand() {
@@ -506,35 +444,3 @@ export function CatalogueCta() {
   );
 }
 
-/* ─── FAQ ─── */
-
-export function CatalogueFaq() {
-  return (
-    <Section tone="alt">
-      <div className="mx-auto max-w-3xl text-center">
-        <h2 className="text-3xl font-semibold sm:text-4xl">FAQ</h2>
-        <p className="mt-4 text-sm leading-relaxed text-body sm:text-base">
-          {cataloguePage.faqIntro}
-        </p>
-      </div>
-
-      <Accordion
-        type="single"
-        collapsible
-        defaultValue={cataloguePage.faqs[0]?.question}
-        className="mx-auto mt-8 max-w-3xl"
-      >
-        {cataloguePage.faqs.map((faq, i) => (
-          <AccordionItem key={`${faq.question}-${i}`} value={`${faq.question}-${i}`}>
-            <AccordionTrigger className="py-4 text-start text-base font-medium text-ink hover:no-underline data-[state=open]:text-brand">
-              {faq.question}
-            </AccordionTrigger>
-            <AccordionContent className="pb-4 text-sm leading-relaxed text-body">
-              {faq.answer}
-            </AccordionContent>
-          </AccordionItem>
-        ))}
-      </Accordion>
-    </Section>
-  );
-}

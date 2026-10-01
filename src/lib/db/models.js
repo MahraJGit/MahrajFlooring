@@ -125,6 +125,8 @@ const ServiceSchema = new Schema(
     processTitle: String,
     processDescription: String,
     processSteps: [Schema.Types.Mixed],
+    faqIntro: String,
+    faqs: [Schema.Types.Mixed],
     caseStudiesTitle: String,
     caseStudiesDescription: String,
     projectsTitle: String,

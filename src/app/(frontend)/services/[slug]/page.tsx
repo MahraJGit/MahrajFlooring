@@ -76,7 +76,11 @@ export default async function ServiceDetailPage({
         (service.processTitle || service.processDescription || service.processSteps.length > 0) ? (
           <ServiceProcess service={service} />
         ) : null}
-        <TechnicalFaqForm formIdPrefix={`service-${service.slug}`} />
+        <TechnicalFaqForm
+          formIdPrefix={`service-${service.slug}`}
+          faqs={service.faqs}
+          faqIntro={service.faqIntro}
+        />
       </>
     );
   }

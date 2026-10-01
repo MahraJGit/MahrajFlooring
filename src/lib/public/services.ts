@@ -5,6 +5,7 @@ import {
   resolveMediaUrl,
   type PublicMedia,
 } from "@/lib/public/media";
+import { readFaqIntro, readFaqs } from "@/lib/services/faqs";
 import {
   DEFAULT_PROCESS_DESCRIPTION,
   DEFAULT_PROCESS_TITLE,
@@ -86,6 +87,8 @@ export type ServiceDetailView = ServiceCard & {
   processTitle: string;
   processDescription: string;
   processSteps: { label: string }[];
+  faqIntro: string;
+  faqs: { question: string; answer: string }[];
   caseStudiesTitle: string;
   caseStudiesDescription: string;
   projectsTitle: string;
@@ -323,6 +326,8 @@ function toDetailView(
         ? service.processDescription
         : DEFAULT_PROCESS_DESCRIPTION,
     processSteps: readProcessSteps(service.processSteps),
+    faqIntro: readFaqIntro(service.faqIntro),
+    faqs: readFaqs(service.faqs),
     caseStudiesTitle:
       typeof service.caseStudiesTitle === "string" ? service.caseStudiesTitle : "",
     caseStudiesDescription:

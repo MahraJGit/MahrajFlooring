@@ -8,7 +8,7 @@ import { industries } from "@/content/home";
 export const metadata: Metadata = {
   title: "Industries We Serve",
   description:
-    "Flooring systems engineered for gyms, schools, hospitals, offices, hotels, events, sports venues, landscapes, homes, fairs, and stables.",
+    "Flooring systems engineered for gyms, schools, hospitals, offices, hotels, events, sports venues, homes, and stables.",
 };
 
 export default function IndustriesPage() {

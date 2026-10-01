@@ -13,6 +13,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { slugify } from "@/lib/cms/slug";
+import { DEFAULT_FAQ_INTRO, DEFAULT_FAQS } from "@/lib/services/faqs";
 import {
   HIGHLIGHT_ICONS,
   HIGHLIGHT_ICON_NAMES,
@@ -72,6 +73,8 @@ function emptyService(): ServiceInput {
     processTitle: DEFAULT_PROCESS_TITLE,
     processDescription: DEFAULT_PROCESS_DESCRIPTION,
     processSteps: DEFAULT_PROCESS_STEPS.map((label) => ({ label })),
+    faqIntro: DEFAULT_FAQ_INTRO,
+    faqs: DEFAULT_FAQS.map((faq) => ({ ...faq })),
     caseStudiesTitle: "",
     caseStudiesDescription: "",
     projectsTitle: "",
@@ -121,6 +124,8 @@ function fromRecord(service: ServiceRecord): ServiceInput {
     processTitle: service.processTitle,
     processDescription: service.processDescription,
     processSteps: service.processSteps,
+    faqIntro: service.faqIntro,
+    faqs: service.faqs,
     caseStudiesTitle: service.caseStudiesTitle,
     caseStudiesDescription: service.caseStudiesDescription,
     projectsTitle: service.projectsTitle,
@@ -164,6 +169,8 @@ const TAB_FIELDS: Record<Tab, string[]> = {
     "processTitle",
     "processDescription",
     "processSteps",
+    "faqIntro",
+    "faqs",
   ],
   Related: ["relatedServices"],
   SEO: ["seoTitle", "seoDescription"],
@@ -856,6 +863,77 @@ export function ServiceForm({
           ) : (
             <p className="text-sm text-muted-foreground">Leave this off to hide the project process on the service page.</p>
           )}
+          </div>
+          <div className="grid gap-4">
+            <div>
+              <h3 className="text-sm font-semibold">FAQs</h3>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Questions shown on this service page. Remove them all to hide the FAQ list.
+              </p>
+            </div>
+            <Field label="Intro" hint="Short note above the questions. Leave blank to hide it." error={errors.faqIntro}>
+              <Textarea
+                value={values.faqIntro ?? ""}
+                placeholder={DEFAULT_FAQ_INTRO}
+                onChange={(e) => update("faqIntro", e.target.value)}
+              />
+            </Field>
+            {errors.faqs ? <p className="text-sm text-destructive">{errors.faqs}</p> : null}
+            <div className="grid gap-4">
+              {values.faqs.map((faq, index) => (
+                <div key={index} className="grid gap-3 rounded-lg border border-border p-3">
+                  <div className="flex items-end gap-2">
+                    <Field
+                      label={`Question ${index + 1}`}
+                      className="min-w-0 flex-1"
+                      error={errors[`faqs.${index}.question`]}
+                    >
+                      <Input
+                        value={faq.question}
+                        placeholder="Question"
+                        onChange={(event) => {
+                          const next = values.faqs.map((item) => ({ ...item }));
+                          next[index] = { ...faq, question: event.target.value };
+                          update("faqs", next);
+                        }}
+                      />
+                    </Field>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="icon"
+                      aria-label={`Remove question ${index + 1}`}
+                      onClick={() =>
+                        update(
+                          "faqs",
+                          values.faqs.filter((_, faqIndex) => faqIndex !== index)
+                        )
+                      }
+                    >
+                      <Trash2 />
+                    </Button>
+                  </div>
+                  <Field label="Answer" error={errors[`faqs.${index}.answer`]}>
+                    <Textarea
+                      value={faq.answer}
+                      placeholder="Answer"
+                      onChange={(event) => {
+                        const next = values.faqs.map((item) => ({ ...item }));
+                        next[index] = { ...faq, answer: event.target.value };
+                        update("faqs", next);
+                      }}
+                    />
+                  </Field>
+                </div>
+              ))}
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => update("faqs", [...values.faqs, { question: "", answer: "" }])}
+              >
+                <Plus className="size-4" /> Add question
+              </Button>
+            </div>
           </div>
         </div>
       ) : null}

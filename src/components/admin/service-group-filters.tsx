@@ -38,12 +38,14 @@ export function ServiceGroupFilters({
     const data = new FormData(event.currentTarget);
     const params = new URLSearchParams();
     const query = String(data.get("q") ?? "").trim();
+    const nextStatus = String(data.get("status") ?? "");
+    const nextMenu = String(data.get("menu") ?? "");
     if (query) params.set("q", query);
-    if (statusValue === "draft" || statusValue === "published") {
-      params.set("status", statusValue);
+    if (nextStatus === "draft" || nextStatus === "published") {
+      params.set("status", nextStatus);
     }
-    if (menuValue === "visible" || menuValue === "hidden") {
-      params.set("menu", menuValue);
+    if (nextMenu === "visible" || nextMenu === "hidden") {
+      params.set("menu", nextMenu);
     }
     const qs = params.toString();
     router.push(qs ? `/admin/service-groups?${qs}` : "/admin/service-groups");
@@ -61,6 +63,8 @@ export function ServiceGroupFilters({
         aria-label="Search service groups"
         className="w-full sm:w-56"
       />
+      <input type="hidden" name="status" value={statusValue} />
+      <input type="hidden" name="menu" value={menuValue} />
       <Select value={statusValue} onValueChange={setStatusValue}>
         <SelectTrigger className="w-full sm:w-40" aria-label="Status">
           <SelectValue placeholder="All statuses" />

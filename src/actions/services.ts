@@ -121,6 +121,13 @@ function toDocument(data: ServiceInput) {
     processSteps: data.processSteps
       .map((step) => ({ label: step.label.trim() }))
       .filter((step) => step.label),
+    faqIntro: data.faqIntro || "",
+    faqs: data.faqs
+      .map((faq) => ({
+        question: faq.question.trim(),
+        answer: faq.answer.trim(),
+      }))
+      .filter((faq) => faq.question && faq.answer),
     caseStudiesTitle: data.caseStudiesTitle || "",
     caseStudiesDescription: data.caseStudiesDescription || "",
     projectsTitle: data.projectsTitle || "",
@@ -151,6 +158,14 @@ function normalizeServiceInput(raw: unknown) {
     data.processSteps = data.processSteps.filter((step) => {
       if (!step || typeof step !== "object") return false;
       return String((step as { label?: unknown }).label ?? "").trim();
+    });
+  }
+  if (Array.isArray(data.faqs)) {
+    data.faqs = data.faqs.filter((faq) => {
+      if (!faq || typeof faq !== "object") return false;
+      const question = String((faq as { question?: unknown }).question ?? "").trim();
+      const answer = String((faq as { answer?: unknown }).answer ?? "").trim();
+      return question || answer;
     });
   }
   return data;
