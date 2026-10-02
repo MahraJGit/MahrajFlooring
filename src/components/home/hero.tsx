@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
+import { FadeIn } from "@/components/motion/reveal";
 import { Container } from "@/components/layout/container";
 import { Button } from "@/components/ui/button";
 import { heroHighlights, heroImage, heroVideo } from "@/content/home";
@@ -57,7 +58,7 @@ export function Hero() {
       />
 
       <Container className="flex min-h-[34rem] flex-col justify-center py-20 lg:min-h-[38rem] lg:py-24">
-        <div className="max-w-2xl">
+        <FadeIn className="max-w-2xl">
           <h1 className="font-heading text-4xl font-semibold leading-[1.12] text-white sm:text-5xl lg:text-[3.5rem]">
             Professional Flooring Solutions for Homes, Workplaces, Gyms, and Commercial Spaces
           </h1>
@@ -74,8 +75,9 @@ export function Hero() {
               </Link>
             </Button>
           </div>
-        </div>
+        </FadeIn>
 
+        <FadeIn delay={0.12}>
         <ul className="mt-14 flex flex-wrap items-center gap-x-10 gap-y-4 border-t border-white/20 pt-6">
           {heroHighlights.map(({ icon: Icon, label }) => (
             <li
@@ -87,6 +89,7 @@ export function Hero() {
             </li>
           ))}
         </ul>
+        </FadeIn>
       </Container>
     </section>
   );

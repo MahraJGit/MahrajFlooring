@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { Stagger, StaggerItem } from "@/components/motion/reveal";
 import { Section } from "@/components/layout/section";
 import { SectionHeading } from "@/components/layout/section-heading";
 import { Button } from "@/components/ui/button";
@@ -14,18 +15,18 @@ export function CoreServices() {
         title="Everything Your Flooring Project Needs"
       />
 
-      <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <Stagger className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {coreServices.map(({ title, subtitle, icon: Icon }, index) => (
-          <li
+          <StaggerItem
             key={`${title}-${index}`}
-            className="rounded-md border border-border bg-background p-6 text-center transition-all hover:border-brand/40 hover:shadow-sm"
+            className="rounded-md border border-border bg-background p-6 text-center transition-all duration-200 hover:-translate-y-0.5 hover:border-brand/40 hover:shadow-sm motion-reduce:hover:translate-y-0"
           >
             <Icon className="mx-auto size-8 text-brand" />
             <h3 className="mt-4 text-sm font-semibold text-ink">{title}</h3>
             <p className="mt-2 text-xs text-body">{subtitle}</p>
-          </li>
+          </StaggerItem>
         ))}
-      </ul>
+      </Stagger>
 
       <div className="mt-10 flex justify-center">
         <Button asChild variant="brandOutline" size="xl">

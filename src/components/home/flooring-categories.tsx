@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
+import { Stagger, StaggerItem } from "@/components/motion/reveal";
 import { Media } from "@/components/media";
 import { Section } from "@/components/layout/section";
 import { SectionHeading } from "@/components/layout/section-heading";
@@ -18,9 +19,9 @@ export async function FlooringCategories() {
         description="Every space has different demands. Browse our specialist flooring categories, purpose built for safety, performance, and heavy duty commercial use across the region."
       />
 
-      <ul className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      <Stagger className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {services.map((service) => (
-          <li key={service.slug}>
+          <StaggerItem key={service.slug}>
             <Link
               href={service.href}
               className="group flex h-full flex-col overflow-hidden rounded-md border border-border bg-background transition-all hover:border-brand/40 hover:shadow-md"
@@ -44,9 +45,9 @@ export async function FlooringCategories() {
                 </span>
               </div>
             </Link>
-          </li>
+          </StaggerItem>
         ))}
-      </ul>
+      </Stagger>
 
       <div className="mt-12 flex justify-center">
         <Button asChild variant="brandOutline" size="xl">

@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { Stagger, StaggerItem } from "@/components/motion/reveal";
 import { Media } from "@/components/media";
 import { Section } from "@/components/layout/section";
 import { SectionHeading } from "@/components/layout/section-heading";
@@ -21,11 +22,11 @@ export function FeaturedCaseStudies() {
         description="See how we've transformed spaces with flooring built for performance and durability."
       />
 
-      <ul className="mt-10 grid gap-5 md:grid-cols-3">
+      <Stagger className="mt-10 grid gap-5 md:grid-cols-3">
         {items.map((item) => (
-          <li
+          <StaggerItem
             key={item.slug}
-            className="overflow-hidden rounded-md border border-border bg-background"
+            className="overflow-hidden rounded-md border border-border bg-background transition-shadow duration-200 hover:shadow-md"
           >
             <Link href={`/projects/${item.slug}`} className="relative block">
               <Media
@@ -50,9 +51,9 @@ export function FeaturedCaseStudies() {
                 <Link href={`/projects/${item.slug}`}>View Project Details</Link>
               </Button>
             </div>
-          </li>
+          </StaggerItem>
         ))}
-      </ul>
+      </Stagger>
     </Section>
   );
 }

@@ -1,6 +1,7 @@
 import { cva, type VariantProps } from "class-variance-authority";
 
 import { Container } from "@/components/layout/container";
+import { Reveal } from "@/components/motion/reveal";
 import { cn } from "@/lib/utils";
 
 const sectionVariants = cva("", {
@@ -40,7 +41,9 @@ export function Section({
       className={cn(sectionVariants({ tone, spacing }), className)}
       {...props}
     >
-      <Container className={containerClassName}>{children}</Container>
+      <Reveal>
+        <Container className={containerClassName}>{children}</Container>
+      </Reveal>
     </section>
   );
 }
