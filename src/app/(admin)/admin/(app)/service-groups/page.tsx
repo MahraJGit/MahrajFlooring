@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Plus } from "lucide-react";
 
 import { SavedBanner } from "@/components/admin/field";
+import { MenuGuide } from "@/components/admin/menu-guide";
 import { AdminPageHeader, EmptyState } from "@/components/admin/page-chrome";
 import { ServiceGroupFilters } from "@/components/admin/service-group-filters";
 import { ServiceGroupTable } from "@/components/admin/service-group-table";
@@ -39,18 +40,19 @@ export default async function ServiceGroupsPage({
   return (
     <>
       <AdminPageHeader
-        title="Service groups"
-        description="Drag the groups into the order they should appear as headings in the website mega menu."
+        title="Families"
+        description="These are the choices on the left of the Services menu."
         action={
           <Button asChild>
             <Link href="/admin/service-groups/new">
               <Plus />
-              New group
+              New family
             </Link>
           </Button>
         }
       />
       <SavedBanner value={saved} />
+      <MenuGuide focus="families" />
       <div className="mb-4">
         <ServiceGroupFilters
           key={[q, status, menu].join("|")}
@@ -63,11 +65,11 @@ export default async function ServiceGroupsPage({
 
       {result.items.length === 0 ? (
         <EmptyState
-          title={filtered ? "No service groups match" : "No service groups yet"}
+          title={filtered ? "No families match" : "No families yet"}
           body={
             filtered
-              ? "Try another filter, or clear them to see every group."
-              : "Create the first group, then add services under it."
+              ? "Try another filter, or clear them to see every family."
+              : "Create the first family, then add services under it."
           }
           action={
             filtered ? (
@@ -78,7 +80,7 @@ export default async function ServiceGroupsPage({
               <Button asChild>
                 <Link href="/admin/service-groups/new">
                   <Plus />
-                  New group
+                  New family
                 </Link>
               </Button>
             )

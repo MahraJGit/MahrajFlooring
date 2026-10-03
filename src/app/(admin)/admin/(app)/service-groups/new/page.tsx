@@ -9,8 +9,8 @@ export default async function NewServiceGroupPage() {
   return (
     <>
       <AdminPageHeader
-        title="New service group"
-        description="Creates a mega-menu column. Add services to it afterwards."
+        title="New family"
+        description="This becomes a choice on the left of the Services menu. Add services to it afterwards."
       />
       <ServiceGroupForm defaultSortOrder={defaultSortOrder} />
     </>

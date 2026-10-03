@@ -127,7 +127,7 @@ export async function deleteServiceGroup(id: string): Promise<ActionResult> {
   const childCount = await countServicesInGroup(id);
   if (childCount > 0) {
     return {
-      error: `This service group contains ${childCount} ${childCount === 1 ? "service" : "services"}. Please move or delete those services before deleting the group.`,
+      error: `This family contains ${childCount} ${childCount === 1 ? "service" : "services"}. Move or delete those services before deleting the family.`,
     };
   }
 

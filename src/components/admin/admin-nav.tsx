@@ -19,7 +19,7 @@ import type { UserRole } from "@/lib/cms/types";
 
 const content = [
   { href: "/admin", label: "Overview", icon: Home, exact: true },
-  { href: "/admin/service-groups", label: "Service Groups", icon: FolderTree },
+  { href: "/admin/service-groups", label: "Families", icon: FolderTree },
   { href: "/admin/services", label: "Services", icon: Layers3 },
   { href: "/admin/blog", label: "Blog", icon: FileText },
   { href: "/admin/categories", label: "Categories", icon: Tags },

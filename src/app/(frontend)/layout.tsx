@@ -25,6 +25,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: {
     default: `${site.name} | Technical Flooring Solutions Across the GCC`,
+    template: `%s | ${site.name}`,
   },
   description: site.description,
   openGraph: {

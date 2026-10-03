@@ -23,7 +23,7 @@ export default async function EditServiceGroupPage({
     <>
       <AdminPageHeader
         title={group.title}
-        description="Edit this mega-menu column. Published changes appear on the website."
+        description="Edit this family. Published changes appear on the left of the Services menu."
       />
       <SavedBanner value={Array.isArray(saved) ? saved[0] : saved} />
       <ServiceGroupForm group={group} />

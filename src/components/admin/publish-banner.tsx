@@ -52,7 +52,7 @@ export function PublishStatusBanner({
       ) : null}
       {kind === "group" ? (
         <p className="mt-2 text-xs text-muted-foreground">
-          Service groups do not have their own page. When published, they appear as mega-menu columns.
+          Service groups do not have their own page. When published, a family appears on the left of the Services menu.
         </p>
       ) : null}
     </div>

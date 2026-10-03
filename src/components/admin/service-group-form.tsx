@@ -87,10 +87,10 @@ export function ServiceGroupForm({
       />
 
       <Field
-        label="Service group"
+        label="Family name"
         htmlFor="title"
         error={errors.title}
-        hint="Shown as the mega-menu column heading."
+        hint="This name appears on the left of the Services menu."
       >
         <Input
           id="title"
@@ -128,8 +128,8 @@ export function ServiceGroupForm({
           }}
         />
         <span>
-          <strong className="block">Show in mega menu</strong>
-          Turn off to hide this column from the website menu.
+          <strong className="block">Show in the Services menu</strong>
+          Turn off to hide this family. Its services stay in the dashboard.
         </span>
       </label>
 
@@ -171,9 +171,9 @@ export function ServiceGroupForm({
 
       {confirmUnpublish ? (
         <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-950">
-          <p className="font-medium">Unpublish this service group?</p>
+          <p className="font-medium">Unpublish this family?</p>
           <p className="mt-1">
-            This will hide the group from the mega menu until you publish it again.
+            This hides the family from the Services menu until you publish it again.
           </p>
           <div className="mt-3 flex gap-2">
             <Button
@@ -228,7 +228,7 @@ export function ServiceGroupForm({
         <div className="border-t border-border pt-6">
           {confirmDelete ? (
             <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-4">
-              <p className="text-sm font-medium">Delete this service group?</p>
+              <p className="text-sm font-medium">Delete this family?</p>
               <p className="mt-1 text-sm text-muted-foreground">
                 This cannot be undone. If it still contains services, deletion will be blocked.
               </p>
@@ -252,10 +252,10 @@ export function ServiceGroupForm({
                     })
                   }
                 >
-                  Delete group
+                  Delete family
                 </Button>
                 <Button type="button" variant="ghost" onClick={() => setConfirmDelete(false)}>
-                  Keep group
+                  Keep family
                 </Button>
               </div>
             </div>
@@ -266,7 +266,7 @@ export function ServiceGroupForm({
               className="text-destructive"
               onClick={() => setConfirmDelete(true)}
             >
-              Delete service group
+              Delete family
             </Button>
           )}
         </div>

@@ -321,14 +321,14 @@ export function ServiceForm({
               }}
             />
           </Field>
-          <Field label="Service group" htmlFor="parent" error={errors.parent} hint="Which mega-menu column this belongs to.">
+          <Field label="Family" htmlFor="parent" error={errors.parent} hint="The left-hand choice this service is listed under.">
             <select
               id="parent"
               className="h-9 w-full rounded-lg border border-input bg-transparent px-2.5 text-sm"
               value={values.parent}
               onChange={(e) => update("parent", e.target.value)}
             >
-              <option value="">Select a group</option>
+              <option value="">Select a family</option>
               {groups.map((group) => (
                 <option key={group.id} value={group.id}>
                   {group.title}
@@ -381,8 +381,8 @@ export function ServiceForm({
               onChange={(e) => update("showInMegaMenu", e.target.checked)}
             />
             <span>
-              <strong className="block">Show in mega menu</strong>
-              Adds a link under this service group. Drag services on the Services list to set the order.
+              <strong className="block">Show in the Services menu</strong>
+              Lists this service on the right when its family is selected. Set the order from the Services page.
             </span>
           </label>
         </div>
@@ -835,7 +835,7 @@ export function ServiceForm({
           ) : (
             <p className="text-sm text-muted-foreground">Leave this off unless the service needs a comparison table.</p>
           )}
-          </div>
+        </div>
           <div className="grid gap-4">
           <label className="flex items-start gap-3 rounded-lg border border-border p-3 text-sm">
             <Checkbox
@@ -878,7 +878,7 @@ export function ServiceForm({
                   </Field>
                 ))}
               </div>
-              <TableRows
+            <TableRows
               columns={values.spaceLabels.map(
                 (label, index) => label.trim() || SPACE_COLUMN_LABELS[index]
               )}

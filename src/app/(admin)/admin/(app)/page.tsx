@@ -30,7 +30,7 @@ export default async function OverviewPage() {
     );
   }
   if (counts.serviceGroups.published === 0) {
-    attention.push("No service groups are published, so the mega menu will be empty.");
+    attention.push("No families are published, so the Services menu will be empty.");
   }
 
   return (
@@ -44,7 +44,7 @@ export default async function OverviewPage() {
         <StatCard
           href="/admin/service-groups"
           icon={FolderTree}
-          label="Service groups"
+          label="Families"
           value={counts.serviceGroups.total}
           hint={`${counts.serviceGroups.published} published`}
         />
@@ -101,7 +101,7 @@ export default async function OverviewPage() {
               Categories <Tags className="ml-1 inline size-3.5" />
             </Link>
             <p className="text-muted-foreground">
-              Service groups, services, blog posts, and categories can be created, edited, and published here.
+              Families and services build the website Services menu. Blog posts and categories are edited here too.
             </p>
           </CardContent>
         </Card>

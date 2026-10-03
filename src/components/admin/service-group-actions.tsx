@@ -61,8 +61,8 @@ export function ServiceGroupActions({
       : "Nothing from this group is on the services page yet.";
   const blockedMessage =
     serviceCount === 1
-      ? "This service group cannot be deleted because it contains 1 service. Move or delete that service first."
-      : `This service group cannot be deleted because it contains ${serviceCount} services. Move or delete those services first.`;
+      ? "This family cannot be deleted because it contains 1 service. Move or delete that service first."
+      : `This family cannot be deleted because it contains ${serviceCount} services. Move or delete those services first.`;
 
   function onOpenChange(next: boolean) {
     if (pending) return;
@@ -76,7 +76,7 @@ export function ServiceGroupActions({
       setError(null);
       const result = await deleteServiceGroup(id);
       if (result.error || !result.href) {
-        setError(result.error ?? "The service group could not be deleted. Please try again.");
+        setError(result.error ?? "The family could not be deleted. Please try again.");
         return;
       }
       router.push(result.href);
@@ -142,12 +142,12 @@ export function ServiceGroupActions({
               <Trash2 />
             </AlertDialogMedia>
             <AlertDialogTitle>
-              {inUse ? "This service group cannot be deleted" : "Delete this service group?"}
+              {inUse ? "This family cannot be deleted" : "Delete this family?"}
             </AlertDialogTitle>
             <AlertDialogDescription>
               {inUse
                 ? blockedMessage
-                : `“${title}” has no services. Deleting it removes the group from the menu. This cannot be undone.`}
+                : `“${title}” has no services. Deleting it removes the family from the menu. This cannot be undone.`}
             </AlertDialogDescription>
           </AlertDialogHeader>
           {error ? (
@@ -159,7 +159,7 @@ export function ServiceGroupActions({
             <AlertDialogCancel disabled={pending}>{inUse ? "Close" : "Cancel"}</AlertDialogCancel>
             {inUse ? null : (
               <Button type="button" variant="destructive" disabled={pending} onClick={remove}>
-                {pending ? "Deleting…" : "Delete group"}
+                {pending ? "Deleting…" : "Delete family"}
               </Button>
             )}
           </AlertDialogFooter>

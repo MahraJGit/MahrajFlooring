@@ -70,11 +70,11 @@ export function ServiceFilters({
       <input type="hidden" name="status" value={statusValue} />
       <input type="hidden" name="ready" value={readyValue} />
       <Select value={groupValue} onValueChange={setGroupValue}>
-        <SelectTrigger className="w-full sm:w-48" aria-label="Service group">
-          <SelectValue placeholder="All groups" />
+        <SelectTrigger className="w-full sm:w-48" aria-label="Family">
+          <SelectValue placeholder="All families" />
         </SelectTrigger>
         <SelectContent position="popper">
-          <SelectItem value="all">All groups</SelectItem>
+          <SelectItem value="all">All families</SelectItem>
           {groups.map((item) => (
             <SelectItem key={item.id} value={item.id}>
               {item.title}

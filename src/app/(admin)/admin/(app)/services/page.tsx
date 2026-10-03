@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Plus } from "lucide-react";
 
 import { SavedBanner } from "@/components/admin/field";
+import { MenuGuide } from "@/components/admin/menu-guide";
 import { AdminPageHeader, EmptyState } from "@/components/admin/page-chrome";
 import { ServiceFilters } from "@/components/admin/service-filters";
 import { ServiceTable } from "@/components/admin/service-table";
@@ -46,7 +47,7 @@ export default async function ServicesPage({
     <>
       <AdminPageHeader
         title="Services"
-        description="Create a service under a group, then drag it into the mega menu order. Empty page sections stay off the website."
+        description="Services are the links on the right of the Services menu, inside the family you choose."
         action={
           <Button asChild>
             <Link href="/admin/services/new">
@@ -57,6 +58,7 @@ export default async function ServicesPage({
         }
       />
       <SavedBanner value={saved} />
+      <MenuGuide focus="services" />
       <div className="mb-4">
         <ServiceFilters
           key={[q, status, group, ready].join("|")}
@@ -75,7 +77,7 @@ export default async function ServicesPage({
           body={
             filtered
               ? "Try another filter, or clear them to see every service."
-              : "Create a service group first, then add services under it."
+              : "Create a family first, then add services under it."
           }
           action={
             filtered ? (

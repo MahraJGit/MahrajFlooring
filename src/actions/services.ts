@@ -201,7 +201,7 @@ export async function saveService(
   const { Service, MainService } = await getModels();
   const parent = await MainService.findById(data.parent).select("_id").lean();
   if (!parent) {
-    return { fieldErrors: { parent: "Please choose a service group." } };
+    return { fieldErrors: { parent: "Please choose a family." } };
   }
 
   const previous =

@@ -14,7 +14,7 @@ export default async function NewServicePage() {
     <>
       <AdminPageHeader
         title="New service"
-        description="Choose a group first. Publish when the listing image and summary are ready."
+        description="Choose a family first. The service is listed on the right of that family in the Services menu."
       />
       <ServiceForm groups={groups} relatedOptions={relatedOptions} />
     </>

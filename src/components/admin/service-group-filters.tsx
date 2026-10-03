@@ -81,7 +81,7 @@ export function ServiceGroupFilters({
         </SelectTrigger>
         <SelectContent position="popper">
           <SelectItem value="all">All menu visibility</SelectItem>
-          <SelectItem value="visible">In mega menu</SelectItem>
+          <SelectItem value="visible">Shown in the menu</SelectItem>
           <SelectItem value="hidden">Hidden from menu</SelectItem>
         </SelectContent>
       </Select>

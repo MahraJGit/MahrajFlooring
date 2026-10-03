@@ -75,10 +75,10 @@ export function ServiceGroupTable({
         </p>
         <p className="text-xs text-muted-foreground">
           {canReorder
-            ? "Drag a group to set the mega menu order."
+            ? "Drag a family to set the order on the left of the Services menu."
             : filtered
-              ? "Clear filters to change the mega menu order."
-              : "This is the mega menu order."}
+              ? "Clear filters to change the menu order."
+              : "This is the order on the left of the Services menu."}
         </p>
       </div>
       {canReorder ? (
@@ -199,7 +199,7 @@ function GroupTable({
       <TableHeader>
         <TableRow className="hover:bg-transparent">
           <TableHead className={cn(headClass, "w-16")}>Order</TableHead>
-          <TableHead className={headClass}>Group</TableHead>
+          <TableHead className={headClass}>Family</TableHead>
           <TableHead className={cn(headClass, "hidden sm:table-cell")}>Services</TableHead>
           <TableHead className={cn(headClass, "hidden md:table-cell")}>Menu</TableHead>
           <TableHead className={headClass}>Status</TableHead>

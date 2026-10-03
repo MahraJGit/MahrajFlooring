@@ -82,14 +82,14 @@ export function ServiceTable({
         </p>
         <p className="text-xs text-muted-foreground">
           {canReorder
-            ? "Drag a service to set its order in the mega menu."
+            ? "Drag a service to set its order on the right of this family."
             : ordering && total < 2
-              ? "Add another service in this group before you can change the order."
+              ? "Add another service in this family before you can change the order."
               : groupId
-                ? "Clear the other filters to change this group’s order."
+                ? "Clear the other filters to change this family’s order."
                 : filtered
-                  ? "Choose one service group, with no other filters, to drag the menu order."
-                  : "Choose a service group to drag the mega menu order."}
+                  ? "Choose one family, with no other filters, to drag the order."
+                  : "Choose one family to drag the order of its services."}
         </p>
       </div>
       {canReorder && groupId ? (
@@ -210,7 +210,7 @@ function ServiceRows({
         <TableRow className="hover:bg-transparent">
           <TableHead className={cn(headClass, "w-16")}>Order</TableHead>
           <TableHead className={headClass}>Service</TableHead>
-          <TableHead className={cn(headClass, "hidden w-40 md:table-cell")}>Group</TableHead>
+          <TableHead className={cn(headClass, "hidden w-40 md:table-cell")}>Family</TableHead>
           <TableHead className={cn(headClass, "hidden w-28 sm:table-cell")}>Page</TableHead>
           <TableHead className={cn(headClass, "hidden w-28 lg:table-cell")}>Menu</TableHead>
           <TableHead className={cn(headClass, "w-36")}>Status</TableHead>
