@@ -98,7 +98,7 @@ export function SiteHeader({
                     </NavigationMenuTrigger>
                     <NavigationMenuContent
                       style={{ top: menuTop }}
-                      className="fixed inset-x-0 z-50 mt-0 w-screen max-w-none overflow-visible rounded-none border-t border-border bg-popover p-0 shadow-[0_28px_50px_-28px_rgba(16,16,16,0.45)] ring-0 md:fixed md:inset-x-0 md:w-screen group-data-[viewport=false]/navigation-menu:mt-0 group-data-[viewport=false]/navigation-menu:w-screen group-data-[viewport=false]/navigation-menu:overflow-visible group-data-[viewport=false]/navigation-menu:rounded-none group-data-[viewport=false]/navigation-menu:bg-popover group-data-[viewport=false]/navigation-menu:shadow-[0_28px_50px_-28px_rgba(16,16,16,0.45)] group-data-[viewport=false]/navigation-menu:ring-0"
+                      className="fixed inset-x-0 z-50 mx-auto mt-0 w-[min(80rem,calc(100%-4rem))] max-w-none overflow-visible rounded-b-xl border border-border bg-popover p-0 shadow-[0_28px_50px_-28px_rgba(16,16,16,0.45)] ring-0 md:fixed md:inset-x-0 md:mx-auto md:w-[min(80rem,calc(100%-4rem))] group-data-[viewport=false]/navigation-menu:mt-0 group-data-[viewport=false]/navigation-menu:w-[min(80rem,calc(100%-4rem))] group-data-[viewport=false]/navigation-menu:overflow-visible group-data-[viewport=false]/navigation-menu:rounded-b-xl group-data-[viewport=false]/navigation-menu:bg-popover group-data-[viewport=false]/navigation-menu:shadow-[0_28px_50px_-28px_rgba(16,16,16,0.45)] group-data-[viewport=false]/navigation-menu:ring-0"
                     >
                       <MegaMenuPanel columns={megaMenu} />
                     </NavigationMenuContent>

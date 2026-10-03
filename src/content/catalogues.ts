@@ -57,16 +57,8 @@ export const cataloguePage = {
       image: "/images/catalogue/Sports.png",
     },
     {
-      title: "Landscapes",
-      image: "/images/catalogue/Landscapes.png",
-    },
-    {
       title: "Homes",
       image: "/images/catalogue/Homes.png",
-    },
-    {
-      title: "Fairs",
-      image: "/images/catalogue/Fairs.png",
     },
     {
       title: "Stables",

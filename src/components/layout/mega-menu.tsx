@@ -5,7 +5,6 @@ import { useState } from "react";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 
-import { Container } from "@/components/layout/container";
 import type { MegaMenuColumn } from "@/lib/public/services";
 import { cn } from "@/lib/utils";
 
@@ -18,7 +17,7 @@ export function MegaMenuPanel({ columns }: { columns: MegaMenuColumn[] }) {
 
   if (!active) {
     return (
-      <Container className="py-8">
+      <div className="px-5 py-3">
         <Link
           href="/services"
           className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand"
@@ -26,13 +25,13 @@ export function MegaMenuPanel({ columns }: { columns: MegaMenuColumn[] }) {
           View all services
           <ArrowRight className="size-4" />
         </Link>
-      </Container>
+      </div>
     );
   }
 
   return (
-    <Container className="py-6 lg:py-8">
-      <div className="mb-5 flex items-end justify-between gap-4">
+    <div className="px-5 py-3">
+      <div className="mb-2.5 flex items-end justify-between gap-3">
         <div>
           <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-brand">
             Flooring systems
@@ -50,7 +49,7 @@ export function MegaMenuPanel({ columns }: { columns: MegaMenuColumn[] }) {
         </Link>
       </div>
 
-      <div className="grid items-start gap-4 lg:grid-cols-[17.5rem_minmax(0,1fr)] lg:gap-6">
+      <div className="grid items-start gap-2.5 lg:grid-cols-[15.5rem_minmax(0,1fr)] lg:gap-3">
         <div
           role="tablist"
           aria-label="Service groups"
@@ -68,7 +67,7 @@ export function MegaMenuPanel({ columns }: { columns: MegaMenuColumn[] }) {
                 onFocus={() => setActiveIndex(index)}
                 onClick={() => setActiveIndex(index)}
                 className={cn(
-                  "flex min-w-[12rem] shrink-0 items-center justify-between gap-3 rounded-md border px-3.5 py-3 text-start transition-colors lg:min-w-0 lg:w-full",
+                  "flex min-w-[11rem] shrink-0 items-center justify-between gap-2 rounded-md border px-3 py-2 text-start transition-colors lg:min-w-0 lg:w-full",
                   selected
                     ? "border-brand bg-brand text-white"
                     : "border-border bg-background text-ink hover:border-brand/40"
@@ -103,9 +102,9 @@ export function MegaMenuPanel({ columns }: { columns: MegaMenuColumn[] }) {
             animate={{ opacity: 1, y: 0 }}
             exit={reduce ? undefined : { opacity: 0, y: -6 }}
             transition={{ duration: 0.22, ease }}
-            className="rounded-md border border-border bg-surface-alt/70 p-3 sm:p-4"
+            className="rounded-md border border-border bg-surface-alt/70 p-2"
           >
-            <div className="mb-3 flex items-center justify-between gap-3 px-1">
+            <div className="mb-1.5 flex items-center justify-between gap-3 px-1.5">
               <h3 className="text-sm font-semibold text-ink">{active.title}</h3>
               <span className="text-xs text-body">
                 {active.links.length === 1
@@ -113,12 +112,12 @@ export function MegaMenuPanel({ columns }: { columns: MegaMenuColumn[] }) {
                   : `${active.links.length} systems`}
               </span>
             </div>
-            <ul className="grid gap-1.5 sm:grid-cols-2">
+            <ul className="grid gap-1 sm:grid-cols-2">
               {active.links.map((link) => (
                 <li key={`${active.title}-${link.href}-${link.label}`}>
                   <Link
                     href={link.href}
-                    className="group flex items-center justify-between gap-3 rounded-md bg-background px-3.5 py-3 text-sm font-medium text-ink ring-1 ring-transparent transition-all hover:-translate-y-px hover:text-brand hover:ring-brand/30 hover:shadow-sm motion-reduce:hover:translate-y-0"
+                    className="group flex items-center justify-between gap-2 rounded-md bg-background px-3 py-2 text-sm font-medium text-ink ring-1 ring-transparent transition-all hover:-translate-y-px hover:text-brand hover:ring-brand/30 hover:shadow-sm motion-reduce:hover:translate-y-0"
                   >
                     <span className="min-w-0 leading-5">{link.label}</span>
                     <ArrowUpRight className="size-4 shrink-0 text-body transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-brand" />
@@ -132,11 +131,11 @@ export function MegaMenuPanel({ columns }: { columns: MegaMenuColumn[] }) {
 
       <Link
         href="/services"
-        className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-brand sm:hidden"
+        className="mt-2.5 inline-flex items-center gap-1.5 text-sm font-semibold text-brand sm:hidden"
       >
         View all services
         <ArrowRight className="size-4" />
       </Link>
-    </Container>
+    </div>
   );
 }
