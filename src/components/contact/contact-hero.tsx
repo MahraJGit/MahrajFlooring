@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 
 import { Container } from "@/components/layout/container";
+import { FadeIn } from "@/components/motion/reveal";
 import { contactHero } from "@/content/contact";
 
 function hasPublicAsset(src: string) {
@@ -53,9 +54,11 @@ export function ContactHero() {
           </ol>
         </nav>
 
-        <h1 className="mt-10 max-w-[34rem] font-heading text-3xl font-semibold leading-[1.15] text-white sm:text-4xl lg:max-w-[38rem] lg:text-[2.5rem]">
-          {contactHero.title}
-        </h1>
+        <FadeIn>
+          <h1 className="mt-10 max-w-[34rem] font-heading text-3xl font-semibold leading-[1.15] text-white sm:text-4xl lg:max-w-[38rem] lg:text-[2.5rem]">
+            {contactHero.title}
+          </h1>
+        </FadeIn>
 
         {/* {showDevice ? (
           <div className="pointer-events-none absolute -bottom-[100px] start-0 z-20 h-[150px] w-[310px] sm:h-[175px] sm:w-[360px] lg:h-[205px] lg:w-[424px]">

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 
 import { Container } from "@/components/layout/container";
+import { FadeIn } from "@/components/motion/reveal";
 import { Button } from "@/components/ui/button";
 import { aboutHero } from "@/content/about";
 
@@ -51,7 +52,7 @@ export function AboutHero() {
           </ol>
         </nav>
 
-        <div className="mt-10 max-w-2xl">
+        <FadeIn className="mt-10 max-w-2xl">
           <h1 className="font-heading text-4xl font-semibold leading-[1.12] text-white sm:text-5xl">
             {aboutHero.title}
           </h1>
@@ -70,7 +71,7 @@ export function AboutHero() {
               <Link href="/services">Explore Our Services</Link>
             </Button>
           </div>
-        </div>
+        </FadeIn>
       </Container>
     </section>
   );

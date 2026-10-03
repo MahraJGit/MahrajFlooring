@@ -1,4 +1,5 @@
 import { Section } from "@/components/layout/section";
+import { Stagger, StaggerItem } from "@/components/motion/reveal";
 import { SectionHeading } from "@/components/layout/section-heading";
 import { contactChannels, contactIntro } from "@/content/contact";
 
@@ -16,10 +17,10 @@ export function GetInTouch() {
         description={contactIntro.description}
       />
 
-      <ul className="mt-10 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <Stagger className="mt-10 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {contactChannels.map(
           ({ title, description, action, href, icon: Icon, external, note }) => (
-            <li key={title}>
+            <StaggerItem key={title}>
               <a
                 href={href}
                 {...(external
@@ -43,10 +44,10 @@ export function GetInTouch() {
                   </span>
                 ) : null}
               </a>
-            </li>
+            </StaggerItem>
           )
         )}
-      </ul>
+      </Stagger>
     </Section>
   );
 }

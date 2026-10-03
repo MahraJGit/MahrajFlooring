@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 
 import { Container } from "@/components/layout/container";
+import { FadeIn } from "@/components/motion/reveal";
 import { Media } from "@/components/media";
 import { Button } from "@/components/ui/button";
 import type { ServiceDetailView } from "@/lib/public/services";
@@ -60,7 +61,7 @@ export function ServiceHero({ service }: { service: ServiceDetailView }) {
           </ol>
         </nav>
 
-        <div className="mt-10 max-w-2xl">
+        <FadeIn className="mt-10 max-w-2xl">
           <h1 className="font-heading text-4xl font-semibold leading-[1.12] text-white sm:text-5xl">
             {service.heroTitle}
           </h1>
@@ -70,7 +71,7 @@ export function ServiceHero({ service }: { service: ServiceDetailView }) {
           <Button asChild variant="brand" size="xl" className="mt-8">
             <Link href="/contact#quote-form">Request a Quote</Link>
           </Button>
-        </div>
+        </FadeIn>
       </Container>
     </section>
   );

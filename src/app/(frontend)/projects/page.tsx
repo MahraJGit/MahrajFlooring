@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { Media } from "@/components/media";
+import { Stagger, StaggerItem } from "@/components/motion/reveal";
 import { PageHero } from "@/components/layout/page-hero";
 import { Section } from "@/components/layout/section";
 import { projects } from "@/content/home";
@@ -20,9 +21,9 @@ export default function ProjectsPage() {
         description="A selection of installations delivered for sports, commercial, and healthcare clients across the Gulf."
       />
       <Section>
-        <ul className="grid gap-6 md:grid-cols-3">
+        <Stagger className="grid gap-6 md:grid-cols-3">
           {projects.map((project) => (
-            <li key={project.slug}>
+            <StaggerItem key={project.slug}>
               <Link href={`/projects/${project.slug}`} className="group block">
                 <Media
                   src={project.image}
@@ -40,9 +41,9 @@ export default function ProjectsPage() {
                   Application: {project.application} | Product: {project.product}
                 </p>
               </Link>
-            </li>
+            </StaggerItem>
           ))}
-        </ul>
+        </Stagger>
       </Section>
     </>
   );

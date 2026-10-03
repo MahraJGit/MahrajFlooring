@@ -5,6 +5,7 @@ import Link from "next/link";
 import { BadgeCheck, ChevronRight, Star } from "lucide-react";
 
 import { Container } from "@/components/layout/container";
+import { FadeIn } from "@/components/motion/reveal";
 import { Button } from "@/components/ui/button";
 import { heroMetrics, reviewsHero } from "@/content/reviews";
 
@@ -51,7 +52,7 @@ export function ReviewsHero() {
           </ol>
         </nav>
 
-        <div className="mt-8 max-w-2xl">
+        <FadeIn className="mt-8 max-w-2xl">
           <h1 className="font-heading text-4xl font-semibold leading-[1.12] text-white sm:text-5xl">
             {reviewsHero.title}
           </h1>
@@ -101,7 +102,7 @@ export function ReviewsHero() {
               <a href="#solution-feedback">View Our Projects</a>
             </Button> */}
           </div>
-        </div>
+        </FadeIn>
       </Container>
     </section>
   );

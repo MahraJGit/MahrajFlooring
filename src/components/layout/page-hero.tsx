@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 
 import { Container } from "@/components/layout/container";
+import { FadeIn } from "@/components/motion/reveal";
 
 export function PageHero({
   title,
@@ -38,14 +39,16 @@ export function PageHero({
           </nav>
         ) : null}
 
-        <h1 className="font-heading text-3xl font-semibold sm:text-4xl lg:text-[2.75rem]">
-          {title}
-        </h1>
-        {description ? (
-          <p className="mt-4 max-w-2xl text-base leading-relaxed text-body">
-            {description}
-          </p>
-        ) : null}
+        <FadeIn>
+          <h1 className="font-heading text-3xl font-semibold sm:text-4xl lg:text-[2.75rem]">
+            {title}
+          </h1>
+          {description ? (
+            <p className="mt-4 max-w-2xl text-base leading-relaxed text-body">
+              {description}
+            </p>
+          ) : null}
+        </FadeIn>
       </Container>
     </section>
   );

@@ -4,6 +4,7 @@ import { ArrowRight } from "lucide-react";
 import { Media } from "@/components/media";
 import { Section } from "@/components/layout/section";
 import { SectionHeading } from "@/components/layout/section-heading";
+import { Stagger, StaggerItem } from "@/components/motion/reveal";
 import { aboutAudiences, aboutIndustries } from "@/content/about";
 import { cn } from "@/lib/utils";
 
@@ -18,9 +19,9 @@ export function AboutIndustries() {
     <Section>
       <SectionHeading align="center" title="Industries we Serve" />
 
-      <ul className="mt-10 grid auto-rows-36 grid-flow-row-dense grid-cols-1 gap-4 sm:auto-rows-40 sm:grid-cols-2 lg:auto-rows-46 lg:grid-cols-4">
+      <Stagger className="mt-10 grid auto-rows-36 grid-flow-row-dense grid-cols-1 gap-4 sm:auto-rows-40 sm:grid-cols-2 lg:auto-rows-46 lg:grid-cols-4">
         {aboutIndustries.map((industry) => (
-          <li
+          <StaggerItem
             key={industry.title}
             className={cn("min-w-0", industrySpanClass[industry.size])}
           >
@@ -54,9 +55,9 @@ export function AboutIndustries() {
                 </span>
               </span>
             </Link>
-          </li>
+          </StaggerItem>
         ))}
-      </ul>
+      </Stagger>
     </Section>
   );
 }

@@ -6,6 +6,7 @@ import { ChevronRight } from "lucide-react";
 
 import { BlogSearchForm } from "@/components/blog/blog-search-form";
 import { Container } from "@/components/layout/container";
+import { FadeIn } from "@/components/motion/reveal";
 import { blogPage } from "@/content/blog";
 
 function hasPublicAsset(src: string) {
@@ -57,14 +58,14 @@ export function BlogHero({
           </ol>
         </nav>
 
-        <div className="mx-auto mt-8 max-w-3xl text-center">
+        <FadeIn className="mx-auto mt-8 max-w-3xl text-center">
           <h1 className="font-heading text-4xl font-semibold leading-[1.12] text-white sm:text-5xl">
             {blogPage.hero.title}
           </h1>
           <p className="mx-auto mt-4 max-w-2xl text-center text-sm leading-relaxed text-white/75 md:text-base">
             {blogPage.hero.description}
           </p>
-        </div>
+        </FadeIn>
 
         <BlogSearchForm query={query} category={category} />
       </Container>

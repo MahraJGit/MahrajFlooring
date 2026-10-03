@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
+import { Stagger, StaggerItem } from "@/components/motion/reveal";
 import { PageHero } from "@/components/layout/page-hero";
 import { Section } from "@/components/layout/section";
 import { Media } from "@/components/media";
@@ -39,9 +40,9 @@ export default async function ServicesPage() {
                 </p>
               </div>
 
-              <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              <Stagger className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {group.children.map((service) => (
-                  <li key={service.slug}>
+                  <StaggerItem key={service.slug}>
                     <Link
                       href={service.href}
                       className="group flex h-full flex-col overflow-hidden rounded-md border border-border bg-background transition-all hover:border-brand/40 hover:shadow-md"
@@ -65,9 +66,9 @@ export default async function ServicesPage() {
                         </span>
                       </div>
                     </Link>
-                  </li>
+                  </StaggerItem>
                 ))}
-              </ul>
+              </Stagger>
             </section>
           ))}
         </div>

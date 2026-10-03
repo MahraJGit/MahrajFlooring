@@ -52,35 +52,41 @@ export function MobileNav({ megaMenu }: { megaMenu: MegaMenuColumn[] }) {
                     {item.label}
                   </AccordionTrigger>
                   <AccordionContent className="pb-3 [&_a]:no-underline!">
-                    <div className="space-y-5">
+                    <Accordion type="single" collapsible className="space-y-2">
                       {megaMenu.map((column) => (
-                        <div key={column.title}>
-                          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-brand">
+                        <AccordionItem
+                          key={column.title}
+                          value={column.title}
+                          className="rounded-md border border-border px-3"
+                        >
+                          <AccordionTrigger className="py-3 text-sm font-semibold text-ink hover:no-underline">
                             {column.title}
-                          </p>
-                          <ul className="mt-2 space-y-2">
-                            {column.links.map((link) => (
-                              <li key={`${column.title}-${link.href}-${link.label}`}>
-                                <Link
-                                  href={link.href}
-                                  onClick={close}
-                                  className="text-sm text-body no-underline hover:text-brand"
-                                >
-                                  {link.label}
-                                </Link>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
+                          </AccordionTrigger>
+                          <AccordionContent className="pb-3">
+                            <ul className="space-y-2">
+                              {column.links.map((link) => (
+                                <li key={`${column.title}-${link.href}-${link.label}`}>
+                                  <Link
+                                    href={link.href}
+                                    onClick={close}
+                                    className="text-sm text-body no-underline hover:text-brand"
+                                  >
+                                    {link.label}
+                                  </Link>
+                                </li>
+                              ))}
+                            </ul>
+                          </AccordionContent>
+                        </AccordionItem>
                       ))}
-                      <Link
-                        href="/services"
-                        onClick={close}
-                        className="inline-block text-sm font-semibold text-brand no-underline"
-                      >
-                        View All Services
-                      </Link>
-                    </div>
+                    </Accordion>
+                    <Link
+                      href="/services"
+                      onClick={close}
+                      className="mt-4 inline-block text-sm font-semibold text-brand no-underline"
+                    >
+                      View All Services
+                    </Link>
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>

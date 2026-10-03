@@ -15,6 +15,7 @@ import { Media } from "@/components/media";
 import { SubscribeForm } from "@/components/forms/subscribe-form";
 import { Section } from "@/components/layout/section";
 import { SectionHeading } from "@/components/layout/section-heading";
+import { Stagger, StaggerItem } from "@/components/motion/reveal";
 import { Button } from "@/components/ui/button";
 import { TopicScroller } from "@/components/catalogues/topic-scroller";
 import { cataloguePage } from "@/content/catalogues";
@@ -182,11 +183,11 @@ export function ExploreCollections({ query }: { query?: string }) {
   return (
     <Section id="collections" tone="alt" className="scroll-mt-28">
       <SectionHeading align="center" title={cataloguePage.explore.title} />
-      <ul className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      <Stagger className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {collections.map((col) => (
-          <li
+          <StaggerItem
             key={col.title}
-            className="overflow-hidden rounded-md border border-border bg-background"
+            className="overflow-hidden rounded-md border border-border bg-background transition-shadow duration-200 hover:shadow-md"
           >
             <div className="relative">
               <Media
@@ -231,9 +232,9 @@ export function ExploreCollections({ query }: { query?: string }) {
                 </Link>
               </Button>
             </div>
-          </li>
+          </StaggerItem>
         ))}
-      </ul>
+      </Stagger>
 
       <div className="mt-10 flex justify-center">
         <Button asChild variant="brand" size="xl">

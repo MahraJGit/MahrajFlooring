@@ -6,6 +6,7 @@ import { ChevronRight } from "lucide-react";
 
 import { CatalogueSearchForm } from "@/components/catalogues/catalogue-search-form";
 import { Container } from "@/components/layout/container";
+import { FadeIn } from "@/components/motion/reveal";
 import { Button } from "@/components/ui/button";
 import { cataloguePage } from "@/content/catalogues";
 
@@ -52,14 +53,14 @@ export function CatalogueHero({ query }: { query?: string }) {
           </ol>
         </nav>
 
-        <div className="mt-8 max-w-xl">
+        <FadeIn className="mt-8 max-w-xl">
           <h1 className="font-heading text-4xl font-semibold leading-[1.12] text-white sm:text-5xl whitespace-pre-line">
             {cataloguePage.hero.title}
           </h1>
           <p className="mt-4 max-w-lg text-sm leading-relaxed text-white/75 md:text-base">
             {cataloguePage.hero.description}
           </p>
-        </div>
+        </FadeIn>
 
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
           <Button asChild variant="brand" size="xl">

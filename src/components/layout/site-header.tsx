@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useLayoutEffect, useRef, useState } from "react";
 import { Mail, Phone } from "lucide-react";
 
 import { Container } from "@/components/layout/container";
@@ -50,13 +51,29 @@ export function SiteHeader({
   megaMenu: MegaMenuColumn[];
 }) {
   const pathname = usePathname();
+  const headerRef = useRef<HTMLElement>(null);
+  const [menuTop, setMenuTop] = useState(0);
+
+  useLayoutEffect(() => {
+    const header = headerRef.current;
+    if (!header) return;
+    const sync = () => setMenuTop(header.getBoundingClientRect().bottom);
+    sync();
+    const observer = new ResizeObserver(sync);
+    observer.observe(header);
+    window.addEventListener("resize", sync);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", sync);
+    };
+  }, []);
 
   function isActive(href: string) {
     return href === "/" ? pathname === "/" : pathname.startsWith(href);
   }
 
   return (
-    <header className="sticky top-0 z-40 bg-background">
+    <header ref={headerRef} className="sticky top-0 z-40 bg-background">
       <TopBar />
       <div className="relative border-b border-border">
         <Container className="flex h-16 items-center justify-between gap-4 lg:h-[4.5rem]">
@@ -79,7 +96,10 @@ export function SiteHeader({
                     >
                       {item.label}
                     </NavigationMenuTrigger>
-                    <NavigationMenuContent className="start-0 top-full w-full rounded-none border-t border-border bg-popover p-0 shadow-lg group-data-[viewport=false]/navigation-menu:mt-0 group-data-[viewport=false]/navigation-menu:rounded-none md:w-full">
+                    <NavigationMenuContent
+                      style={{ top: menuTop }}
+                      className="fixed inset-x-0 z-50 mt-0 w-screen max-w-none overflow-visible rounded-none border-t border-border bg-popover p-0 shadow-[0_28px_50px_-28px_rgba(16,16,16,0.45)] ring-0 md:fixed md:inset-x-0 md:w-screen group-data-[viewport=false]/navigation-menu:mt-0 group-data-[viewport=false]/navigation-menu:w-screen group-data-[viewport=false]/navigation-menu:overflow-visible group-data-[viewport=false]/navigation-menu:rounded-none group-data-[viewport=false]/navigation-menu:bg-popover group-data-[viewport=false]/navigation-menu:shadow-[0_28px_50px_-28px_rgba(16,16,16,0.45)] group-data-[viewport=false]/navigation-menu:ring-0"
+                    >
                       <MegaMenuPanel columns={megaMenu} />
                     </NavigationMenuContent>
                   </NavigationMenuItem>

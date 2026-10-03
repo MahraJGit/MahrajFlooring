@@ -15,6 +15,7 @@ import { Media } from "@/components/media";
 import { Section } from "@/components/layout/section";
 import { SectionHeading } from "@/components/layout/section-heading";
 import { Button } from "@/components/ui/button";
+import { Stagger, StaggerItem } from "@/components/motion/reveal";
 import { blogPage } from "@/content/blog";
 import type { BlogCard, BlogCategory } from "@/lib/public/blog";
 import { cn } from "@/lib/utils";
@@ -298,13 +299,13 @@ export function LatestInsights({
           ) : null}
         </div>
       ) : (
-        <ul className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <Stagger className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {posts.map((post) => (
-            <li key={post.id}>
+            <StaggerItem key={post.id}>
               <BlogPostCard post={post} />
-            </li>
+            </StaggerItem>
           ))}
-        </ul>
+        </Stagger>
       )}
 
       {totalPages > 1 ? (
