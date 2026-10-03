@@ -32,14 +32,14 @@ export function MegaMenuPanel({ columns }: { columns: MegaMenuColumn[] }) {
   return (
     <div className="px-5 py-3">
       <div className="mb-2.5 flex items-end justify-between gap-3">
-        <div>
+        {/* <div>
           <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-brand">
             Flooring systems
           </p>
           <p className="mt-1 text-sm text-body">
             Choose a family, then open a system.
           </p>
-        </div>
+        </div> */}
         <Link
           href="/services"
           className="hidden items-center gap-1.5 text-sm font-semibold text-ink transition-colors hover:text-brand sm:inline-flex"
