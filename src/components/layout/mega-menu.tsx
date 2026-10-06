@@ -31,24 +31,6 @@ export function MegaMenuPanel({ columns }: { columns: MegaMenuColumn[] }) {
 
   return (
     <div className="px-5 py-3">
-      <div className="mb-2.5 flex items-end justify-between gap-3">
-        {/* <div>
-          <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-brand">
-            Flooring systems
-          </p>
-          <p className="mt-1 text-sm text-body">
-            Choose a family, then open a system.
-          </p>
-        </div> */}
-        <Link
-          href="/services"
-          className="hidden items-center gap-1.5 text-sm font-semibold text-ink transition-colors hover:text-brand sm:inline-flex"
-        >
-          View all services
-          <ArrowRight className="size-4" />
-        </Link>
-      </div>
-
       <div className="grid items-start gap-2.5 lg:grid-cols-[15.5rem_minmax(0,1fr)] lg:gap-3">
         <div
           role="tablist"
@@ -74,21 +56,21 @@ export function MegaMenuPanel({ columns }: { columns: MegaMenuColumn[] }) {
                 )}
               >
                 <span>
-                  <span className="block text-[0.6875rem] font-semibold uppercase tracking-[0.14em] opacity-70">
+                  {/* <span className="block text-[0.6875rem] font-semibold uppercase tracking-[0.14em] opacity-70">
                     {String(index + 1).padStart(2, "0")}
-                  </span>
-                  <span className="mt-0.5 block text-sm font-semibold leading-5">
+                  </span> */}
+                  <span className="block text-sm font-semibold leading-5">
                     {column.title}
                   </span>
                 </span>
-                <span
+                {/* <span
                   className={cn(
                     "rounded-full px-2 py-0.5 text-[0.6875rem] font-semibold",
                     selected ? "bg-white/15 text-white" : "bg-surface-alt text-body"
                   )}
                 >
                   {column.links.length}
-                </span>
+                </span> */}
               </button>
             );
           })}
@@ -106,11 +88,11 @@ export function MegaMenuPanel({ columns }: { columns: MegaMenuColumn[] }) {
           >
             <div className="mb-1.5 flex items-center justify-between gap-3 px-1.5">
               <h3 className="text-sm font-semibold text-ink">{active.title}</h3>
-              <span className="text-xs text-body">
+              {/* <span className="text-xs text-body">
                 {active.links.length === 1
                   ? "1 system"
                   : `${active.links.length} systems`}
-              </span>
+              </span> */}
             </div>
             <ul className="grid gap-1 sm:grid-cols-2">
               {active.links.map((link) => (
@@ -131,7 +113,7 @@ export function MegaMenuPanel({ columns }: { columns: MegaMenuColumn[] }) {
 
       <Link
         href="/services"
-        className="mt-2.5 inline-flex items-center gap-1.5 text-sm font-semibold text-brand sm:hidden"
+        className="mt-2.5 inline-flex items-center gap-1.5 text-sm font-semibold text-ink transition-colors hover:text-brand"
       >
         View all services
         <ArrowRight className="size-4" />
