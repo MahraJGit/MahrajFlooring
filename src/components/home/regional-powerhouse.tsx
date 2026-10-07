@@ -1,34 +1,40 @@
 import { MapPin } from "lucide-react";
 
-import { HomeCarousel } from "@/components/home/home-carousel";
 import { Media } from "@/components/media";
 import { Section } from "@/components/layout/section";
-import { regions, trustPartnerLogos } from "@/content/home";
+import { regions } from "@/content/home";
+
+const partnerLogos = [
+  "62",
+  "107",
+  "112",
+  "113",
+  "114",
+  "115",
+  "116",
+  "120",
+  "122",
+  "123",
+  "133",
+  "135",
+  "136",
+  "137",
+  "138",
+  "139",
+];
 
 export function RegionalPowerhouse() {
   return (
     <Section tone="alt">
       <div className="rounded-md border border-border bg-background p-8 lg:p-12">
-        <HomeCarousel
-          controlsPlacement="before"
-          controlStyle="squares"
-          prevLabel="Previous partners"
-          nextLabel="Next partners"
-          gapClassName="gap-3"
-          itemClassName="w-[calc((100%-0.75rem)/2)] sm:w-[calc((100%-2.25rem)/4)]"
-          className="border-t border-border pt-8"
-          heading={
-            <div className="text-center">
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand">
-                Our Regional Presence
-              </p>
-              <h2 className="mt-2 text-3xl font-semibold sm:text-4xl">
-                Trusted Across the GCC
-              </h2>
-            </div>
-          }
-          middle={
-            <div className="mb-10 grid items-center gap-10 lg:grid-cols-2">
+        <div className="text-center">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand">
+            Our Regional Presence
+          </p>
+          <h2 className="mt-2 text-3xl font-semibold sm:text-4xl">Trusted Across the GCC</h2>
+        </div>
+
+        <div className="mt-8 grid items-center gap-10 lg:grid-cols-2">
               <div>
                 <h3 className="text-xs font-semibold uppercase tracking-[0.14em] text-body">
                   Where We Operate:
@@ -66,18 +72,24 @@ export function RegionalPowerhouse() {
                   </div>
                 </div>
               </div>
-            </div>
-          }
-        >
-          {trustPartnerLogos.map((logo) => (
-            <div
-              key={logo}
-              className="flex h-14 items-center justify-center rounded border border-border bg-background px-4 text-center text-sm font-black italic tracking-tight text-ink/85 sm:text-lg"
-            >
-              {logo}
-            </div>
-          ))}
-        </HomeCarousel>
+        </div>
+
+        <div className="mt-10 overflow-hidden border-t border-border pt-8 motion-reduce:overflow-x-auto">
+          <div className="flex w-max animate-partner-marquee hover:[animation-play-state:paused] motion-reduce:animate-none">
+            {[0, 1].map((copy) => (
+              <div key={copy} className="flex shrink-0 items-center">
+                {partnerLogos.map((id) => (
+                  <img
+                    key={`${copy}-${id}`}
+                    src={`/images/partners/${id}.png`}
+                    alt=""
+                    className="mx-6 h-12 w-auto object-contain"
+                  />
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </Section>
   );
