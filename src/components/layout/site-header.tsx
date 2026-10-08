@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useLayoutEffect, useRef, useState } from "react";
-import { Mail, Phone } from "lucide-react";
+import { Mail, MapPin, Phone } from "lucide-react";
 
 import { Container } from "@/components/layout/container";
 import { Logo } from "@/components/layout/logo";
@@ -25,21 +25,32 @@ import { cn } from "@/lib/utils";
 function TopBar() {
   return (
     <div className="hidden border-b border-border bg-surface-alt md:block">
-      <Container className="flex h-9 items-center justify-end gap-6">
+      <Container className="flex h-9 items-center justify-between gap-6">
         <a
-          href={site.phoneHref}
+          href={site.address.mapsHref}
+          target="_blank"
+          rel="noreferrer noopener"
           className="flex items-center gap-1.5 text-xs text-body transition-colors hover:text-brand"
         >
-          <Phone className="size-3.5" />
-          {site.phone}
+          <MapPin className="size-3.5 shrink-0" />
+          {site.address.line1}, {site.address.line2}
         </a>
-        <a
-          href={`mailto:${site.email}`}
-          className="flex items-center gap-1.5 text-xs text-body transition-colors hover:text-brand"
-        >
-          <Mail className="size-3.5" />
-          {site.email}
-        </a>
+        <div className="flex items-center gap-6">
+          <a
+            href={site.phoneHref}
+            className="flex items-center gap-1.5 text-xs text-body transition-colors hover:text-brand"
+          >
+            <Phone className="size-3.5" />
+            {site.phone}
+          </a>
+          <a
+            href={`mailto:${site.email}`}
+            className="flex items-center gap-1.5 text-xs text-body transition-colors hover:text-brand"
+          >
+            <Mail className="size-3.5" />
+            {site.email}
+          </a>
+        </div>
       </Container>
     </div>
   );

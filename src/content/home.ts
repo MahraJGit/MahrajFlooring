@@ -221,13 +221,8 @@ export const blogHighlights = [
 ];
 
 export const regions = [
-  "Dubai",
-  // "United Arab Emirates",
-  // "Saudi Arabia",
-  // "Qatar",
-  // "Oman",
-  // "Bahrain",
-  // "Kuwait",
+  "United Arab Emirates (UAE)",
+  "Kingdom of Saudi Arabia (KSA)",
 ];
 
 export const faqs = [
