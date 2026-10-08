@@ -6,15 +6,16 @@ export const site = {
   url: "https://mahrajflooring.com",
   phone: "+97150 882 0457",
   phoneHref: "tel:+971508820457",
-  email: "info@mahrajfloors.com",
-  salesEmail: "sales@mahrajfloors.com",
+  email: "bthomas@mahraj.com",
   whatsapp: "https://wa.me/971508820457",
   address: {
-    line1: "Industrial Area 4, Al Qusais",
-    line2: "Dubai, UAE",
-    line3: "Office 402, King Fahad Road, Riyadh, KSA",
+    line1: "22nd Floor, B2B Tower",
+    line2: "Business Bay, Dubai, UAE",
+    // line3: "Office 402, King Fahad Road, Riyadh, KSA",
     mapsHref:
-      "https://www.google.com/maps/search/?api=1&query=Industrial+Area+4+Al+Qusais+Dubai",
+      "https://www.google.com/maps/search/?api=1&query=B2B+Tower+Business+Bay+Dubai",
+    mapsEmbed:
+      "https://maps.google.com/maps?q=B2B+Tower+Business+Bay+Dubai&z=16&output=embed",
   },
   social: [
     { label: "Instagram", href: "https://www.instagram.com/mahrajflooring/" },

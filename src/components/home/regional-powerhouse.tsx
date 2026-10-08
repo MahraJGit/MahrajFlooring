@@ -1,27 +1,7 @@
-import { MapPin } from "lucide-react";
-
-import { Media } from "@/components/media";
+import { PartnerLogos } from "@/components/home/partner-logos";
 import { Section } from "@/components/layout/section";
 import { regions } from "@/content/home";
-
-const partnerLogos = [
-  "62",
-  "107",
-  "112",
-  "113",
-  "114",
-  "115",
-  "116",
-  "120",
-  "122",
-  "123",
-  "133",
-  "135",
-  "136",
-  "137",
-  "138",
-  "139",
-];
+import { site } from "@/content/site";
 
 export function RegionalPowerhouse() {
   return (
@@ -53,43 +33,20 @@ export function RegionalPowerhouse() {
                 <h3 className="mb-4 text-xs font-semibold uppercase tracking-[0.14em] text-body">
                   Regional Footprint
                 </h3>
-                <div className="relative overflow-hidden rounded-md border border-border">
-                  <Media
-                    src="/images/gcc-map.jpg"
-                    alt="GCC coverage map"
-                    className="aspect-[16/10] grayscale"
-                    sizes="(min-width: 1024px) 45vw, 90vw"
+                <div className="overflow-hidden rounded-md border border-border">
+                  <iframe
+                    title="Mahraj Flooring, B2B Tower, Business Bay, Dubai"
+                    src={site.address.mapsEmbed}
+                    className="aspect-[16/10] w-full border-0"
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    allowFullScreen
                   />
-                  <div
-                    aria-hidden
-                    className="absolute inset-0 bg-gradient-to-b from-white via-white/75 to-white/15"
-                  />
-                  <div className="absolute inset-0 flex items-center justify-center p-4">
-                    <p className="flex flex-col items-center gap-2 rounded-md border border-border bg-background/95 px-6 py-4 text-center text-sm font-semibold shadow-sm">
-                      <MapPin className="size-5 text-brand" />
-                      Active Projects in 12+ Gulf Cities
-                    </p>
-                  </div>
                 </div>
               </div>
         </div>
 
-        <div className="mt-10 overflow-hidden border-t border-border pt-8 motion-reduce:overflow-x-auto">
-          <div className="flex w-max animate-partner-marquee hover:[animation-play-state:paused] motion-reduce:animate-none">
-            {[0, 1].map((copy) => (
-              <div key={copy} className="flex shrink-0 items-center">
-                {partnerLogos.map((id) => (
-                  <img
-                    key={`${copy}-${id}`}
-                    src={`/images/partners/${id}.png`}
-                    alt=""
-                    className="mx-6 h-12 w-auto object-contain"
-                  />
-                ))}
-              </div>
-            ))}
-          </div>
-        </div>
+        <PartnerLogos className="mt-10 border-t border-border pt-8" />
       </div>
     </Section>
   );

@@ -61,8 +61,7 @@ export const contactChannels: ContactChannel[] = [
 
 export const currentLocation = {
   title: "Current Location",
-  embedUrl:
-    "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3608.1987654321!2d55.3815!3d25.2769!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e5f43496ad9c645%3A0xbde66e5084295162!2sAl%20Qusais%20Industrial%20Area!5e0!3m2!1sen!2sae!4v1700000000000!5m2!1sen!2sae",
+  embedUrl: site.address.mapsEmbed,
 };
 
 export const regionalOfficesIntro = {
@@ -95,18 +94,18 @@ export const regionalOffices: RegionalOffice[] = [
     hours: "9:00am - 7:00pm",
     mapsHref: site.address.mapsHref,
   },
-  {
-    slug: "riyadh",
-    title: "Riyadh Regional Office",
-    tone: "navy",
-    address: "Al Murooj, Prince Turki St, Al Olaya, Riyadh 12212, Saudi Arabia",
-    phone: site.phone,
-    phoneHref: site.phoneHref,
-    email: site.email,
-    hours: "9:00am - 7:00pm",
-    mapsHref:
-      "https://www.google.com/maps/search/?api=1&query=Al+Murooj+Prince+Turki+St+Al+Olaya+Riyadh",
-  },
+  // {
+  //   slug: "riyadh",
+  //   title: "Riyadh Regional Office",
+  //   tone: "navy",
+  //   address: "Al Murooj, Prince Turki St, Al Olaya, Riyadh 12212, Saudi Arabia",
+  //   phone: site.phone,
+  //   phoneHref: site.phoneHref,
+  //   email: site.email,
+  //   hours: "9:00am - 7:00pm",
+  //   mapsHref:
+  //     "https://www.google.com/maps/search/?api=1&query=Al+Murooj+Prince+Turki+St+Al+Olaya+Riyadh",
+  // },
 ];
 
 export const contactFaqIntro =

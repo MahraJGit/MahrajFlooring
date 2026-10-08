@@ -1,22 +1,14 @@
 import { Target } from "lucide-react";
 
+import { PartnerLogos } from "@/components/home/partner-logos";
 import { Media } from "@/components/media";
 import { Section } from "@/components/layout/section";
-import { aboutOverview, aboutPartners } from "@/content/about";
+import { aboutOverview } from "@/content/about";
 
 export function AboutPartners() {
   return (
     <Section spacing="compact">
-      <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-        {aboutPartners.map((partner) => (
-          <li
-            key={partner}
-            className="flex h-14 items-center justify-center rounded border border-border px-4 text-center text-sm font-black italic tracking-tight text-ink/80"
-          >
-            {partner}
-          </li>
-        ))}
-      </ul>
+      <PartnerLogos />
     </Section>
   );
 }

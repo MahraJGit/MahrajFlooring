@@ -221,12 +221,13 @@ export const blogHighlights = [
 ];
 
 export const regions = [
-  "United Arab Emirates",
-  "Saudi Arabia",
-  "Qatar",
-  "Oman",
-  "Bahrain",
-  "Kuwait",
+  "Dubai",
+  // "United Arab Emirates",
+  // "Saudi Arabia",
+  // "Qatar",
+  // "Oman",
+  // "Bahrain",
+  // "Kuwait",
 ];
 
 export const faqs = [
@@ -258,7 +259,7 @@ export const faqs = [
   {
     question: "Do you supply flooring outside the UAE?",
     answer:
-      "Yes! Mahraj Flooring delivers and installs across Saudi Arabia, Qatar, Oman, and Bahrain, making us a trusted GCC-wide flooring partner."
+      "Our office and project support are based in Dubai, UAE. Share your site details and the team will confirm how we can help."
   }
 ];
 

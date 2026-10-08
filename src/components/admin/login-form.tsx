@@ -23,7 +23,7 @@ export function LoginForm() {
           autoComplete="username"
           required
           className="h-10"
-          placeholder="you@mahrajfloors.com"
+          placeholder="you@mahraj.com"
         />
       </div>
       <div className="space-y-2">

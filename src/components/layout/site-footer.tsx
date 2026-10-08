@@ -164,8 +164,7 @@ export function SiteFooter() {
                     className="transition-colors hover:text-brand"
                   >
                     {site.address.line1}, {site.address.line2}
-                    <br />
-                    {site.address.line3}
+                    {/* {site.address.line3} */}
                   </a>
                 </li>
                 <li className="flex gap-3">
@@ -176,13 +175,6 @@ export function SiteFooter() {
                       className="transition-colors hover:text-brand"
                     >
                       {site.email}
-                    </a>
-                    <br />
-                    <a
-                      href={`mailto:${site.salesEmail}`}
-                      className="transition-colors hover:text-brand"
-                    >
-                      {site.salesEmail}
                     </a>
                   </span>
                 </li>

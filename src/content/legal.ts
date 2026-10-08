@@ -237,7 +237,7 @@ export const termsDocument: LegalDocument = {
       title: "Contact Our Commercial Team",
       paragraphs: [],
       bullets: [
-        "Email: info@mahrajfloors.com",
+        "Email: bthomas@mahraj.com",
         "Phone: +971 50 882 0457",
       ],
     },
@@ -255,7 +255,7 @@ export const privacyDocument: LegalDocument = {
   highlights: [
     { label: "Last Updated", value: "23 September 2026" },
     { label: "Information Collected", value: "Enquiries & project details" },
-    { label: "Privacy Questions", value: "info@mahrajfloors.com" },
+    { label: "Privacy Questions", value: "bthomas@mahraj.com" },
   ],
   keyPointsTitle: "How We Use Your Data",
   keyPointsDescription:
@@ -299,8 +299,8 @@ export const privacyDocument: LegalDocument = {
       id: "who-we-are",
       title: "Who Manages Your Data",
       paragraphs: [
-        "Mahraj Flooring is responsible for the personal data collected through our website and enquiry channels. We're based at Industrial Area 4, Al Qusais, Dubai, UAE, with regional offices listed on our Contact page.",
-        'Got a privacy question or request? Email info@mahrajfloors.com with the subject "Privacy Request," and we\'ll get back to you promptly.',
+        "Mahraj Flooring is responsible for the personal data collected through our website and enquiry channels. We're based at 22nd Floor, B2B Tower, Business Bay, Dubai, UAE.",
+        'Got a privacy question or request? Email bthomas@mahraj.com with the subject "Privacy Request," and we\'ll get back to you promptly.',
       ],
     },
     {
@@ -444,9 +444,9 @@ export const privacyDocument: LegalDocument = {
         "Have a question or request about your personal data? We're happy to help.",
       ],
       bullets: [
-        "Email: info@mahrajfloors.com",
+        "Email: bthomas@mahraj.com",
         "Phone: +971 50 882 0457",
-        "Address: Industrial Area 4, Al Qusais, Dubai, UAE",
+        "Address: 22nd Floor, B2B Tower, Business Bay, Dubai, UAE",
       ],
     },
   ],

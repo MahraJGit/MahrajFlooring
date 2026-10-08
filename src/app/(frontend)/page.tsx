@@ -1,5 +1,5 @@
 import { CoreServices } from "@/components/home/core-services";
-import { FeaturedCaseStudies } from "@/components/home/featured-case-studies";
+// import { FeaturedCaseStudies } from "@/components/home/featured-case-studies";
 import { FlooringCategories } from "@/components/home/flooring-categories";
 import { Hero } from "@/components/home/hero";
 import { IndustriesGrid } from "@/components/home/industries-grid";
@@ -13,7 +13,7 @@ export default function Home() {
       <Hero />
       <FlooringCategories />
       <CoreServices />
-      <FeaturedCaseStudies />
+      {/* <FeaturedCaseStudies /> */}
       <IndustriesGrid />
       <RegionalPowerhouse />
       <TechnicalInsights />
