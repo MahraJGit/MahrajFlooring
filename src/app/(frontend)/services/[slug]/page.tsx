@@ -15,14 +15,10 @@ import {
   ServiceCaseStudies,
 } from "@/components/services/service-performance";
 import { OngoingProjects, ServiceProcess, SpaceRequirements } from "@/components/services/service-support";
-import {
-  getServiceBySlug,
-  getServiceSlugs,
-} from "@/lib/public/services";
+import { getServiceBySlug } from "@/lib/public/services";
 
-export async function generateStaticParams() {
-  const slugs = await getServiceSlugs();
-  return slugs.map((slug) => ({ slug }));
+export function generateStaticParams() {
+  return [];
 }
 
 export async function generateMetadata({

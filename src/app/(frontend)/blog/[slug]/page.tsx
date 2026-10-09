@@ -22,15 +22,13 @@ import { Button } from "@/components/ui/button";
 import { site } from "@/content/site";
 import {
   getPostBySlug,
-  getPostSlugs,
   getRelatedPosts,
   toBlogCard,
 } from "@/lib/public/blog";
 import { extractHeadings } from "@/lib/public/rich-text";
 
-export async function generateStaticParams() {
-  const slugs = await getPostSlugs();
-  return slugs.map((slug) => ({ slug }));
+export function generateStaticParams() {
+  return [];
 }
 
 export async function generateMetadata({

@@ -22,6 +22,10 @@ const outfit = Outfit({
   display: "swap",
 });
 
+// Pages read live CMS data. Rendering them on each request keeps `next build`
+// from opening MongoDB on Vercel, where Atlas blocks the build machine.
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: {
