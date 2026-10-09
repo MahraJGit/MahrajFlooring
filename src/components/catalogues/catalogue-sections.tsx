@@ -19,6 +19,7 @@ import { Stagger, StaggerItem } from "@/components/motion/reveal";
 import { Button } from "@/components/ui/button";
 import { TopicScroller } from "@/components/catalogues/topic-scroller";
 import { cataloguePage } from "@/content/catalogues";
+import type { CatalogueCollection } from "@/lib/public/catalogues";
 
 function hasPublicAsset(src: string) {
   return existsSync(path.join(process.cwd(), "public", src.replace(/^\//, "")));
@@ -30,7 +31,11 @@ function matchesQuery(query: string | undefined, fields: Array<string | undefine
   return fields.some((field) => field?.toLowerCase().includes(term));
 }
 
-export function hasCatalogueResults(query?: string) {
+function catalogueFields(item: CatalogueCollection) {
+  return [item.title, item.description, item.pdfName, ...item.tags];
+}
+
+export function hasCatalogueResults(query?: string, catalogues: CatalogueCollection[] = []) {
   const term = query?.trim();
   if (!term) return true;
 
@@ -41,11 +46,7 @@ export function hasCatalogueResults(query?: string) {
     return true;
   }
 
-  if (
-    cataloguePage.explore.collections.some((item) =>
-      matchesQuery(term, [item.title, item.description, ...item.tags])
-    )
-  ) {
+  if (catalogues.some((item) => matchesQuery(term, catalogueFields(item)))) {
     return true;
   }
 
@@ -62,13 +63,19 @@ export function hasCatalogueResults(query?: string) {
   );
 }
 
-export function CatalogueSearchResults({ query }: { query?: string }) {
+export function CatalogueSearchResults({
+  query,
+  catalogues = [],
+}: {
+  query?: string;
+  catalogues?: CatalogueCollection[];
+}) {
   const term = query?.trim();
   if (!term) return null;
 
   return (
     <Section id="catalogue-results" spacing="compact">
-      {hasCatalogueResults(term) ? (
+      {hasCatalogueResults(term, catalogues) ? (
         <p className="text-sm text-body">
           Results for <span className="font-semibold text-ink">“{term}”</span>
         </p>
@@ -174,73 +181,101 @@ export function FeaturedCollection({ query }: { query?: string }) {
 
 /* ─── Explore collections ─── */
 
-export function ExploreCollections({ query }: { query?: string }) {
-  const collections = cataloguePage.explore.collections.filter((item) =>
-    matchesQuery(query, [item.title, item.description, ...item.tags])
-  );
-  if (collections.length === 0) return null;
+export function ExploreCollections({
+  query,
+  catalogues,
+}: {
+  query?: string;
+  catalogues: CatalogueCollection[];
+}) {
+  const collections = catalogues.filter((item) => matchesQuery(query, catalogueFields(item)));
+  if (query?.trim() && collections.length === 0) return null;
 
   return (
     <Section id="collections" tone="alt" className="scroll-mt-28">
-      <SectionHeading align="center" title={cataloguePage.explore.title} />
-      <Stagger className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-        {collections.map((col) => (
-          <StaggerItem
-            key={col.title}
-            className="overflow-hidden rounded-md border border-border bg-background transition-shadow duration-200 hover:shadow-md"
-          >
-            <div className="relative">
-              <Media
-                src={col.image}
-                alt={col.title}
-                className="aspect-[5/4]"
-                sizes="(min-width: 1024px) 22vw, (min-width: 640px) 45vw, 90vw"
-              />
-            </div>
-            <div className="p-4">
-              <h3 className="text-base font-semibold">{col.title}</h3>
-              <p className="mt-1 text-sm leading-relaxed text-body">
-                {col.description}
-              </p>
+      <SectionHeading
+        align="center"
+        title={cataloguePage.explore.title}
+        description="Each card is a flooring system. Open the service page for details, or download the PDF catalogue."
+      />
 
-              <p className="mt-3 text-xs font-semibold text-ink">Best For</p>
-              <div className="mt-1.5 flex flex-wrap gap-1.5">
-                {col.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="rounded border border-border px-2 py-0.5 text-[0.6875rem] text-body"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
+      {collections.length === 0 ? (
+        <div className="mx-auto mt-10 max-w-xl rounded-md border border-border bg-background px-6 py-10 text-center">
+          <p className="text-base font-semibold text-ink">Catalogues are on the way.</p>
+          <p className="mt-2 text-sm leading-relaxed text-body">
+            Tell us which flooring system you need and we will send the catalogue.
+          </p>
+          <Button asChild variant="brand" size="xl" className="mt-6">
+            <Link href="/contact">Request a catalogue</Link>
+          </Button>
+        </div>
+      ) : (
+        <>
+          <Stagger className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {collections.map((col) => (
+              <StaggerItem
+                key={col.pdfName}
+                className="flex h-full flex-col overflow-hidden rounded-md border border-border bg-background transition-shadow duration-200 hover:shadow-md"
+              >
+                <Media
+                  src={col.image}
+                  alt={col.title}
+                  className="aspect-[5/4]"
+                  sizes="(min-width: 1280px) 22vw, (min-width: 1024px) 30vw, (min-width: 640px) 45vw, 90vw"
+                />
+                <div className="flex flex-1 flex-col p-4">
+                  <h3 className="text-base font-semibold">{col.title}</h3>
+                  <p className="mt-1 line-clamp-3 text-sm leading-relaxed text-body">
+                    {col.description}
+                  </p>
 
-              <div className="mt-4 flex items-center justify-between">
-                <Link
-                  href="/catalogues"
-                  className="text-sm font-semibold text-ink transition-colors hover:text-brand"
-                >
-                  Explore Collection
-                </Link>
-                <ArrowRight className="size-4 text-ink" />
-              </div>
+                  {col.tags.length > 0 ? (
+                    <>
+                      <p className="mt-3 text-xs font-semibold text-ink">Best For</p>
+                      <div className="mt-1.5 flex flex-wrap gap-1.5">
+                        {col.tags.map((tag) => (
+                          <span
+                            key={tag}
+                            className="rounded border border-border px-2 py-0.5 text-[0.6875rem] text-body"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    </>
+                  ) : null}
 
-              <Button asChild variant="brand" size="xl" className="mt-3 w-full">
-                <Link href="/catalogues">
-                  <Download className="size-4" />
-                  Download Catalogue
-                </Link>
-              </Button>
-            </div>
-          </StaggerItem>
-        ))}
-      </Stagger>
+                  <div className="mt-auto pt-4">
+                    {col.href ? (
+                      <Link
+                        href={col.href}
+                        className="flex items-center justify-between text-sm font-semibold text-ink transition-colors hover:text-brand"
+                      >
+                        Explore Collection
+                        <ArrowRight className="size-4" />
+                      </Link>
+                    ) : null}
 
-      <div className="mt-10 flex justify-center">
-        <Button asChild variant="brand" size="xl">
-          <Link href="/catalogues">View all Floorings Collections</Link>
-        </Button>
-      </div>
+                    <p className="mt-3 text-xs text-body">{col.fileSizeLabel}</p>
+                    <Button asChild variant="brand" size="xl" className="mt-2 w-full">
+                      <a href={col.pdfHref} download={col.pdfName}>
+                        <Download className="size-4" />
+                        Download Catalogue
+                      </a>
+                    </Button>
+                  </div>
+                </div>
+              </StaggerItem>
+            ))}
+          </Stagger>
+
+          <div className="mt-10 flex justify-center">
+            <Button asChild variant="brand" size="xl">
+              <Link href="/services">View all flooring solutions</Link>
+            </Button>
+          </div>
+        </>
+      )}
     </Section>
   );
 }

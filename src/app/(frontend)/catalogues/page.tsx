@@ -4,7 +4,7 @@ import { CatalogueHero } from "@/components/catalogues/catalogue-hero";
 import {
   CatalogueSearchResults,
   TopicFilters,
-  FeaturedCollection,
+  // FeaturedCollection,
   ExploreCollections,
   ChooseByMatters,
   FindByIndustry,
@@ -15,6 +15,7 @@ import {
 } from "@/components/catalogues/catalogue-sections";
 import { TechnicalFaqForm } from "@/components/home/technical-faq-form";
 import { cataloguePage } from "@/content/catalogues";
+import { getCatalogueCollections } from "@/lib/public/catalogues";
 
 export const metadata: Metadata = {
   title: "Catalogues",
@@ -33,14 +34,15 @@ export default async function CataloguesPage({
 }: PageProps<"/catalogues">) {
   const params = await searchParams;
   const query = firstValue(params.q);
+  const catalogues = await getCatalogueCollections();
 
   return (
     <>
       <CatalogueHero query={query} />
-      <CatalogueSearchResults query={query} />
+      <CatalogueSearchResults query={query} catalogues={catalogues} />
       <TopicFilters />
-      <FeaturedCollection query={query} />
-      <ExploreCollections query={query} />
+      {/* <FeaturedCollection query={query} /> */}
+      <ExploreCollections query={query} catalogues={catalogues} />
       <ChooseByMatters />
       <FindByIndustry query={query} />
       <RealProjects query={query} />
