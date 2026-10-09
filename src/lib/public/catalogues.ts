@@ -118,7 +118,7 @@ export async function getCatalogueCollections(): Promise<CatalogueCollection[]> 
 
   const used = new Set<string>();
 
-  const matched = files.flatMap((file) => {
+  const matched = files.flatMap((file): CatalogueCollection[] => {
     const key = catalogueKey(file);
     const service = findService(file, services, used);
     const stats = statSync(path.join(CATALOGUE_DIR, file));
