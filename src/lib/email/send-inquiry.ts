@@ -1,3 +1,5 @@
+import { lookup } from "node:dns/promises";
+
 import nodemailer from "nodemailer";
 
 import { site } from "@/content/site";
@@ -116,17 +118,20 @@ export async function sendInquiryEmail(input: {
     value: field.value.trim().slice(0, 4000),
   }));
 
+  // Hostinger's IPv6 address accepts the connection and then never sends a
+  // greeting. Connect to the IPv4 address and keep the hostname for TLS.
+  const resolved = await lookup(host, { family: 4 });
+
   const transport = nodemailer.createTransport({
-    host,
+    host: resolved.address,
+    servername: host,
     port,
     secure: port === 465,
-    // Hostinger's IPv6 address accepts the connection and then never sends a
-    // greeting, so the send hangs. Force IPv4.
-    family: 4,
     auth: { user, pass },
     connectionTimeout: 15_000,
     greetingTimeout: 15_000,
     socketTimeout: 20_000,
+    tls: { servername: host },
   });
 
   const from =
