@@ -19,7 +19,6 @@ export function SubscribeForm({
   inputClassName?: string;
 }) {
   const [email, setEmail] = useState("");
-  const [website, setWebsite] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
   const [done, setDone] = useState(false);
@@ -31,7 +30,7 @@ export function SubscribeForm({
     if (next) return;
 
     setPending(true);
-    const result = await submitSubscription({ source, email, website });
+    const result = await submitSubscription({ source, email });
     setPending(false);
     if (!result.ok) {
       setError(result.error);
@@ -49,18 +48,7 @@ export function SubscribeForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} noValidate className={cn("relative space-y-2", className)}>
-      <div className="absolute -left-[9999px] h-0 w-0 overflow-hidden" aria-hidden="true">
-        <label htmlFor="subscribe-website">Website</label>
-        <input
-          id="subscribe-website"
-          name="website"
-          tabIndex={-1}
-          autoComplete="off"
-          value={website}
-          onChange={(e) => setWebsite(e.target.value)}
-        />
-      </div>
+    <form onSubmit={handleSubmit} noValidate className={cn("space-y-2", className)}>
       <div className="flex flex-col gap-3 sm:flex-row">
         <input
           type="email"

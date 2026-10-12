@@ -63,7 +63,6 @@ export function EnquiryForm({
   const [touched, setTouched] = useState(false);
   const [pending, setPending] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
-  const [website, setWebsite] = useState("");
 
   function update<K extends keyof EnquiryValues>(key: K, value: EnquiryValues[K]) {
     setValues((prev) => {
@@ -87,7 +86,6 @@ export function EnquiryForm({
     const result = await submitEnquiry({
       source,
       ...values,
-      website,
       requirePhone,
     });
     setPending(false);
@@ -116,7 +114,6 @@ export function EnquiryForm({
             setErrors({});
             setTouched(false);
             setFormError(null);
-            setWebsite("");
           }}
         >
           Send another request
@@ -126,18 +123,7 @@ export function EnquiryForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} noValidate className={cn("relative space-y-5", className)}>
-      <div className="absolute -left-[9999px] h-0 w-0 overflow-hidden" aria-hidden="true">
-        <label htmlFor={`${idPrefix}-website`}>Website</label>
-        <input
-          id={`${idPrefix}-website`}
-          name="website"
-          tabIndex={-1}
-          autoComplete="off"
-          value={website}
-          onChange={(e) => setWebsite(e.target.value)}
-        />
-      </div>
+    <form onSubmit={handleSubmit} noValidate className={cn("space-y-5", className)}>
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-2">
           <Label htmlFor={`${idPrefix}-name`} className={labelClass}>

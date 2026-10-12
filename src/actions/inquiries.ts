@@ -25,13 +25,8 @@ export async function submitEnquiry(input: {
   phone: string;
   solution: string;
   brief: string;
-  website?: string;
   requirePhone?: boolean;
 }): Promise<InquiryResult> {
-  if (clean(input.website)) {
-    return { ok: true };
-  }
-
   const values: EnquiryValues = {
     name: clean(input.name),
     company: clean(input.company),
@@ -76,12 +71,7 @@ export async function submitEnquiry(input: {
 export async function submitSubscription(input: {
   source: string;
   email: string;
-  website?: string;
 }): Promise<InquiryResult> {
-  if (clean(input.website)) {
-    return { ok: true };
-  }
-
   const email = clean(input.email);
   const error = validateEmail(email);
   if (error) return { ok: false, error };
