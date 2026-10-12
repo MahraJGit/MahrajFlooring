@@ -2,7 +2,7 @@
 
 import { EnquiryForm } from "@/components/forms/enquiry-form";
 
-export function QuoteForm() {
+export function QuoteForm({ source = "Quotation request" }: { source?: string }) {
   return (
     <div className="rounded-md bg-surface-alt p-8 lg:p-10">
       <h3 className="text-xl font-semibold sm:text-2xl">Get a Technical Quote</h3>
@@ -11,6 +11,7 @@ export function QuoteForm() {
       </p>
       <EnquiryForm
         idPrefix="quote"
+        source={source}
         submitLabel="Send Quote Request"
         className="mt-7"
       />

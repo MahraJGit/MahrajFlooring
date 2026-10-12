@@ -5,6 +5,7 @@ import { Section } from "@/components/layout/section";
 import { SectionHeading } from "@/components/layout/section-heading";
 import { Button } from "@/components/ui/button";
 import { regionalOffices, regionalOfficesIntro } from "@/content/contact";
+import { site } from "@/content/site";
 import { cn } from "@/lib/utils";
 
 const officeToneClass = {
@@ -87,12 +88,22 @@ export function RegionalOffices() {
                 </li>
                 <li className="flex gap-3">
                   <Mail className="mt-0.5 size-4 shrink-0" />
-                  <a
-                    href={`mailto:${office.email}`}
-                    className="transition-opacity hover:opacity-80"
-                  >
-                    {office.email}
-                  </a>
+                  <span className="flex flex-col gap-1">
+                    <a
+                      href={`mailto:${site.inquiryEmail}`}
+                      className="transition-opacity hover:opacity-80"
+                    >
+                      {site.inquiryEmail}
+                    </a>
+                    {office.email !== site.inquiryEmail ? (
+                      <a
+                        href={`mailto:${office.email}`}
+                        className="transition-opacity hover:opacity-80"
+                      >
+                        {office.email}
+                      </a>
+                    ) : null}
+                  </span>
                 </li>
                 <li className="flex gap-3">
                   <Clock className="mt-0.5 size-4 shrink-0" />

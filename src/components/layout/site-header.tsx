@@ -44,10 +44,16 @@ function TopBar() {
             {site.phone}
           </a>
           <a
-            href={`mailto:${site.email}`}
+            href={`mailto:${site.inquiryEmail}`}
             className="flex items-center gap-1.5 text-xs text-body transition-colors hover:text-brand"
           >
             <Mail className="size-3.5" />
+            {site.inquiryEmail}
+          </a>
+          <a
+            href={`mailto:${site.email}`}
+            className="text-xs text-body transition-colors hover:text-brand"
+          >
             {site.email}
           </a>
         </div>

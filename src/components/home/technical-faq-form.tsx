@@ -10,11 +10,13 @@ import { DEFAULT_FAQS, type FaqItem } from "@/lib/services/faqs";
 
 export function TechnicalFaqForm({
   formIdPrefix = "home",
+  source = "Homepage enquiry",
   faqs = DEFAULT_FAQS,
   faqIntro = "Have questions about our flooring services? We've answered the most common ones below. If you need more details, our team is just a message away.",
   formTitle = "Technical Expertise",
 }: {
   formIdPrefix?: string;
+  source?: string;
   faqs?: FaqItem[];
   faqIntro?: string;
   formTitle?: string;
@@ -66,7 +68,7 @@ export function TechnicalFaqForm({
           <h3 className="text-xl font-semibold uppercase tracking-[0.04em] sm:text-2xl">
             {formTitle}
           </h3>
-          <EnquiryForm idPrefix={formIdPrefix} className="mt-6" />
+          <EnquiryForm idPrefix={formIdPrefix} source={source} className="mt-6" />
         </div>
       </div>
     </Section>

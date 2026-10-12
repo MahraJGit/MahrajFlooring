@@ -7,6 +7,7 @@ export const site = {
   phone: "+97150 882 0457",
   phoneHref: "tel:+971508820457",
   email: "bthomas@mahraj.com",
+  inquiryEmail: "inquiry@mahrajflooring.com",
   whatsapp: "https://wa.me/971508820457",
   address: {
     line1: "22nd Floor, B2B Tower",

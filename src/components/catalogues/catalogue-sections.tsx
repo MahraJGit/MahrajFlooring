@@ -550,6 +550,7 @@ export function CatalogueCta() {
           </p>
           <SubscribeForm
             placeholder={cataloguePage.ctaPanels.subscribe.placeholder}
+            source="Catalogue newsletter"
             className="mt-6"
           />
         </div>

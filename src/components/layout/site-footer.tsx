@@ -169,7 +169,13 @@ export function SiteFooter() {
                 </li>
                 <li className="flex gap-3">
                   <Mail className="mt-0.5 size-4 shrink-0 text-brand" />
-                  <span>
+                  <span className="flex flex-col gap-1">
+                    <a
+                      href={`mailto:${site.inquiryEmail}`}
+                      className="transition-colors hover:text-brand"
+                    >
+                      {site.inquiryEmail}
+                    </a>
                     <a
                       href={`mailto:${site.email}`}
                       className="transition-colors hover:text-brand"

@@ -238,6 +238,7 @@ export const termsDocument: LegalDocument = {
       paragraphs: [],
       bullets: [
         "Email: bthomas@mahraj.com",
+        "Inquiries: inquiry@mahrajflooring.com",
         "Phone: +971 50 882 0457",
       ],
     },
@@ -445,6 +446,7 @@ export const privacyDocument: LegalDocument = {
       ],
       bullets: [
         "Email: bthomas@mahraj.com",
+        "Inquiries: inquiry@mahrajflooring.com",
         "Phone: +971 50 882 0457",
         "Address: 22nd Floor, B2B Tower, Business Bay, Dubai, UAE",
       ],

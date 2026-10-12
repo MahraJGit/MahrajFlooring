@@ -44,8 +44,8 @@ export const contactChannels: ContactChannel[] = [
   {
     title: "Email",
     description: "Send us your project details, and we'll get back with a plan.",
-    action: site.email,
-    href: `mailto:${site.email}`,
+    action: site.inquiryEmail,
+    href: `mailto:${site.inquiryEmail}`,
     icon: Mail,
   },
   {

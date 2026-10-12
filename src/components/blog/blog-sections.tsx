@@ -423,6 +423,7 @@ export function LessonsAndCta() {
           </p>
           <SubscribeForm
             placeholder={blogPage.ctaPanels.subscribe.placeholder}
+            source="Blog newsletter"
             className="mt-6"
           />
         </div>
