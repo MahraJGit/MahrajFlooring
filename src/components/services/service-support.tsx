@@ -81,48 +81,81 @@ export function SpaceRequirements({
         </p>
       ) : null}
 
-      <div className={`overflow-x-auto rounded-md border border-border ${title || description ? "mt-10" : ""}`}>
-        <table className="w-full min-w-[48rem] text-sm">
-          <thead className="bg-surface-alt text-xs uppercase tracking-[0.1em] text-body">
-            <tr>
-              {service.spaceLabels.map((heading, index) => (
-                <th key={index} className="px-5 py-4 text-start font-semibold">
-                  {heading}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {service.spaceRows.map((row, index) => {
-              const cells = [
-                row.useCase,
-                row.recommended,
-                row.impact,
-                row.slip,
-                row.acoustic,
-                row.maintenance,
-              ];
+      <div className={title || description ? "mt-10" : ""}>
+        <ul className="grid gap-3 lg:hidden">
+          {service.spaceRows.map((row, index) => {
+            const details = [
+              row.recommended,
+              row.impact,
+              row.slip,
+              row.acoustic,
+              row.maintenance,
+            ];
 
-              return (
-                <tr
-                  key={row.useCase}
-                  className={index % 2 === 0 ? "bg-background" : "bg-surface-alt"}
-                >
-                  {cells.map((cell, cellIndex) => (
-                    <td
-                      key={`${row.useCase}-${cell}`}
-                      className={`px-5 py-4 ${
-                        cellIndex === 0 ? "font-semibold text-ink" : "text-body"
-                      }`}
-                    >
-                      {cell}
-                    </td>
+            return (
+              <li
+                key={`${row.useCase}-${index}`}
+                className="rounded-md border border-border bg-background p-4"
+              >
+                <p className="text-base font-semibold text-ink">{row.useCase}</p>
+                <dl className="mt-3 grid grid-cols-2 gap-x-4 gap-y-3 sm:grid-cols-3">
+                  {details.map((value, detailIndex) => (
+                    <div key={detailIndex}>
+                      <dt className="text-[0.6875rem] font-semibold uppercase tracking-[0.1em] text-body">
+                        {service.spaceLabels[detailIndex + 1]}
+                      </dt>
+                      <dd className="mt-1 text-sm text-ink">{value}</dd>
+                    </div>
                   ))}
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+                </dl>
+              </li>
+            );
+          })}
+        </ul>
+
+        <div className="hidden overflow-x-auto rounded-md border border-border lg:block">
+          <table className="w-full text-sm">
+            <thead className="bg-surface-alt text-xs uppercase tracking-[0.1em] text-body">
+              <tr>
+                {service.spaceLabels.map((heading, index) => (
+                  <th key={index} className="px-4 py-4 text-start font-semibold">
+                    {heading}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {service.spaceRows.map((row, index) => {
+                const cells = [
+                  row.useCase,
+                  row.recommended,
+                  row.impact,
+                  row.slip,
+                  row.acoustic,
+                  row.maintenance,
+                ];
+
+                return (
+                  <tr
+                    key={`${row.useCase}-${index}`}
+                    className={index % 2 === 0 ? "bg-background" : "bg-surface-alt"}
+                  >
+                    {cells.map((cell, cellIndex) => (
+                      <td
+                        key={cellIndex}
+                        className={`px-4 py-4 ${
+                          cellIndex === 0 ? "font-semibold text-ink" : "text-body"
+                        }`}
+                      >
+                        {cell}
+                      </td>
+                    ))}
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
     </Section>
   );

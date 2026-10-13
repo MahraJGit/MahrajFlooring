@@ -27,9 +27,9 @@ export function PerformanceMatrix({ service }: { service: ServiceDetailView }) {
           service.brandingTitle || service.brandingDescription ? "lg:grid-cols-2" : ""
         }`}
       >
-        <div>
-          <div className="overflow-x-auto rounded-md border border-border">
-            <table className="w-full min-w-[32rem] text-start text-sm">
+        <div className="min-w-0">
+          <div className="max-w-full overflow-x-auto rounded-md border border-border">
+            <table className="w-full text-start text-sm">
               <thead className="bg-surface-alt text-xs uppercase tracking-[0.1em] text-body">
                 <tr>
                   {service.performanceLabels.map((label, index) => (
