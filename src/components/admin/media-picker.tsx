@@ -16,6 +16,7 @@ function dimensions(item: { width?: number | null; height?: number | null }) {
 
 export function MediaPicker({
   label,
+  hint,
   value,
   previewUrl,
   previewAlt,
@@ -28,6 +29,7 @@ export function MediaPicker({
   error,
 }: {
   label: string;
+  hint?: string;
   value: string;
   previewUrl?: string;
   previewAlt?: string;
@@ -88,6 +90,7 @@ export function MediaPicker({
   return (
     <div className="space-y-2">
       <Label>{label}</Label>
+      {hint ? <p className="text-xs text-muted-foreground">{hint}</p> : null}
       {value && previewUrl ? (
         <div className="flex items-center gap-3 rounded-lg border border-border p-2">
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -181,7 +184,7 @@ export function MediaPicker({
               <div className="border-t border-border pt-4">
                 <p className="mb-2 text-sm font-medium">Upload new</p>
                 <p className="mb-3 text-xs text-muted-foreground">
-                  JPG, PNG, WebP, or GIF. Max 8 MB. A file can use the same name as an image already in the library. Replacing a picture keeps the previous file for anything still using it.
+                  JPG, PNG, WebP, or GIF. Max 8 MB. Blog images should be 1920 × 1080. A file can use the same name as an image already in the library. Replacing a picture keeps the previous file for anything still using it.
                 </p>
                 <form
                   className="grid gap-3"

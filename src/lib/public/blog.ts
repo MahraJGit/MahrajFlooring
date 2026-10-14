@@ -37,8 +37,13 @@ export type PublicPost = {
   coverImage: PublicMedia | null;
   seoTitle: string;
   seoDescription: string;
+  focusKeyword: string;
+  imageAlt: string;
+  tags: string[];
+  faqs: { question: string; answer: string }[];
   category: { id: string; title: string; slug: string } | null;
   author: string;
+  authorRole: string;
   authorImage: PublicMedia | null;
   readTime: string;
   publishedAt: string | null;
@@ -49,6 +54,24 @@ export type PublicPost = {
 const published = { _status: "published" } as const;
 
 type LeanDoc = Record<string, unknown> & { _id?: unknown };
+
+function stringList(value: unknown) {
+  if (!Array.isArray(value)) return [];
+  return value
+    .map((item) => (typeof item === "string" ? item.trim() : ""))
+    .filter(Boolean);
+}
+
+function faqList(value: unknown) {
+  if (!Array.isArray(value)) return [];
+  return value.flatMap((item) => {
+    if (!item || typeof item !== "object") return [];
+    const record = item as Record<string, unknown>;
+    const question = typeof record.question === "string" ? record.question.trim() : "";
+    const answer = typeof record.answer === "string" ? record.answer.trim() : "";
+    return question && answer ? [{ question, answer }] : [];
+  });
+}
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return Boolean(value) && typeof value === "object" && !Array.isArray(value);
@@ -98,7 +121,7 @@ export function toBlogCard(
     slug: post.slug,
     excerpt: post.excerpt,
     image: image.url,
-    imageAlt: image.alt || post.title,
+    imageAlt: post.imageAlt || image.alt || post.title,
     readTime: post.readTime,
     date: formatDate(post.publishedAt),
     author: post.author || "By Mahraj Engineering Team",
@@ -135,6 +158,10 @@ function toPublicPost(
     seoTitle: typeof doc.seoTitle === "string" ? doc.seoTitle : "",
     seoDescription:
       typeof doc.seoDescription === "string" ? doc.seoDescription : "",
+    focusKeyword: typeof doc.focusKeyword === "string" ? doc.focusKeyword : "",
+    imageAlt: typeof doc.imageAlt === "string" ? doc.imageAlt : "",
+    tags: stringList(doc.tags),
+    faqs: faqList(doc.faqs),
     category:
       category ??
       (isRecord(doc.category)
@@ -149,6 +176,7 @@ function toPublicPost(
           }
         : null),
     author: typeof doc.author === "string" ? doc.author : "",
+    authorRole: typeof doc.authorRole === "string" ? doc.authorRole : "",
     authorImage: media.get(authorImageId) ?? null,
     readTime: typeof doc.readTime === "string" ? doc.readTime : "",
     publishedAt: publishedAtIso(doc.publishedAt),

@@ -1,3 +1,5 @@
+import { htmlToPlainText } from "@/lib/blog/html";
+
 /**
  * Lexical adapter for the custom Blog CMS.
  *
@@ -24,12 +26,15 @@ export type InlineSpan = {
   href?: string;
 };
 
+export type HeadingLevel = 1 | 2 | 3 | 4;
+
 export type EditorBlock =
   | { id: string; type: "paragraph"; spans: InlineSpan[] }
-  | { id: string; type: "heading"; level: 2 | 3; spans: InlineSpan[] }
+  | { id: string; type: "heading"; level: HeadingLevel; spans: InlineSpan[] }
   | { id: string; type: "list"; ordered: boolean; items: InlineSpan[][] }
   | { id: string; type: "quote"; spans: InlineSpan[] }
   | { id: string; type: "code"; text: string }
+  | { id: string; type: "html"; html: string }
   | { id: string; type: "hr" }
   | {
       id: string;
@@ -174,7 +179,16 @@ export function blocksToLexical(blocks: EditorBlock[]): LexicalDoc {
 
 export function lexicalHasVisibleText(value: unknown): boolean {
   if (!isLexicalDoc(value)) return false;
-  return readNodeText({ type: "root", children: value.root.children }).trim().length > 0;
+  return value.root.children.some((node) => {
+    if (node.type === "html") {
+      const html = String(node.html ?? "");
+      return htmlToPlainText(html).length > 0 || /<(table|img)\b/i.test(html);
+    }
+    if (node.type === "upload" || node.type === "horizontalrule" || node.type === "hr") {
+      return true;
+    }
+    return readNodeText(node).trim().length > 0;
+  });
 }
 
 export function collectUploadIds(value: unknown): string[] {
@@ -290,17 +304,25 @@ function nodeToBlock(
   }
 
   if (type === "heading") {
-    const tag = String(node.tag ?? "");
-    if (tag !== "h2" && tag !== "h3") return rawBlock(node);
+    const level = headingLevel(String(node.tag ?? ""));
+    if (!level) return rawBlock(node);
     const spans = inlineFromChildren(asNodes(node.children));
     return spans
       ? {
           id: newBlockId(),
           type: "heading",
-          level: tag === "h3" ? 3 : 2,
+          level,
           spans: spans.length ? spans : [{ text: "" }],
         }
       : rawBlock(node);
+  }
+
+  if (type === "html") {
+    return {
+      id: newBlockId(),
+      type: "html",
+      html: typeof node.html === "string" ? node.html : "",
+    };
   }
 
   if (type === "quote") {
@@ -491,11 +513,14 @@ function blockToNode(block: EditorBlock): LexicalNode | null {
       version: 1,
     };
   }
+  if (block.type === "html") {
+    return { type: "html", html: block.html, version: 1 };
+  }
   if (block.type === "heading") {
     if (!spansToPlainText(block.spans).trim()) return null;
     return {
       type: "heading",
-      tag: block.level === 3 ? "h3" : "h2",
+      tag: `h${block.level}`,
       children: childrenFromSpans(block.spans),
       direction: "ltr",
       format: "",
@@ -590,7 +615,16 @@ function emptyParagraphNode(): LexicalNode {
   };
 }
 
+function headingLevel(tag: string): HeadingLevel | null {
+  if (tag === "h1") return 1;
+  if (tag === "h2") return 2;
+  if (tag === "h3") return 3;
+  if (tag === "h4") return 4;
+  return null;
+}
+
 function readNodeText(node: LexicalNode): string {
+  if (typeof node.html === "string") return htmlToPlainText(node.html);
   if (typeof node.text === "string") return node.text;
   return asNodes(node.children).map(readNodeText).join("");
 }

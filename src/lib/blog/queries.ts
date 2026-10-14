@@ -60,8 +60,13 @@ export type PostRecord = {
   coverHeight: number | null;
   seoTitle: string;
   seoDescription: string;
+  focusKeyword: string;
+  imageAlt: string;
+  tags: string[];
+  faqs: { question: string; answer: string }[];
   category: string;
   author: string;
+  authorRole: string;
   authorImage: string;
   authorImageUrl: string;
   authorImageAlt: string;
@@ -93,6 +98,23 @@ function when(value: unknown) {
   if (value instanceof Date) return value.toISOString();
   if (typeof value === "string") return value;
   return "";
+}
+
+function stringList(value: unknown) {
+  if (!Array.isArray(value)) return [];
+  return value
+    .map((item) => (typeof item === "string" ? item.trim() : ""))
+    .filter(Boolean);
+}
+
+function faqList(value: unknown) {
+  if (!Array.isArray(value)) return [];
+  return value.flatMap((item) => {
+    if (!item || typeof item !== "object") return [];
+    const question = "question" in item ? String(item.question ?? "").trim() : "";
+    const answer = "answer" in item ? String(item.answer ?? "").trim() : "";
+    return question || answer ? [{ question, answer }] : [];
+  });
 }
 
 function dateInput(value: unknown) {
@@ -325,8 +347,13 @@ export async function getPost(id: string): Promise<PostRecord | null> {
     coverHeight: cover.height,
     seoTitle: String(doc.seoTitle ?? ""),
     seoDescription: String(doc.seoDescription ?? ""),
+    focusKeyword: String(doc.focusKeyword ?? ""),
+    imageAlt: String(doc.imageAlt ?? ""),
+    tags: stringList(doc.tags),
+    faqs: faqList(doc.faqs),
     category: toId(doc.category),
     author: String(doc.author ?? "By Mahraj Engineering Team"),
+    authorRole: String(doc.authorRole ?? ""),
     authorImage: authorImage.id,
     authorImageUrl: authorImage.url,
     authorImageAlt: authorImage.alt,

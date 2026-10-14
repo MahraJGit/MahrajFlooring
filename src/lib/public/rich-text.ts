@@ -1,7 +1,7 @@
 export type ArticleHeading = {
   id: string;
   title: string;
-  level: 2 | 3;
+  level: 1 | 2 | 3 | 4;
 };
 
 type HeadingNode = {
@@ -43,7 +43,9 @@ function collectHeadings(content: LexicalContent) {
 
   return nodes.flatMap((node) => {
     if (node.type !== "heading") return [];
-    if (node.tag !== "h2" && node.tag !== "h3") return [];
+    const level =
+      node.tag === "h1" ? 1 : node.tag === "h2" ? 2 : node.tag === "h3" ? 3 : node.tag === "h4" ? 4 : 0;
+    if (!level) return [];
 
     const title = readNodeText(node).trim();
     if (!title) return [];
@@ -57,7 +59,7 @@ function collectHeadings(content: LexicalContent) {
         node,
         id: count === 0 ? base : `${base}-${count + 1}`,
         title,
-        level: node.tag === "h2" ? (2 as const) : (3 as const),
+        level: level as 1 | 2 | 3 | 4,
       },
     ];
   });

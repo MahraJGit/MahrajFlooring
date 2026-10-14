@@ -21,6 +21,11 @@ const publishedAtSchema = z
     message: "Use a valid publication date.",
   });
 
+const faqSchema = z.object({
+  question: z.string().trim().max(300, "Keep the question shorter."),
+  answer: z.string().trim().max(2000, "Keep the answer shorter."),
+});
+
 const lexicalContent = z.unknown().superRefine((value, ctx) => {
   if (value == null) return;
   if (!isLexicalDoc(value)) {
@@ -59,11 +64,16 @@ export const postInputSchema = z.object({
   seoDescription: z
     .string()
     .trim()
-    .max(200, "Keep the SEO description to 200 characters or fewer.")
+    .max(200, "Keep the meta description to 200 characters or fewer.")
     .optional()
     .or(z.literal("")),
+  focusKeyword: z.string().trim().max(80).optional().or(z.literal("")),
+  imageAlt: z.string().trim().max(180).optional().or(z.literal("")),
+  tags: z.array(z.string().trim().min(1).max(40)).max(20).default([]),
+  faqs: z.array(faqSchema).max(20).default([]),
   category: z.string().trim().optional().or(z.literal("")),
   author: z.string().trim().optional().or(z.literal("")),
+  authorRole: z.string().trim().max(120).optional().or(z.literal("")),
   authorImage: optionalObjectId,
   readTime: z.string().trim().max(40).optional().or(z.literal("")),
   publishedAt: publishedAtSchema,
@@ -77,6 +87,17 @@ export const postDraftSchema = postInputSchema.superRefine((value, ctx) => {
       code: z.ZodIssueCode.custom,
       path: ["category"],
       message: "Please choose a valid category.",
+    });
+  }
+
+  const incompleteFaq = value.faqs.some(
+    (item) => Boolean(item.question.trim()) !== Boolean(item.answer.trim())
+  );
+  if (incompleteFaq) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["faqs"],
+      message: "Each FAQ needs both a question and an answer.",
     });
   }
 

@@ -4,8 +4,10 @@ import { useEffect, useRef, useState } from "react";
 import {
   Bold,
   Code,
+  Heading1,
   Heading2,
   Heading3,
+  Heading4,
   ImagePlus,
   Italic,
   Link2,
@@ -14,6 +16,7 @@ import {
   Minus,
   Pilcrow,
   Quote,
+  Table,
   Trash2,
   Underline,
 } from "lucide-react";
@@ -42,14 +45,19 @@ import {
 import { cn } from "@/lib/utils";
 
 const BLOCK_TYPES = [
-  { value: "paragraph", label: "Paragraph" },
-  { value: "heading-2", label: "Heading" },
-  { value: "heading-3", label: "Subheading" },
+  { value: "paragraph", label: "Body text" },
+  { value: "heading-1", label: "Heading 1" },
+  { value: "heading-2", label: "Heading 2" },
+  { value: "heading-3", label: "Heading 3" },
+  { value: "heading-4", label: "Heading 4" },
   { value: "list", label: "Bulleted list" },
   { value: "ordered", label: "Numbered list" },
+  { value: "html", label: "HTML embed" },
   { value: "quote", label: "Quote" },
   { value: "code", label: "Code" },
 ] as const;
+
+export const BLOG_IMAGE_SIZE = { width: 1920, height: 1080 };
 
 export function LexicalEditor({
   value,
@@ -124,12 +132,15 @@ export function LexicalEditor({
     const text = spansToPlainText(spans);
 
     let next: EditorBlock = { id, type: "paragraph", spans };
-    if (kind === "heading-2") next = { id, type: "heading", level: 2, spans };
+    if (kind === "heading-1") next = { id, type: "heading", level: 1, spans };
+    else if (kind === "heading-2") next = { id, type: "heading", level: 2, spans };
     else if (kind === "heading-3") next = { id, type: "heading", level: 3, spans };
+    else if (kind === "heading-4") next = { id, type: "heading", level: 4, spans };
     else if (kind === "list") next = { id, type: "list", ordered: false, items: [spans] };
     else if (kind === "ordered") next = { id, type: "list", ordered: true, items: [spans] };
     else if (kind === "quote") next = { id, type: "quote", spans };
     else if (kind === "code") next = { id, type: "code", text };
+    else if (kind === "html") next = { id, type: "html", html: "" };
     else if (kind === "hr") next = { id, type: "hr" };
 
     replace(id, next);
@@ -142,10 +153,16 @@ export function LexicalEditor({
       return;
     }
     const id = newBlockId();
-    if (kind === "heading-2") {
+    if (kind === "heading-1") {
+      insert(active?.id ?? null, { id, type: "heading", level: 1, spans: [{ text: "" }] });
+    } else if (kind === "heading-2") {
       insert(active?.id ?? null, { id, type: "heading", level: 2, spans: [{ text: "" }] });
     } else if (kind === "heading-3") {
       insert(active?.id ?? null, { id, type: "heading", level: 3, spans: [{ text: "" }] });
+    } else if (kind === "heading-4") {
+      insert(active?.id ?? null, { id, type: "heading", level: 4, spans: [{ text: "" }] });
+    } else if (kind === "html") {
+      insert(active?.id ?? null, { id, type: "html", html: "" });
     } else if (kind === "list") {
       insert(active?.id ?? null, { id, type: "list", ordered: false, items: [[{ text: "" }]] });
     } else if (kind === "ordered") {
@@ -180,8 +197,8 @@ export function LexicalEditor({
 
   return (
     <TooltipProvider delayDuration={400}>
-      <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
-        <div className="sticky top-0 z-10 flex flex-wrap items-center gap-1 border-b border-border bg-card/95 px-2 py-2 backdrop-blur-sm">
+      <div className="rounded-xl border border-border bg-card shadow-sm">
+        <div className="sticky top-0 z-30 flex flex-wrap items-center gap-1 border-b border-border bg-card/95 px-2 py-2 shadow-sm backdrop-blur-sm">
           <select
             aria-label="Block style"
             className="h-8 rounded-lg border border-input bg-background px-2 text-sm"
@@ -200,11 +217,14 @@ export function LexicalEditor({
           <MarkButton icon={Underline} label="Underline" command="underline" />
           <LinkButton />
           <ToolbarDivider />
-          <ToolbarButton icon={Pilcrow} label="Paragraph" onClick={() => applyKind("paragraph")} />
-          <ToolbarButton icon={Heading2} label="Heading" onClick={() => applyKind("heading-2")} />
-          <ToolbarButton icon={Heading3} label="Subheading" onClick={() => applyKind("heading-3")} />
+          <ToolbarButton icon={Pilcrow} label="Body text" onClick={() => applyKind("paragraph")} />
+          <ToolbarButton icon={Heading1} label="Heading 1" onClick={() => applyKind("heading-1")} />
+          <ToolbarButton icon={Heading2} label="Heading 2" onClick={() => applyKind("heading-2")} />
+          <ToolbarButton icon={Heading3} label="Heading 3" onClick={() => applyKind("heading-3")} />
+          <ToolbarButton icon={Heading4} label="Heading 4" onClick={() => applyKind("heading-4")} />
           <ToolbarButton icon={List} label="Bulleted list" onClick={() => applyKind("list")} />
           <ToolbarButton icon={ListOrdered} label="Numbered list" onClick={() => applyKind("ordered")} />
+          <ToolbarButton icon={Table} label="HTML embed" onClick={() => applyKind("html")} />
           <ToolbarButton icon={Quote} label="Quote" onClick={() => applyKind("quote")} />
           <ToolbarButton icon={Code} label="Code" onClick={() => applyKind("code")} />
           <ToolbarDivider />
@@ -285,18 +305,20 @@ function EditorBlockView({
         <RichLine
           placeholder={
             block.type === "heading"
-              ? block.level === 2
-                ? "Heading"
-                : "Subheading"
+              ? `Heading ${block.level}`
               : block.type === "quote"
                 ? "Quote"
-                : "Write…"
+                : "Body text"
           }
           className={
             block.type === "heading"
-              ? block.level === 2
-                ? "font-heading text-2xl font-semibold"
-                : "font-heading text-xl font-semibold"
+              ? block.level === 1
+                ? "font-heading text-3xl font-semibold"
+                : block.level === 2
+                  ? "font-heading text-2xl font-semibold"
+                  : block.level === 3
+                    ? "font-heading text-xl font-semibold"
+                    : "font-heading text-lg font-semibold"
               : block.type === "quote"
                 ? "border-s-4 border-brand bg-surface-alt px-4 py-3 italic"
                 : "text-base leading-7"
@@ -366,6 +388,21 @@ function EditorBlockView({
         />
       ) : null}
 
+      {block.type === "html" ? (
+        <div className="space-y-2">
+          <textarea
+            className="min-h-40 w-full rounded-lg border border-input bg-muted/40 p-3 font-mono text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring/40"
+            placeholder={'<table class="blog-table"><thead><tr><th>Column</th></tr></thead><tbody><tr><td>Value</td></tr></tbody></table>'}
+            value={block.html}
+            onChange={(event) => onChange({ ...block, html: event.target.value })}
+            onFocus={onFocus}
+          />
+          <p className="text-xs text-muted-foreground">
+            Paste a table or other HTML. Tables are shown with the shared blog-table style.
+          </p>
+        </div>
+      ) : null}
+
       {block.type === "hr" ? <hr className="my-4 border-border" /> : null}
 
       {block.type === "image" ? (
@@ -411,6 +448,7 @@ function ImageBlock({
       {choosing ? (
         <MediaPicker
           label="Article image"
+          hint={`Recommended size ${BLOG_IMAGE_SIZE.width} × ${BLOG_IMAGE_SIZE.height}.`}
           value={block.mediaId}
           previewUrl={block.url}
           previewAlt={block.alt}
@@ -464,6 +502,17 @@ function ImageBlock({
               Replace
             </Button>
           </div>
+          <Input
+            value={block.alt ?? ""}
+            placeholder="Image alt text"
+            aria-label="Image alt text"
+            onChange={(event) => onChange({ ...block, alt: event.target.value })}
+          />
+          {block.width && block.height && (block.width !== BLOG_IMAGE_SIZE.width || block.height !== BLOG_IMAGE_SIZE.height) ? (
+            <p className="text-xs text-amber-800">
+              This image is {block.width} × {block.height}. Blog images should be {BLOG_IMAGE_SIZE.width} × {BLOG_IMAGE_SIZE.height}.
+            </p>
+          ) : null}
           <Input
             value={block.caption ?? ""}
             placeholder="Caption (optional)"

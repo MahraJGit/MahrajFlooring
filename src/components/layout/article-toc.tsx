@@ -5,7 +5,7 @@ import { ArrowUp, List, X } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
-type TocItem = { id: string; title: string; level?: 2 | 3 };
+type TocItem = { id: string; title: string; level?: 1 | 2 | 3 | 4 };
 
 function useActiveSection(items: TocItem[]) {
   const [activeId, setActiveId] = useState(items[0]?.id ?? "");
@@ -78,7 +78,9 @@ export function ArticleToc({
               aria-current={isActive ? "true" : undefined}
               className={cn(
                 "flex gap-3 rounded-md border-s-2 px-3 py-2 text-sm transition-colors",
+                item.level === 2 && "ps-3",
                 item.level === 3 && "ps-6 text-[0.8125rem]",
+                item.level === 4 && "ps-9 text-[0.8125rem]",
                 isActive
                   ? "border-brand bg-brand/5 font-medium text-brand"
                   : "border-transparent text-body hover:border-brand/40 hover:text-brand"

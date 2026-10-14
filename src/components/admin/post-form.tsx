@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 
 import { deletePost, savePost } from "@/actions/posts";
 import { CharCount, Field } from "@/components/admin/field";
-import { LexicalEditor } from "@/components/admin/lexical-editor";
+import { BLOG_IMAGE_SIZE, LexicalEditor } from "@/components/admin/lexical-editor";
 import { MediaPicker } from "@/components/admin/media-picker";
 import { PublishStatusBanner } from "@/components/admin/publish-banner";
 import { Button } from "@/components/ui/button";
@@ -37,8 +37,13 @@ function emptyPost(): PostInput {
     coverImage: "",
     seoTitle: "",
     seoDescription: "",
+    focusKeyword: "",
+    imageAlt: "",
+    tags: [],
+    faqs: [],
     category: "",
     author: "By Mahraj Engineering Team",
+    authorRole: "",
     authorImage: "",
     readTime: "",
     publishedAt: "",
@@ -57,8 +62,13 @@ function fromRecord(post: PostRecord): PostInput {
     coverImage: post.coverImage,
     seoTitle: post.seoTitle,
     seoDescription: post.seoDescription,
+    focusKeyword: post.focusKeyword,
+    imageAlt: post.imageAlt,
+    tags: post.tags,
+    faqs: post.faqs,
     category: post.category,
     author: post.author,
+    authorRole: post.authorRole,
     authorImage: post.authorImage,
     readTime: post.readTime,
     publishedAt: post.publishedAt,
@@ -92,6 +102,7 @@ export function PostForm({
     width: post?.authorImageWidth ?? null,
     height: post?.authorImageHeight ?? null,
   });
+  const [tagsText, setTagsText] = useState(post?.tags.join(", ") ?? "");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [error, setError] = useState<string | null>(null);
   const [pending, start] = useTransition();
@@ -120,6 +131,10 @@ export function PostForm({
   function submit(status: "draft" | "published", leave = false) {
     const payload: PostInput = {
       ...values,
+      tags: tagsText
+        .split(",")
+        .map((tag) => tag.trim())
+        .filter(Boolean),
       slug: slugLocked ? values.slug : generated,
       _status: status,
     };
@@ -130,7 +145,13 @@ export function PostForm({
       if (result.fieldErrors) {
         setErrors(result.fieldErrors);
         if (result.fieldErrors.content) setTab("Content");
-        else if (result.fieldErrors.seoTitle || result.fieldErrors.seoDescription) setTab("SEO");
+        else if (
+          result.fieldErrors.seoTitle ||
+          result.fieldErrors.seoDescription ||
+          result.fieldErrors.focusKeyword
+        ) {
+          setTab("SEO");
+        } else if (result.fieldErrors.faqs) setTab("Basic");
         else setTab("Basic");
         return;
       }
@@ -188,7 +209,7 @@ export function PostForm({
 
       {tab === "Basic" ? (
         <div className="grid max-w-2xl gap-5">
-          <Field label="Title" htmlFor="title" error={errors.title}>
+          <Field label="Blog title" htmlFor="title" error={errors.title}>
             <Input
               id="title"
               value={values.title}
@@ -261,11 +282,34 @@ export function PostForm({
               ))}
             </select>
           </Field>
+          <Field label="Tags" htmlFor="tags" hint="Separate tags with commas." error={errors.tags}>
+            <Input
+              id="tags"
+              value={tagsText}
+              placeholder="gym flooring, rubber tiles, Dubai"
+              onChange={(event) => {
+                setTagsText(event.target.value);
+                setDirty(true);
+              }}
+            />
+          </Field>
           <Field label="Author" htmlFor="author" error={errors.author}>
             <Input
               id="author"
               value={values.author ?? ""}
               onChange={(event) => update("author", event.target.value)}
+            />
+          </Field>
+          <Field
+            label="What the author does"
+            htmlFor="authorRole"
+            hint="Shown beside the author name, for example Technical Advisor."
+            error={errors.authorRole}
+          >
+            <Input
+              id="authorRole"
+              value={values.authorRole ?? ""}
+              onChange={(event) => update("authorRole", event.target.value)}
             />
           </Field>
           <MediaPicker
@@ -289,7 +333,8 @@ export function PostForm({
             }}
           />
           <MediaPicker
-            label="Cover image"
+            label="Main image"
+            hint={`Recommended size ${BLOG_IMAGE_SIZE.width} × ${BLOG_IMAGE_SIZE.height}.`}
             value={values.coverImage ?? ""}
             previewUrl={coverPreview.url}
             previewAlt={coverPreview.alt}
@@ -308,6 +353,81 @@ export function PostForm({
               });
             }}
           />
+          {coverPreview.width &&
+          coverPreview.height &&
+          (coverPreview.width !== BLOG_IMAGE_SIZE.width ||
+            coverPreview.height !== BLOG_IMAGE_SIZE.height) ? (
+            <p className="text-xs text-amber-800">
+              This image is {coverPreview.width} × {coverPreview.height}. Blog images should be{" "}
+              {BLOG_IMAGE_SIZE.width} × {BLOG_IMAGE_SIZE.height}.
+            </p>
+          ) : null}
+          <Field
+            label="Image alt text"
+            htmlFor="imageAlt"
+            hint="Describes the main image for search engines and screen readers."
+            error={errors.imageAlt}
+          >
+            <Input
+              id="imageAlt"
+              value={values.imageAlt ?? ""}
+              onChange={(event) => update("imageAlt", event.target.value)}
+            />
+          </Field>
+          <div className="space-y-3">
+            <div className="flex items-center justify-between gap-3">
+              <p className="text-sm font-medium">FAQs</p>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() =>
+                  update("faqs", [...(values.faqs ?? []), { question: "", answer: "" }])
+                }
+              >
+                Add FAQ
+              </Button>
+            </div>
+            {(values.faqs ?? []).map((item, index) => (
+              <div key={index} className="grid gap-2 rounded-lg border border-border p-3">
+                <Input
+                  value={item.question}
+                  placeholder="Question"
+                  aria-label={`FAQ question ${index + 1}`}
+                  onChange={(event) => {
+                    const faqs = [...(values.faqs ?? [])];
+                    faqs[index] = { ...item, question: event.target.value };
+                    update("faqs", faqs);
+                  }}
+                />
+                <Textarea
+                  value={item.answer}
+                  placeholder="Answer"
+                  aria-label={`FAQ answer ${index + 1}`}
+                  onChange={(event) => {
+                    const faqs = [...(values.faqs ?? [])];
+                    faqs[index] = { ...item, answer: event.target.value };
+                    update("faqs", faqs);
+                  }}
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="justify-self-start"
+                  onClick={() =>
+                    update(
+                      "faqs",
+                      (values.faqs ?? []).filter((_, itemIndex) => itemIndex !== index)
+                    )
+                  }
+                >
+                  Remove
+                </Button>
+              </div>
+            ))}
+            {errors.faqs ? <p className="text-xs text-destructive">{errors.faqs}</p> : null}
+          </div>
           <Field
             label="Read time"
             htmlFor="readTime"
@@ -360,8 +480,8 @@ export function PostForm({
       {tab === "SEO" ? (
         <div className="grid max-w-xl gap-5">
           <Field
-            label="SEO title"
-            hint="Overrides the post title in search results. Open Graph uses this and the cover image."
+            label="Meta title"
+            hint="Overrides the blog title in search results. Open Graph uses this and the main image."
             error={errors.seoTitle}
           >
             <Input
@@ -369,13 +489,25 @@ export function PostForm({
               onChange={(event) => update("seoTitle", event.target.value)}
             />
           </Field>
-          <Field label="SEO description" error={errors.seoDescription}>
+          <Field label="Meta description" error={errors.seoDescription}>
             <Textarea
               maxLength={200}
               value={values.seoDescription ?? ""}
               onChange={(event) => update("seoDescription", event.target.value)}
             />
             <CharCount value={values.seoDescription ?? ""} max={200} />
+          </Field>
+          <Field
+            label="Focus keyword"
+            htmlFor="focusKeyword"
+            hint="The main phrase this article should be found for."
+            error={errors.focusKeyword}
+          >
+            <Input
+              id="focusKeyword"
+              value={values.focusKeyword ?? ""}
+              onChange={(event) => update("focusKeyword", event.target.value)}
+            />
           </Field>
         </div>
       ) : null}

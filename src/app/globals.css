@@ -169,3 +169,31 @@ section[data-section].bg-charcoal + section[data-section].bg-charcoal,
 section[data-section].bg-brand-dark + section[data-section].bg-brand-dark {
   padding-top: 0;
 }
+
+.blog-table {
+  width: 100%;
+  min-width: 36rem;
+  border-collapse: collapse;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: var(--ink, #1a1a1a);
+}
+
+.blog-table th,
+.blog-table td {
+  border: 1px solid var(--border, #e6e6e6);
+  padding: 0.75rem 1rem;
+  text-align: start;
+  vertical-align: top;
+}
+
+.blog-table th {
+  background: var(--surface-alt, #f6f6f6);
+  font-weight: 600;
+}
+
+.blog-table caption {
+  margin-bottom: 0.5rem;
+  text-align: start;
+  font-weight: 600;
+}

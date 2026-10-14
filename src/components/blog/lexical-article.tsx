@@ -1,5 +1,6 @@
 import { Fragment, type ReactNode } from "react";
 
+import { sanitizeBlogHtml } from "@/lib/blog/html";
 import {
   FORMAT_BOLD,
   FORMAT_CODE,
@@ -31,6 +32,7 @@ const SUPPORTED = new Set([
   "linebreak",
   "tab",
   "upload",
+  "html",
 ]);
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -178,11 +180,25 @@ function renderBlock(
   }
 
   if (type === "heading") {
-    const Tag = node.tag === "h3" ? "h3" : node.tag === "h2" ? "h2" : "p";
+    const Tag =
+      node.tag === "h1" || node.tag === "h2" || node.tag === "h3" || node.tag === "h4"
+        ? node.tag
+        : "h2";
     return (
       <Tag id={headingIds.get(node)} className="scroll-mt-28">
         {renderInline(asNodes(node.children), mediaById, unknown)}
       </Tag>
+    );
+  }
+
+  if (type === "html") {
+    const html = sanitizeBlogHtml(typeof node.html === "string" ? node.html : "");
+    if (!html.trim()) return null;
+    return (
+      <div
+        className="my-8 overflow-x-auto"
+        dangerouslySetInnerHTML={{ __html: html }}
+      />
     );
   }
 
@@ -244,13 +260,16 @@ function renderBlock(
     if (!media?.url) {
       return <span data-lexical-unknown="upload" hidden />;
     }
+    const fields = isRecord(node.fields) ? node.fields : null;
+    const fieldAlt =
+      fields && typeof fields.alt === "string" ? fields.alt.trim() : "";
     const caption = captionFromUpload(node, media);
     return (
       <figure>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={media.url}
-          alt={media.alt || caption || ""}
+          alt={fieldAlt || media.alt || caption || ""}
           width={media.width ?? undefined}
           height={media.height ?? undefined}
           loading="lazy"

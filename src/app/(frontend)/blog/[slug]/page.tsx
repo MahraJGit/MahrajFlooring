@@ -12,6 +12,12 @@ import {
 } from "lucide-react";
 
 import { BlogArticleBody } from "@/components/blog/blog-article";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { BlogPostCard } from "@/components/blog/blog-sections";
 import { BlogShare } from "@/components/blog/blog-share";
 import { ArticleToc, BackToTop } from "@/components/layout/article-toc";
@@ -42,6 +48,7 @@ export async function generateMetadata({
   return {
     title: post.seoTitle || post.title,
     description: post.seoDescription || post.excerpt,
+    keywords: [post.focusKeyword, ...post.tags].filter(Boolean),
     alternates: { canonical: `/blog/${post.slug}` },
     openGraph: {
       title: post.seoTitle || post.title,
@@ -232,7 +239,12 @@ export default async function BlogPostPage({
                     ) : (
                       <UserRound className="size-3.5" />
                     )}
-                    {card.author}
+                    <span>
+                      {card.author}
+                      {post.authorRole ? (
+                        <span className="text-body"> · {post.authorRole}</span>
+                      ) : null}
+                    </span>
                   </li>
                 ) : null}
                 {card.date ? (
@@ -254,11 +266,86 @@ export default async function BlogPostPage({
               {post.excerpt}
             </p>
 
+            {post.tags.length > 0 ? (
+              <ul className="mt-5 flex flex-wrap gap-2">
+                {post.tags.map((tag) => (
+                  <li
+                    key={tag}
+                    className="rounded-full border border-border bg-surface-alt px-3 py-1 text-xs text-body"
+                  >
+                    {tag}
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+
+            {card.image ? (
+              <Media
+                src={card.image}
+                alt={card.imageAlt}
+                className="mt-8 aspect-video w-full rounded-md"
+                sizes="(min-width: 1024px) 48rem, 100vw"
+                priority
+              />
+            ) : null}
+
+            {headings.length > 0 ? (
+              <nav
+                aria-label="Table of contents"
+                className="mt-8 rounded-md border border-border bg-surface-alt p-5"
+              >
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-brand">
+                  Contents
+                </p>
+                <ol className="mt-3 space-y-1.5">
+                  {headings.map((item) => (
+                    <li
+                      key={item.id}
+                      className={
+                        item.level === 2
+                          ? "ps-4"
+                          : item.level === 3
+                            ? "ps-8"
+                            : item.level === 4
+                              ? "ps-12"
+                              : ""
+                      }
+                    >
+                      <a
+                        href={`#${item.id}`}
+                        className="text-sm text-ink transition-colors hover:text-brand"
+                      >
+                        {item.title}
+                      </a>
+                    </li>
+                  ))}
+                </ol>
+              </nav>
+            ) : null}
+
             {post.content ? (
               <BlogArticleBody data={post.content} mediaById={post.inlineMedia} />
             ) : (
               <p className="mt-8 text-body">This article is being written.</p>
             )}
+
+            {post.faqs.length > 0 ? (
+              <div className="mt-12">
+                <h2 className="font-heading text-2xl font-semibold text-ink">FAQs</h2>
+                <Accordion type="single" collapsible className="mt-4">
+                  {post.faqs.map((item, index) => (
+                    <AccordionItem key={`${item.question}-${index}`} value={`faq-${index}`}>
+                      <AccordionTrigger className="text-start text-base font-medium text-ink hover:no-underline">
+                        {item.question}
+                      </AccordionTrigger>
+                      <AccordionContent className="text-sm leading-relaxed text-body">
+                        {item.answer}
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+              </div>
+            ) : null}
 
             <div className="mt-12 flex flex-col gap-4 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-center gap-3">
@@ -279,7 +366,7 @@ export default async function BlogPostPage({
                     {card.author || "Mahraj Engineering Team"}
                   </p>
                   <p className="text-xs text-body">
-                    Technical flooring specialists across the GCC
+                    {post.authorRole || "Technical flooring specialists across the GCC"}
                   </p>
                 </div>
               </div>

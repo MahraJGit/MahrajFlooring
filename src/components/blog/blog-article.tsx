@@ -12,9 +12,11 @@ export function BlogArticleBody({
     <div
       className={[
         "max-w-none text-base leading-relaxed text-body",
+        "[&_h1]:mt-12 [&_h1]:font-heading [&_h1]:text-3xl [&_h1]:font-semibold [&_h1]:tracking-tight [&_h1]:text-ink",
         "[&_h2]:mt-12 [&_h2]:font-heading [&_h2]:text-2xl [&_h2]:font-semibold [&_h2]:tracking-tight [&_h2]:text-ink",
         "[&_h3]:mt-9 [&_h3]:font-heading [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:text-ink",
-        "[&_h2+p]:mt-3 [&_h3+p]:mt-3",
+        "[&_h4]:mt-7 [&_h4]:font-heading [&_h4]:text-lg [&_h4]:font-semibold [&_h4]:text-ink",
+        "[&_h1+p]:mt-3 [&_h2+p]:mt-3 [&_h3+p]:mt-3 [&_h4+p]:mt-3",
         "[&_p]:mt-5 [&_p]:max-w-[68ch]",
         "[&_ul]:mt-5 [&_ul]:list-disc [&_ul]:space-y-2 [&_ul]:ps-6",
         "[&_ol]:mt-5 [&_ol]:list-decimal [&_ol]:space-y-2 [&_ol]:ps-6",
