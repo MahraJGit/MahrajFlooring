@@ -469,12 +469,21 @@ export function PostForm({
       ) : null}
 
       {tab === "Content" ? (
-        <LexicalEditor
-          value={values.content}
-          mediaById={post?.inlineMedia}
-          onChange={(content) => update("content", content)}
-          error={errors.content}
-        />
+        <div className="space-y-3">
+          <div>
+            <h2 className="font-heading text-base font-semibold text-ink">Article</h2>
+            <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
+              Write the full article in the document below. Headings, paragraphs, bullets and numbered
+              lists are all applied in place from the toolbar — you do not add a separate field for each.
+            </p>
+          </div>
+          <LexicalEditor
+            value={values.content}
+            mediaById={post?.inlineMedia}
+            onChange={(content) => update("content", content)}
+            error={errors.content}
+          />
+        </div>
       ) : null}
 
       {tab === "SEO" ? (

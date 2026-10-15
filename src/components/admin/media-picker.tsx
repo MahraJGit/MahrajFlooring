@@ -26,6 +26,7 @@ export function MediaPicker({
   onChange,
   onDismiss,
   startOpen = false,
+  dialogOnly = false,
   error,
 }: {
   label: string;
@@ -46,6 +47,7 @@ export function MediaPicker({
   }) => void;
   onDismiss?: () => void;
   startOpen?: boolean;
+  dialogOnly?: boolean;
   error?: string;
 }) {
   const [open, setOpen] = useState(startOpen);
@@ -88,7 +90,9 @@ export function MediaPicker({
   }, [open, query]);
 
   return (
-    <div className="space-y-2">
+    <div className={dialogOnly ? undefined : "space-y-2"}>
+      {dialogOnly ? null : (
+      <>
       <Label>{label}</Label>
       {hint ? <p className="text-xs text-muted-foreground">{hint}</p> : null}
       {value && previewUrl ? (
@@ -129,6 +133,8 @@ export function MediaPicker({
         </button>
       )}
       {error ? <p className="text-xs text-destructive">{error}</p> : null}
+      </>
+      )}
 
       {open ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/40 p-4">
