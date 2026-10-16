@@ -348,8 +348,7 @@ function toDetailView(
         : "",
     related,
     siblings,
-    seoTitle:
-      (typeof service.seoTitle === "string" && service.seoTitle) || title,
+    seoTitle: typeof service.seoTitle === "string" ? service.seoTitle.trim() : "",
     seoDescription:
       (typeof service.seoDescription === "string" && service.seoDescription) ||
       card.excerpt,

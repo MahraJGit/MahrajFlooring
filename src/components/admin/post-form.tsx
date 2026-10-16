@@ -480,7 +480,7 @@ export function PostForm({
         <div className="grid max-w-xl gap-5">
           <Field
             label="Meta title"
-            hint="Overrides the blog title in search results. Open Graph uses this and the main image."
+            hint="This is the full title Google shows. Include Mahraj Flooring here if you want it — the site will not add it again. Open Graph uses this and the main image."
             error={errors.seoTitle}
           >
             <Input

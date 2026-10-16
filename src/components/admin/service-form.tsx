@@ -1087,7 +1087,11 @@ export function ServiceForm({
 
       {tab === "SEO" ? (
         <div className="grid max-w-xl gap-5">
-          <Field label="SEO title" hint="Overrides the service name in search results." error={errors.seoTitle}>
+          <Field
+            label="SEO title"
+            hint="This is the full title Google shows. Include Mahraj Flooring here if you want it — the site will not add it again."
+            error={errors.seoTitle}
+          >
             <Input value={values.seoTitle ?? ""} onChange={(e) => update("seoTitle", e.target.value)} />
           </Field>
           <Field label="SEO description" error={errors.seoDescription}>

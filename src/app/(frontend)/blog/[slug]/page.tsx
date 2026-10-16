@@ -31,6 +31,7 @@ import {
   getRelatedPosts,
   toBlogCard,
 } from "@/lib/public/blog";
+import { documentTitle } from "@/lib/seo/title";
 import { extractHeadings } from "@/lib/public/rich-text";
 
 export function generateStaticParams() {
@@ -45,13 +46,15 @@ export async function generateMetadata({
 
   if (!post) return {};
 
+  const title = documentTitle(post.seoTitle, post.title);
+
   return {
-    title: post.seoTitle || post.title,
+    title,
     description: post.seoDescription || post.excerpt,
     keywords: [post.focusKeyword, ...post.tags].filter(Boolean),
     alternates: { canonical: `/blog/${post.slug}` },
     openGraph: {
-      title: post.seoTitle || post.title,
+      title,
       description: post.seoDescription || post.excerpt,
       type: "article",
       publishedTime: post.publishedAt ?? undefined,

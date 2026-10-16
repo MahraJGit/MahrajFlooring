@@ -16,6 +16,7 @@ import {
 } from "@/components/services/service-performance";
 import { OngoingProjects, ServiceProcess, SpaceRequirements } from "@/components/services/service-support";
 import { getServiceBySlug } from "@/lib/public/services";
+import { documentTitle } from "@/lib/seo/title";
 
 export function generateStaticParams() {
   return [];
@@ -30,7 +31,7 @@ export async function generateMetadata({
   if (!service) return {};
 
   return {
-    title: service.seoTitle,
+    title: documentTitle(service.seoTitle, service.title),
     description: service.seoDescription,
   };
 }
