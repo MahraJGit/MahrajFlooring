@@ -61,8 +61,6 @@ import {
 } from "@/lib/cms/lexical";
 import { cn } from "@/lib/utils";
 
-export const BLOG_IMAGE_SIZE = { width: 1920, height: 1080 };
-
 type IslandBlock = Extract<EditorBlock, { type: "image" | "html" | "raw" }>;
 type ImageIsland = Extract<EditorBlock, { type: "image" }>;
 type StyleValue = "paragraph" | "h1" | "h2" | "h3" | "h4" | "quote" | "code";
@@ -746,10 +744,6 @@ function ImageDetailsForm({
 }) {
   const [alt, setAlt] = useState(block.alt ?? "");
   const [caption, setCaption] = useState(block.caption ?? "");
-  const wrongSize =
-    block.width &&
-    block.height &&
-    (block.width !== BLOG_IMAGE_SIZE.width || block.height !== BLOG_IMAGE_SIZE.height);
 
   return (
     <form
@@ -763,11 +757,6 @@ function ImageDetailsForm({
       {block.url ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img src={block.url} alt="" className="max-h-48 w-full rounded-md bg-muted object-contain" />
-      ) : null}
-      {wrongSize ? (
-        <p className="text-xs text-amber-800">
-          This image is {block.width} × {block.height}. Blog images should be {BLOG_IMAGE_SIZE.width} × {BLOG_IMAGE_SIZE.height}.
-        </p>
       ) : null}
       <div className="grid gap-2">
         <Label htmlFor="editor-image-alt">Alt text</Label>

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 
 import { deletePost, savePost } from "@/actions/posts";
 import { CharCount, Field } from "@/components/admin/field";
-import { BLOG_IMAGE_SIZE, LexicalEditor } from "@/components/admin/lexical-editor";
+import { LexicalEditor } from "@/components/admin/lexical-editor";
 import { MediaPicker } from "@/components/admin/media-picker";
 import { PublishStatusBanner } from "@/components/admin/publish-banner";
 import { Button } from "@/components/ui/button";
@@ -334,7 +334,6 @@ export function PostForm({
           />
           <MediaPicker
             label="Main image"
-            hint={`Recommended size ${BLOG_IMAGE_SIZE.width} × ${BLOG_IMAGE_SIZE.height}.`}
             value={values.coverImage ?? ""}
             previewUrl={coverPreview.url}
             previewAlt={coverPreview.alt}
@@ -353,15 +352,6 @@ export function PostForm({
               });
             }}
           />
-          {coverPreview.width &&
-          coverPreview.height &&
-          (coverPreview.width !== BLOG_IMAGE_SIZE.width ||
-            coverPreview.height !== BLOG_IMAGE_SIZE.height) ? (
-            <p className="text-xs text-amber-800">
-              This image is {coverPreview.width} × {coverPreview.height}. Blog images should be{" "}
-              {BLOG_IMAGE_SIZE.width} × {BLOG_IMAGE_SIZE.height}.
-            </p>
-          ) : null}
           <Field
             label="Image alt text"
             htmlFor="imageAlt"
